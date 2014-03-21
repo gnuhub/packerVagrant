@@ -7,6 +7,6 @@
 # Also prefer if the command executed conditionally, so this could deal with all Distro specific things
 # not just this one issue.
 #
-echo "vagrant ALL=(ALL) NOPASSWD: ALL" /tmp/tmp/txt
+echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /tmp/tmp.txt
 cat /etc/sudoers /tmp/tmp.txt > /tmp/sudoers.txt
 mv /tmp/sudoers.txt /etc/sudoers
