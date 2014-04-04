@@ -1,0 +1,11 @@
+"/home/idsldap/idsslapd-idsldap/logs/ibmslapd.log"{
+    copytruncate
+    delaycompress
+    missingok
+    dateext
+    compress
+    daily
+    rotate 10
+    postrotate
+    endscript
+}

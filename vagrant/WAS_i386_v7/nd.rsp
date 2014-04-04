@@ -1,0 +1,25 @@
+-OPT silentInstallLicenseAcceptance="true"
+
+-OPT disableOSPrereqChecking="true"
+-OPT disableNonBlockingPrereqChecking="true"
+
+-OPT installType="installNew"
+-OPT profileType="custom"
+
+-OPT feature="languagepack.console.all"
+-OPT feature="languagepack.server.all" 
+
+-OPT PROF_enableAdminSecurity="true"
+-OPT PROF_adminUserName=wasadmin
+-OPT PROF_adminPassword=Passw0rd
+
+-OPT installLocation="/opt/IBM/WebSphere/AppServer"
+
+-OPT PROF_profileName=AppSrv01
+-OPT PROF_isDefault="true"
+
+-OPT PROF_federateLater="false"
+-OPT PROF_dmgrHost="REUXGBLS291"
+-OPT PROF_dmgrPort="8879"
+-OPT PROF_dmgrAdminUserName=wasadmin
+-OPT PROF_dmgrAdminPassword=Passw0rd

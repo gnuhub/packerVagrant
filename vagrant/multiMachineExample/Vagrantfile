@@ -1,0 +1,27 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # Once a VM has been defined, you configure only that VM by replacing "config" at
+  #  the start of a configuration option with the name given when you defined it.
+  config.vm.define "web" do |web|
+    web.vm.box = "centOS_65_amd64"
+	web.vm.provider "virtualbox" do |vb|
+		vb.name = "Box1"
+		vb.gui = true
+	end
+	web.vm.provision :shell, :path => "box1.sh"
+  end
+
+  config.vm.define "db" do |db|
+    db.vm.box = "centos_65_i386"
+	db.vm.provider "virtualbox" do |vb|
+		vb.name = "Box2"
+		vb.gui = true
+	end
+    db.vm.provision :shell, :path => "box2.sh"
+  end
+  config.vm.provision :shell, :path => "box-both.sh"
+end

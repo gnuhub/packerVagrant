@@ -1,0 +1,39 @@
+# Issues: None
+# Note: Look in /root/waslogs/ for log files and install problems!
+#
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+#	Once a VM has been defined, you configure only that VM by replacing "config" at
+#	the start of a configuration option with the name given when you defined it.
+	config.vm.define "was1" do |was1|
+		was1.vm.box = "centos_65_i386"
+		was1.vm.provider "virtualbox" do |vb|
+			vb.name = "wasNode1"
+			vb.gui = false
+		end
+		was1.vm.network "private_network", ip: "10.0.15.3"
+		was1.vm.network "forwarded_port", guest: 9060, host: 9060
+		was1.vm.network "forwarded_port", guest: 9043, host: 9043
+		was1.vm.network "forwarded_port", guest: 443, host: 8443
+		was1.vm.network "forwarded_port", guest: 12100, host: 12100	
+		was1.vm.provision :shell, :path => "WAS_Node1-install.sh"
+	end
+	
+	config.vm.define "was2" do |was2|
+		was2.vm.box = "centos_65_i386"
+		was2.vm.provider "virtualbox" do |vb|
+			vb.name = "wasNode2"
+			vb.gui = false
+		end
+		was2.vm.network "private_network", ip: "10.0.15.4"
+		was2.vm.provision :shell, :path => "WAS_Node2-install.sh"
+	end
+	config.vm.provision :shell, :path => "WAS_all_startupScripts.sh"
+	config.vm.provision :shell, :path => "WAS_all_install1.sh"
+	
+	config.vm.synced_folder "C:/Users/Dennis English/DownloadDirector/WAS7_Linux32", "/installs"
+end

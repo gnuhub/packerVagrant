@@ -1,0 +1,4 @@
+# In an environment without DNS, or if you don't want to use it,
+# define your hosts in the lines below and then appened them to
+# the hosts file for each of the VMs created so that they can
+# can comminicate by host name not IP address.
