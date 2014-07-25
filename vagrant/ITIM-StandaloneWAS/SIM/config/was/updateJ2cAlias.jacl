@@ -1,0 +1,48 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2006,2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+#  
+#  This script will invoke the procedure to update the J2C 
+#  authentication alias set and used by ITIM.  They are either
+#  itim_init (used for accessing datasource, or itim_jms (used
+#  for accessing ITIM JMS queues).  If the being updated alias
+#  is itim_jms, it also invokes the procedure to add the userid
+#  to the roles which will allow the userid to perform send,
+#  receive, and other necessary operations on the itim_bus.
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Three arguments are required."  
+  puts "   arg1 - ITIM J2C alias (itim_init or itim_jms)"
+  puts "   arg2 - user identifier"
+  puts "   arg3 - user password"   
+  puts "  "
+} else {
+
+  set itim_alias  [lindex $argv 0]
+  set userid      [lindex $argv 1]
+  set user_pw     [lindex $argv 2]
+
+  puts "--> itim alias is $itim_alias"
+  puts "--> userid is $userid"
+
+  puts "--> configure J2C authentication alias for $itim_alias"
+
+  set rc [create_itim_j2c_auth_alias $itim_alias \
+                    "$itim_alias J2C authentication alias" $userid $user_pw] 
+  
+  if { $rc == "SUCCESS" && $itim_alias == "itim_jms" } { 
+      puts "--> reset the jms role for the userid $userid"   
+      set rc [reset_default_role_user "itim_bus" $userid]
+  }
+
+  if { $rc=="SUCCESS" || $rc=="UNCHANGED"} { 
+     $AdminConfig save
+  }
+}

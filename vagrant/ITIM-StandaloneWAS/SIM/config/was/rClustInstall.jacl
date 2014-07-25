@@ -1,0 +1,322 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to install ITIM on a regular cluster
+#
+# required input 
+#     $earloc   - Fully qualified ear file name
+#     $applname - Application name   
+#     $cluster  - ITIM application cluster name  
+#     $ejbid    - ITIM EJB userid which will be mapped to the ITIM_SYSTEM user if
+#                   it is set
+#
+
+if {$argc < 2} { 
+  puts "  "
+  puts "rClusterInstall usage: These arguments are required."  
+  puts "   arg1 - fully qualified ear file name; NOTE: Always use / for file separator"
+  puts "   arg2 - application name"
+  puts "   arg3 - cluster name"
+  puts "   arg4 - EJB userid"
+  puts "   arg5 - EJB password"
+  puts "   arg6 - virtual host (default = default_host)"
+  puts " "
+  exit -1
+
+} else {
+
+  set earloc   [lindex $argv 0]
+  set applname [lindex $argv 1]
+  set cluster  [lindex $argv 2]
+  set ejbid    [lindex $argv 3]
+  set ejbpwd   [lindex $argv 4]
+  set vhost    [lindex $argv 5]
+
+  if { $vhost == "" } {
+     set vhost "default_host"
+  } 
+
+  # Query AdminControl go get the cell name
+  set cellname [$AdminControl getCell]
+  puts " "
+  puts "rClusterInstall: fully qualified ear file name is '$earloc'"
+  puts "rClusterInstall: application name is '$applname'"
+  puts "rClusterInstall: cell name is '$cellname'"
+  puts "rClusterInstall: cluster name is '$cluster'"
+  puts "rClusterInstall: ejb user id is '$ejbid'"
+  puts "rClusterInstall: virtual host is '$vhost'"
+  puts "rClusterInstall: ejb password is '$ejbpwd'"
+  puts " "
+  
+  # Get the clusters configured
+  set clusters [$AdminControl queryNames type=Cluster,*]
+  set clusterfound "false"
+  # set clusterstring "{clusterName $cluster}"
+  set clusterstring [list [list clusterName $cluster]]
+  puts "Debug cluster name is -- '$clusterstring'"
+  foreach icluster $clusters {
+     set iclustername [string trim [$AdminControl getAttributes $icluster {clusterName}]]
+     puts "Check for match with trimmed value '$iclustername'"
+     set strmatch [string match $iclustername $clusterstring]
+     puts "Debug: strmatch $strmatch"
+     if { $strmatch == 1 } {
+        set clusterfound "true"
+        break
+     }
+  }
+
+  puts "cluster found ? $clusterfound"
+  if { [string match $clusterfound "false"] == 1 } {
+     error "Cluster $cluster not created"
+     exit -1
+  }
+
+  #Setup the access-id for the mapping roles.
+  set Clustername "Cell=:ServerCluster=$cluster"
+  puts "--> Cluster Name: $Clustername"
+
+  set securityDomainName [$AdminTask getSecurityDomainForResource [ list -resourceName $Clustername ]]
+
+  set reginfo ""
+ set realmName ""
+ set regType ""
+
+ # if SD is empty , the Global Security Domain is being used
+
+ if { $securityDomainName == "" } {
+   set regInfo [ $AdminTask getUserRegistryInfo {} ]
+ } else {
+   set regInfo [ $AdminTask getUserRegistryInfo [ list -securityDomainName $securityDomainName ]]
+ }
+
+ puts "--> RegInfo : $reginfo"
+
+# Rony's code for finding realm name. Doesn't work for the realm name's with space
+ #set num_regInfo [llength $regInfo]
+ #puts "--> num_members: $num_regInfo"
+ #for {set i 0} {$i < $num_regInfo} {incr i} {
+ #     set regdata [lindex $regInfo $i]
+
+ #     puts "--> regdata: $regdata"
+ #     if {[regexp "realm" $regdata] == 1}  { 
+ 
+ #	puts " found"
+ #	set elems  [split $regdata " "]
+ #      set realmName [lindex $elems 1]
+ #      puts " realm Name: $realmName"
+ #	break	
+ #     }	
+
+ #}
+
+
+# Divya's code for finding realm name.
+
+foreach regdata $regInfo {
+	
+	if {[regexp "realm" $regdata] == 1}  { 
+ 
+ 	 set realm [lindex $regdata 1]
+	 set realmName [ string trim $realm ]
+         puts "RealmName -> $realmName"
+	 break
+	
+      }	
+       
+}
+
+# Find Registry type of the Security Domain. The _Websphere_Config_Data_Type attribute
+# of the $AdminTask getUserRegistryInfo() is used in below script to get the registry type.
+#
+
+# Divya's code for finding the Registry type of the Security Domain.
+foreach reginfo $regInfo {
+
+	puts " Registry: $reginfo" 
+	
+	if {[regexp "_Websphere_Config_Data_Type" $reginfo] == 1}  { 
+		#set reglist [split $reginfo " "]
+		#set regType [lindex $reglist 1]
+
+		set regType [lindex $reginfo 1]
+		puts "regType : $regType"
+	}
+
+}
+
+
+
+
+
+
+# var mapping can be for each of the registry types
+# Registry Type - CustomUserRegistry mapping should be: user:$realmName/$ejbid
+# Registry Type - WIMUserRegsitry mapping should be : 
+# user:defaultWIMFileBasedRealm/uid=$ejbid,o=defaultWIMFileBasedRealm
+# Registry type - LDAPUserRegistry  -----
+# user:$realmName/
+# Regsitry Type - File Based registry ----
+# user:$realmName/
+
+#set access_ids [$AdminTask listRegistryUsers [list -securityRealmName $realmName -displayAccessIds true ]]
+#puts "--> access_ids: $access_ids"
+
+set mapping ""
+
+
+
+if {$regType =="CustomUserRegistry"} {
+
+   set mapping "$ejbid"
+   puts "--> custom registry mapping: $mapping"
+   set accessID "user:$realmName/$mapping"	
+   puts "Required accessID -> $accessID"	
+
+} else {
+
+   set ACCESS_ID [ $AdminTask listRegistryUsers [list -securityRealmName $realmName -displayAccessIds true -userFilter $ejbid ]]
+
+   if { [string compare $ACCESS_ID ""] == 0} {
+
+	puts "The EJB user not found in the external user registry. The deployment of IBM Security Identity Manager failed."
+	exit 0
+
+   } else {	
+	foreach value $ACCESS_ID {
+		if { [regexp "user:" $value] == 1} {
+			set accessID [ string trim [lindex $value 1 ] ]
+			puts "Required accessID: $accessID" 
+			break
+        	} 
+   	}	
+   }
+}
+
+
+
+  # Setup attributes for installation
+
+  set mapwebmodtovh   [list [list "EnRole" app_web.war,WEB-INF/web.xml default_host] \
+                 [list "PasswordSynch" passwordsynch_web.war,WEB-INF/web.xml default_host] \
+                 [list "PasswordReset" passwordreset_web.war,WEB-INF/web.xml default_host] \
+		     [list "Credential Vault" cvsvc.war,WEB-INF/web.xml default_host] \
+                 [list "ITIM Console" itim_console.war,WEB-INF/web.xml default_host] \
+                 [list "ITIM_Self_Service" itim_self_service.war,WEB-INF/web.xml default_host] \
+                 [list "ITIM Console Help" itim_console_help.war,WEB-INF/web.xml default_host] \
+                 [list "ITIM Message Help" itim_message_help.war,WEB-INF/web.xml default_host] \
+                 [list "ITIM Self Service Help" itim_self_service_help.war,WEB-INF/web.xml default_host] \
+                 [list "EHS3.01" itim_iehs_help.war,WEB-INF/web.xml default_host]]
+                 
+  #Commenting out for WAS Auth changes               
+
+  #if { $ejbid == "" }  {
+  #    set maprole  [list ITIM_SYSTEM AppDeploymentOption.Yes AppDeploymentOption.No "" ""]
+  #    set mapclientrole  [list ITIM_CLIENT AppDeploymentOption.Yes AppDeploymentOption.No "" ""]
+ # } else {
+   #   set maprole  [list ITIM_SYSTEM AppDeploymentOption.No AppDeploymentOption.No $ejbid "" AppDeploymentOption.No user:itimCustomRealm/$ejbid ""]
+ 
+     set maprole  [list ITIM_SYSTEM AppDeploymentOption.No AppDeploymentOption.No $ejbid "" AppDeploymentOption.No $accessID ""]
+
+      set mapclientrole  [list ITIM_CLIENT AppDeploymentOption.No AppDeploymentOption.No "" "" AppDeploymentOption.Yes "" ""]
+ # }
+  set maproletousers [list $maprole $mapclientrole]
+
+ # Map Run As Roles for isimsystem user
+  puts "--------Run As Roles to ISIM security user"
+  set ras [list [list "ITIM_SYSTEM" $ejbid $ejbpwd]]
+   
+  set attr     [list -appname $applname -cluster $cluster -MapWebModToVH $mapwebmodtovh -MapRolesToUsers $maproletousers -MapRunAsRolesToUsers $ras -verbose]
+  puts "rClusterInstall: $attr"
+
+  puts "rClusterInstall: Installing application $applname.... Please wait!"
+  $AdminApp install $earloc $attr
+
+  puts " "
+  puts " "
+  puts "...................................."
+  puts "...................................."
+  puts "...................................."
+  puts "rClusterInstall: Saving configuration... Please wait!"
+  $AdminConfig save
+
+  # Get the Deployment object id of the just deployed application
+  set appid [$AdminConfig getid /Deployment:$applname/]
+  
+  # Retrieve the deployed object id inside the "Deployment object id, from where
+  # attributes of wasClassLoaderPolicy and classload.mode then can be accessed
+  set deployoid [lindex [$AdminConfig show $appid] 0]
+
+  puts "rClusterInstall: Setting classloaded policy for $applname"
+  $AdminConfig modify $deployoid {{warClassLoaderPolicy SINGLE} \
+				  {classloader {{mode PARENT_LAST} \
+						{libraries {{{libraryName ITIM_LIB} \
+							     {sharedClassloader true}}}}}}}
+
+  # Set the session managment properties for ITIM console and self service
+  puts "----- config session management for web modules..."
+
+  
+  set appDeploy [$AdminConfig showAttribute $appid deployedObject]
+  set mods [$AdminConfig showAttribute $appDeploy modules]
+  
+  # mods is a list of a list so we need to get the first element
+  set mods [lindex $mods 0]
+  set nmod [llength $mods]
+  puts "----- modules = $mods"
+  puts "----- nmod = $nmod"
+  
+  set smattr0 [list enable true]
+  set smattr1 [list enableSecurityIntegration false]
+  set smattr2 [list sessionPersistenceMode NONE]
+  set smattr3 [list enableCookies true]
+  set tpattr0 [list invalidationTimeout 30]
+  set tuningParmsDetailList [list $tpattr0]
+  set tuningParamsList [list tuningParams $tuningParmsDetailList]
+
+  # loop through the application modules
+  for {set i 0} {$i < $nmod} {incr i} {
+      set module   [lindex $mods $i]
+      
+      if {[regexp WebModuleDeployment $module] == 1} {
+          set uri [$AdminConfig showAttribute $module uri]
+          if { $uri == "itim_console.war" } {
+              puts "----- config session management for itim_console.war..."
+  	      set kuki [list path /itim/console]
+	      set cookie [list $kuki]
+	      set cookieSettings [list defaultCookieSettings $cookie]
+	      set sessionManagerDetailList [list $smattr0 $smattr1 $smattr2 $smattr3 $cookieSettings $tuningParamsList]
+	      set sessionMgr [list sessionManagement $sessionManagerDetailList]
+	      set webAttrs [list $sessionMgr]
+
+  	      set moduleConfig [$AdminConfig create WebModuleConfig $module $webAttrs]
+  	      set targetMappings [lindex [$AdminConfig showAttribute $module targetMappings] 0]
+  	      set attrs [list config $moduleConfig]
+  	      $AdminConfig modify $targetMappings [list $attrs]
+  	  } elseif {$uri == "itim_self_service.war" } {
+              puts "----- config session management for itim_self_service.war..."
+  	      set kuki [list path /itim/self]
+	      set cookie [list $kuki]
+	      set cookieSettings [list defaultCookieSettings $cookie]
+	      set sessionManagerDetailList [list $smattr0 $smattr1 $smattr2 $smattr3 $cookieSettings $tuningParamsList]
+	      set sessionMgr [list sessionManagement $sessionManagerDetailList]
+	      set webAttrs [list $sessionMgr]
+
+  	      set moduleConfig [$AdminConfig create WebModuleConfig $module $webAttrs]
+  	      set targetMappings [lindex [$AdminConfig showAttribute $module targetMappings] 0]
+  	      set attrs [list config $moduleConfig]
+  	      $AdminConfig modify $targetMappings [list $attrs]
+  	  }
+      }
+  }
+  
+  puts "rClusterInstall: Saving configuration... Please wait!"
+  $AdminConfig save
+  puts "rClusterInstall: Done."
+
+}

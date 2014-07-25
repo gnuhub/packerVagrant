@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/********************************************************************
+*
+* Licensed Materials - Property of IBM
+*
+* (C) Copyright IBM Corp. 2005, 2012 All Rights Reserved.
+*
+* US Government Users Restricted Rights - Use, duplication, or
+* disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+*
+*
+*******************************************************************/-->
+<AdHocReport Version="1.1">
+	<Created>
+		<Time>2004-08-09 19:34:00.707</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</Created>
+	<LastUpdate>
+		<Time>2004-08-09 19:34:00.707</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</LastUpdate>
+	<Style>standard</Style>
+	<ReportHeader>
+		<Title>dummy</Title>
+	</ReportHeader>
+	<Page Lines="45">
+		<PageHeader>
+			<TimeStamp TimeZone="GMT" show="YES"/>
+			<User show="YES"/>
+			<Logo show="YES"/>
+		</PageHeader>
+		<Body>
+			<Query>
+				<Columns>
+					<Column Width="5" id="1">
+						<Header>userId</Header>
+						<Source>Account.eruid</Source>
+						<Sort Order="2" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="2">
+						<Header>fullName</Header>
+						<Source>Person.cn</Source>
+						<Sort Order="3" Type="ASC"/>
+					</Column>
+					<Column Width="6" id="3">
+						<Header>serviceType</Header>
+						<Source>Service.servicetype</Source>
+						<Sort Order="4" Type="ASC"/>
+					</Column>
+					<Column Width="6" id="4">
+						<Header>serviceName</Header>
+						<Source>Service.erservicename</Source>
+						<Sort Order="5" Type="ASC"/>
+					</Column>
+					<Column Width="6" id="5">
+						<Header>suspendedSince</Header>
+						<Source>SUSPENDED_ACCOUNT_OPERATIONS.COMPLETED</Source>
+						<Sort Order="1" Type="ASC"/>
+					</Column>
+				</Columns>
+				<Tables>
+					<Table>Account</Table>
+					<Table>Service</Table>
+					<Table>Person</Table>
+					<Table>SERVICE_ACCOUNT_MAPPING</Table>
+					<Table>SUSPENDED_ACCOUNT_OPERATIONS</Table>
+				</Tables>
+				<Filter><![CDATA[Account.owner = Person.DN AND Account.erservice = Service.DN AND Account.eraccountstatus = '1' AND Person.DN = SUSPENDED_ACCOUNT_OPERATIONS.REQUESTEE AND Service.erservicename = SUSPENDED_ACCOUNT_OPERATIONS.SUBJECT_SERVICE AND Account.eruid = SUSPENDED_ACCOUNT_OPERATIONS.SUBJECT AND SUSPENDED_ACCOUNT_OPERATIONS.SUBJECT_PROFILE = SERVICE_ACCOUNT_MAPPING.ACCOUNTPROFILE AND SERVICE_ACCOUNT_MAPPING.SERVICEPROFILE = Service.servicetype AND Account.eruid like '_USERINPUT_' AND Person.DN like '_USERINPUT_' AND Service.servicetype like '_USERINPUT_' AND Service.DN like '_USERINPUT_' AND SUSPENDED_ACCOUNT_OPERATIONS.COMPLETED < '_USERINPUT_' ]]></Filter>
+			</Query>
+		</Body>
+		<PageFooter>
+			<PageNumber Format="1OfN" show="YES"/>
+		</PageFooter>
+	</Page>
+</AdHocReport>

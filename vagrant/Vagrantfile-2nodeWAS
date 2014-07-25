@@ -1,0 +1,45 @@
+# Issues: None
+# Note: Look in /root/waslogs/ for log files and install problems!
+#
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.omnibus.chef_version = :latest
+	config.vm.define "was1" do |was1|
+		was1.vm.box = "centos65x32"
+		was1.vm.network "private_network", ip: "10.0.15.3"
+		#was1.vm.hostname = "REUXGBLS291"
+		was1.vm.provider "virtualbox" do |vb|
+			vb.name = "dualChef1"
+			vb.gui = false
+		end
+		was1.vm.network "forwarded_port", guest: 9060, host: 9060
+		was1.vm.network "forwarded_port", guest: 9043, host: 9043
+		was1.vm.network "forwarded_port", guest: 443, host: 8443
+		was1.vm.network "forwarded_port", guest: 12100, host: 12100			
+		was1.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "wasSingleNode"
+			#chef.log_level = :debug
+		end
+	end
+	
+	config.vm.define "was2" do |was2|
+		was2.vm.box = "centos65x32"
+		was2.vm.network "private_network", ip: "10.0.15.4"
+		#was2.vm.hostname = "REUXGBLS292"
+		was2.vm.provider "virtualbox" do |vb|
+			vb.name = "dualChef2"
+			vb.gui = false
+		end
+		was2.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "wasExtraNode"
+			#chef.log_level = :debug
+		end
+	end	
+	config.vm.synced_folder "../software", "/installs"
+end

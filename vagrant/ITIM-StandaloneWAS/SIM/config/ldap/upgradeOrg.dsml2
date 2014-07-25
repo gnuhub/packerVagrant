@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file contains the modified default data entries which 
+     are applicable to any organization (organization.tmpl)
+     between ITIM 4.6 Enterprise and ITIM 5.0.
+     
+     The upgrade program will loop through all the organzations
+     and load this file for each organization.
+          
+     Note: Typically we don't add new entries in this file. The new ITIM groups are the exceptions because
+           they need to be added to any organization for auto-group population feature.
+     
+     
+     -->
+     
+<batchRequest>
+
+
+     <!-- ======================================================== -->
+     <!--   Help Desk group                                        -->
+     <!-- ======================================================== -->
+     <addRequest dn="erglobalid=<%sysrole.helpdesk.id=00000000000000000034%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+       <attr name="objectclass">
+        <value>top</value>
+        <value>erSystemRole</value>
+        <value>erManagedItem</value>
+       </attr>
+       <attr name="erglobalid"><value>00000000000000000034</value></attr>
+       <attr name="errolename"><value>Help Desk Assistant</value></attr>
+       <attr name="description"><value>Default Help Desk Assistant Group for <%org.name%></value></attr>
+       <attr name="ersystemrolecategory"><value>4</value></attr>
+       <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+     </addRequest>
+ 
+     <!-- ======================================================== -->
+     <!--   Service Owner group                                    -->
+     <!-- ======================================================== -->
+     <addRequest dn="erglobalid=<%sysrole.serviceowner.id=00000000000000000035%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+       <attr name="objectclass">
+        <value>top</value>
+        <value>erSystemRole</value>
+        <value>erManagedItem</value>
+       </attr>
+       <attr name="erglobalid"><value>00000000000000000035</value></attr>
+       <attr name="errolename"><value>Service Owner</value></attr>
+       <attr name="description"><value>Default Service Owner Group for <%org.name%></value></attr>
+       <attr name="ersystemrolecategory"><value>5</value></attr>
+       <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+     </addRequest>
+ 
+    <!-- ======================================================== -->
+    <!--   Manager group		                                     -->
+    <!-- ======================================================== -->
+     <addRequest dn="erglobalid=<%sysrole.manager.id=00000000000000000048%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+       <attr name="objectclass">
+        <value>top</value>
+        <value>erSystemRole</value>
+        <value>erManagedItem</value>
+       </attr>
+       <attr name="erglobalid"><value><%sysrole.manager.id%></value></attr>
+       <attr name="errolename"><value>Manager</value></attr>
+       <attr name="description"><value>Default Manager Group for <%org.name%></value></attr>
+       <attr name="ersystemrolecategory"><value>2</value></attr>
+       <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+     </addRequest>
+ 
+    <!-- ======================================================== -->
+    <!--   Auditor group 	                                     -->
+    <!-- ======================================================== -->
+     <addRequest dn="erglobalid=<%sysrole.auditor.id=00000000000000000062%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+       <attr name="objectclass">
+        <value>top</value>
+        <value>erSystemRole</value>
+        <value>erManagedItem</value>
+       </attr>
+       <attr name="erglobalid"><value><%sysrole.auditor.id%></value></attr>
+       <attr name="errolename"><value>Auditor</value></attr>
+       <attr name="description"><value>Default Auditor Group for <%org.name%></value></attr>
+       <attr name="ersystemrolecategory"><value>6</value></attr>
+       <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+     </addRequest>
+
+    
+</batchRequest>

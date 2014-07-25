@@ -1,0 +1,37 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2005, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+
+if {$argc < 1} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - server-name" 
+} else {
+
+  set node   [lindex $argv 0]
+  set server [lindex $argv 1]
+
+  if { $server == "" } {
+     set server server1
+  }
+  puts "node name is $node"
+  puts "server name is $server"
+
+  # call the create_itimhelp_url_provider proc in WasConfigUtil.jacl
+  set sid [$AdminConfig getid /Node:$node/Server:$server]
+  set rc [create_itimhelp_url_provider $sid ]
+  puts "Debug --> return from create_itimhelp_url_provider. rc: $rc"
+
+  if {$rc == "SUCCESS"} {
+    $AdminConfig save
+  }
+}

@@ -1,0 +1,7 @@
+dn:cn=isimsystem,dc=com
+objectclass:person
+objectclass:inetOrgPerson
+cn:isimsystem
+sn:isimsystem
+uid:isimsystem
+userpassword:secret

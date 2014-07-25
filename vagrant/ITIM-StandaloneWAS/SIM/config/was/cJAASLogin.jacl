@@ -1,0 +1,72 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to create ITIM JAAS Application Login 
+# configuration
+#
+# this script add the ITIM JAAS Allication Login entry in 
+#      $WAS_HOME\config\cells\<cellName>\security.xml
+#
+ 
+  set cell_name [$AdminControl getCell]
+  set sid [$AdminConfig getid /Cell:$cell_name/Security:/]
+  set aid [$AdminConfig showAttribute $sid applicationLoginConfig]
+  set elist [$AdminConfig list JAASConfigurationEntry]
+
+  set nentry [llength $elist]
+  set founditim false
+  set foundsrv  false
+  puts "Debug --> number of JAAS entry is $nentry"
+  for {set i 0} {$i < $nentry} {incr i} {
+     set entryi [lindex $elist $i]
+     set alias  [$AdminConfig showAttribute $entryi alias]
+     puts "Debug --> current JAAS entry alias is $alias" 
+     if {[regexp "ITIM" $alias] == 1} {
+        set founditim true
+     }
+     if {[regexp "serviceLoginContext" $alias] == 1} {
+        set foundsrv true
+     }
+  }  
+
+  # If ITIM JAAS Application Login Config ID is not found, create it
+  if {$founditim == "false"} {
+    puts "Debug --> not found ITIM JAAS entry; will create it"
+
+    set jeid [$AdminConfig create JAASConfigurationEntry $aid {{alias "ITIM"}}]
+    set lid  [$AdminConfig create JAASLoginModule $jeid {{authenticationStrategy "REQUIRED"} \
+                {moduleClassName "com.ibm.ws.security.common.auth.module.proxy.WSLoginModuleProxy"}}]
+    $AdminConfig create Property $lid {{name "delegate"} \
+                    {value "com.ibm.itim.apps.jaas.spi.PlatformLoginModule"}} 
+    $AdminConfig save                    
+    puts "Debug --> created ITIM jaas application login entry"
+  }   #  not found ITIM jaas application login entry
+
+  if {$founditim == "true"} {
+    puts "Debug --> found ITIM jaas application login entry"
+  } 
+
+  # If serviceLoginContext JAAS Application Login Config ID is not found, create it
+  if {$foundsrv == "false"} {
+    puts "Debug --> not found serviceLoginContext JAAS entry; will create it"
+
+    set jeid [$AdminConfig create JAASConfigurationEntry $aid {{alias "serviceLoginContext"}}]
+    set lid  [$AdminConfig create JAASLoginModule $jeid {{authenticationStrategy "REQUIRED"} \
+                {moduleClassName "com.ibm.ws.security.common.auth.module.proxy.WSLoginModuleProxy"}}]
+    $AdminConfig create Property $lid {{name "delegate"} \
+                    {value "com.ibm.itim.remoteservices.provider.itim.ServiceLoginModule"}} 
+    $AdminConfig save                    
+    puts "Debug --> created serviceLoginContext jaas application login entry"
+  }   #  not found serviceLoginContext jaas application login entry
+
+  if {$foundsrv == "true"} {
+    puts "Debug --> found serviceLoginContext jaas application login entry"
+  }

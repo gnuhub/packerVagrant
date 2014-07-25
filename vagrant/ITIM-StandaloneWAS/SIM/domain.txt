@@ -1,0 +1,2 @@
+configResponse.properties:sysConfigResponse.enRole.enrole.appServer.createSecurityDomain=true
+configResponse.properties:sysConfigResponse.enRole.enrole.appServer.security.domain=ISIMSecurityDomain

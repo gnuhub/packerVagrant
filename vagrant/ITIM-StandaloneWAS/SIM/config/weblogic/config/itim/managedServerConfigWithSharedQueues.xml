@@ -1,0 +1,118 @@
+<!--
+/********************************************************************
+*  Licensed Materials - Property of IBM
+*  
+*  (c) Copyright IBM Corp.  2004, 2005 All Rights Reserved
+*  
+*  US Government Users Restricted Rights - Use, duplication or
+*  disclosure restricted by GSA ADP Schedule Contract with
+*  IBM Corp.
+********************************************************************/
+-->
+<Domain Name="enrole">
+  <Server Cluster="%CLUSTER_NAME%" ListenAddress="%LISTEN_ADDRESS%"
+          ListenPort="%PORT%" Name="%MANAGED%" ServerVersion="7.0.1.0" StagingMode="stage">
+          <COM Name="%MANAGED%"/>
+          <ExecuteQueue Name="default" ThreadCount="15"/>
+          <ExecuteQueue Name="ITIM MDB Execute Queue" ThreadsIncrease="5" ThreadsMaximum="50" ThreadsMinimum="10"/>
+          <IIOP Name="%MANAGED%"/>
+          <JTAMigratableTarget Cluster="%CLUSTER_NAME%" Name="%MANAGED%" UserPreferredServer="%MANAGED%"/>
+          <JTARecoveryService Name="%MANAGED%"/>
+          <KernelDebug Name="%MANAGED%"/>
+          <Log Name="%MANAGED%"/>
+          <SSL Enabled="true" HostnameVerificationIgnored="true"
+                ListenPort="%SSL_PORT%" Name="%MANAGED%"
+                ServerCertificateChainFileName="./ca.pem"
+                ServerCertificateFileName="./democert.pem" 
+                ServerKeyFileName="./demokey.pem"/>
+          <ServerDebug Name="%MANAGED%"/>
+          <ServerStart Name="%MANAGED%"/>
+          <WebServer LogFileName="%MANAGED%/access.log" Name="%MANAGED%"/>
+      </Server> 
+      <JMSServer Name="JMSServer-%MANAGED%" Store="jmsStore_%MANAGED%" Targets="%MANAGED%">
+    <JMSQueue
+        DeliveryModeOverride="Persistent" 
+        JNDIName="adhocSyncQueue"
+        JNDINameReplicated="false" 
+        Name="adhocSyncQueue.%MANAGED%"
+        StoreEnabled="true"/>
+    <JMSQueue
+        DeliveryModeOverride="Persistent" 
+        DestinationKeys="JMSPriorityKey"
+        JNDIName="workflowQueue"
+        JNDINameReplicated="false" 
+        Name="workflowQueue.%MANAGED%"
+        StoreEnabled="true"
+        TimeToDeliverOverride="300"/>
+    <JMSQueue
+        DeliveryModeOverride="Persistent"
+        DestinationKeys="JMSPriorityKey"
+        JNDIName="remoteServicesQueue"
+        JNDINameReplicated="false" 
+        Name="remoteServicesQueue.%MANAGED%" 
+        StoreEnabled="true"/>
+    <JMSQueue DeliveryModeOverride="Persistent"
+        JNDIName="mailServicesQueue"
+        JNDINameReplicated="false" 
+        Name="mailServicesQueue.%MANAGED%" 
+        StoreEnabled="true"/>
+    <JMSQueue 
+        DeliveryModeOverride="Persistent"
+        JNDIName="partitioningServiceQueue" 
+        JNDINameReplicated="false" 
+        Name="partitioningServiceQueue.%MANAGED%" 
+        StoreEnabled="true"/>
+    <JMSQueue
+        DeliveryModeOverride="Persistent" 
+        DestinationKeys="JMSPriorityKey"
+        JNDIName="remotePendingQueue"
+        JNDINameReplicated="false" 
+        Name="remotePendingQueue.%MANAGED%"
+        StoreEnabled="true"/>
+    <JMSQueue
+        DeliveryModeOverride="Persistent"
+        JNDIName="importExportQueue"
+        JNDINameReplicated="false" 
+        Name="importExportQueue.%MANAGED%" 
+        StoreEnabled="true"/>
+	<JMSQueue DestinationKeys=""
+	    JNDIName="policySimulationQueue@JMSServer-%MANAGED%"
+	    Name="policySimulationQueue@JMSServer-%MANAGED%"
+	    StoreEnabled="true" Template="policySimulationQueue"/>
+	<JMSQueue DestinationKeys="JMSPriorityKey"
+	    JNDIName="sharedWorkflowQueue@JMSServer-%MANAGED%"
+	    Name="sharedWorkflowQueue@JMSServer-%MANAGED%"
+	    StoreEnabled="true" Template="sharedWorkflowQueue"/>
+	<JMSQueue DestinationKeys=""
+	    JNDIName="policyAnalysisQueue@JMSServer-%MANAGED%"
+	    Name="policyAnalysisQueue@JMSServer-%MANAGED%" 
+	    StoreEnabled="true" Template="policyAnalysisQueue"/>
+      
+      </JMSServer>
+  <JMSJDBCStore ConnectionPool="enrolePool" Name="jmsStore_%MANAGED%"/>
+  
+    <JMSTemplate Name="policySimulationQueue"/>
+    <JMSDistributedQueue JNDIName="policySimulationQueue"
+        Name="policySimulationQueue" Targets="%CLUSTER_NAME%" Template="policySimulationQueue">
+        <JMSDistributedQueueMember
+            JMSQueue="policySimulationQueue@JMSServer-%MANAGED%"
+            Name="policySimulationQueue@JMSServer-%MANAGED%" Weight="1"/>
+    </JMSDistributedQueue>
+    <JMSTemplate Name="sharedWorkflowQueue"/>
+    <JMSDistributedQueue ForwardDelay="-1"
+        JNDIName="sharedWorkflowQueue" LoadBalancingPolicy="Random"
+        Name="sharedWorkflowQueue" Targets="%CLUSTER_NAME%" Template="sharedWorkflowQueue">
+        <JMSDistributedQueueMember
+            JMSQueue="sharedWorkflowQueue@JMSServer-%MANAGED%"
+            Name="sharedWorkflowQueue@JMSServer-%MANAGED%" Weight="1"/>
+    </JMSDistributedQueue>
+    <JMSTemplate Name="policyAnalysisQueue"/>
+    <JMSDistributedQueue JNDIName="policyAnalysisQueue"
+        Name="policyAnalysisQueue" Targets="%CLUSTER_NAME%" Template="policyAnalysisQueue">
+        <JMSDistributedQueueMember
+            JMSQueue="policyAnalysisQueue@JMSServer-%MANAGED%"
+            Name="policyAnalysisQueue@JMSServer-%MANAGED%" Weight="1"/>
+    </JMSDistributedQueue>
+
+</Domain>
+

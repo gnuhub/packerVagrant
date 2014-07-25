@@ -1,0 +1,30 @@
+<!-- Weblogic web application descriptor for enrole 4.0 -->
+<weblogic-web-app>
+  <description>Weblogic web application descriptor for enrole 4.0</description>
+  <weblogic-version>6.0</weblogic-version>
+	<session-descriptor>
+    <!-- use replicated session for servlet clustering -->
+		<session-param>
+		  <param-name>PersistentStoreType</param-name>
+		  <param-value>replicated</param-value>
+	  </session-param>
+	</session-descriptor>
+    <jsp-descriptor>
+        <jsp-param>
+            <param-name>
+                precompile
+            </param-name>
+            <param-value>
+                true
+            </param-value>
+        </jsp-param>
+        <jsp-param>
+            <param-name>
+                compileCommand
+            </param-name>
+            <param-value>
+                %JAVAC_PATH%
+            </param-value>
+        </jsp-param>
+    </jsp-descriptor>
+</weblogic-web-app>

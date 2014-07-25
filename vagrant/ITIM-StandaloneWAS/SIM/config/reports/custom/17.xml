@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/********************************************************************
+*
+* Licensed Materials - Property of IBM
+*
+* (C) Copyright IBM Corp. 2005, 2012 All Rights Reserved.
+*
+* US Government Users Restricted Rights - Use, duplication, or
+* disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+*
+*
+*******************************************************************/-->
+<AdHocReport Version="1.1">
+	<Created>
+		<Time>2004-03-26 18:23:35.418</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</Created>
+	<LastUpdate>
+		<Time>2004-03-26 18:23:35.418</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</LastUpdate>
+	<Style>standard</Style>
+	<ReportHeader>
+		<Title>dummy</Title>
+	</ReportHeader>
+	<Page Lines="45">
+		<PageHeader>
+			<TimeStamp TimeZone="GMT" show="YES"/>
+			<User show="YES"/>
+			<Logo show="YES"/>
+		</PageHeader>
+		<Body>
+			<Query>
+				<Columns>
+					<Column Width="3" id="1">
+						<Header>requestType</Header>
+						<Source>PROCESS.TYPE</Source>
+						<Sort Order="1" Type="ASC"/>
+					</Column>
+					<Column Width="3" id="2">
+						<Header>submittedBy</Header>
+						<Source>PROCESS.REQUESTER_NAME</Source>
+						<Sort Order="2" Type="ASC"/>
+					</Column>
+					<Column Width="3" id="3">
+						<Header>requestedFor</Header>
+						<Source>PROCESS.REQUESTEE_NAME</Source>
+						<Sort Order="3" Type="ASC"/>
+					</Column>
+					<Column Width="3" id="4">
+						<Header>subject</Header>
+						<Source>PROCESS.SUBJECT</Source>
+						<Sort Order="4" Type="ASC"/>
+					</Column>
+					<Column Width="3" id="5">
+						<Header>status</Header>
+						<Source>PROCESS.STATE</Source>
+						<Sort Order="5" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="6">
+						<Header>timeStarted</Header>
+						<Source>PROCESS.STARTED</Source>
+						<Sort Order="6" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="7">
+						<Header>timeCompleted</Header>
+						<Source>PROCESS.COMPLETED</Source>
+						<Sort Order="7" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="8">
+						<Header>lastAccessTime</Header>
+						<Source>PROCESS.LASTMODIFIED</Source>
+						<Sort Order="8" Type="ASC"/>
+					</Column>
+				</Columns>
+				<Tables>
+					<Table>PROCESS</Table>
+					<Table>PROCESS_VIEW</Table>
+				</Tables>
+				<Filter><![CDATA[PROCESS_VIEW.REQUESTER like '_USERINPUT_' AND PROCESS_VIEW.REQUESTEE like '_USERINPUT_' AND PROCESS_VIEW.ID = PROCESS.ID AND PROCESS.COMPLETED > '_USERINPUT_' AND PROCESS.COMPLETED < '_USERINPUT_' ]]></Filter>
+			</Query>
+		</Body>
+		<PageFooter>
+			<PageNumber Format="1OfN" show="YES"/>
+		</PageFooter>
+	</Page>
+</AdHocReport>

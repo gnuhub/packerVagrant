@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/********************************************************************
+*
+* Licensed Materials - Property of IBM
+*
+* (C) Copyright IBM Corp. 2005, 2012 All Rights Reserved.
+*
+* US Government Users Restricted Rights - Use, duplication, or
+* disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+*
+*
+*******************************************************************/-->
+<AdHocReport Version="1.1">
+	<Created>
+		<Time>2006-07-18 15:49:41.443</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</Created>
+	<LastUpdate>
+		<Time>2006-07-18 15:49:41.443</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</LastUpdate>
+	<Style>standard</Style>
+	<ReportHeader>
+		<Title>dummy</Title>
+	</ReportHeader>
+	<Page Lines="45">
+		<PageHeader>
+			<TimeStamp TimeZone="GMT" show="YES"/>
+			<User show="YES"/>
+			<Logo show="YES"/>
+		</PageHeader>
+		<Body>
+			<Query>
+				<Columns>
+					<Column Width="5" id="1">
+						<Header>ownerName</Header>
+						<Source>Person.cn</Source>
+						<Sort Order="1" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="2">
+						<Header>userId</Header>
+						<Source>Account.eruid</Source>
+						<Sort Order="2" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="3">
+						<Header>organizationalUnit</Header>
+						<Source>OrganizationalContainer.name</Source>
+						<Sort Order="3" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="4">
+						<Header>accessType</Header>
+						<Source>Accessview.accesstype</Source>
+						<Sort Order="4" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="5">
+						<Header>access</Header>
+						<Source>Accessview.eraccessname</Source>
+						<Sort Order="5" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="6">
+						<Header>serviceName</Header>
+						<Source>Service.erservicename</Source>
+						<Sort Order="6" Type="ASC"/>
+					</Column>
+				</Columns>
+				<Tables>
+					<Table>Person</Table>
+					<Table>Account</Table>
+					<Table>OrganizationalContainer</Table>
+					<Table>Service</Table>
+				</Tables>
+				<Filter><![CDATA[Person.erparent = OrganizationalContainer.DN AND Account.owner = Person.DN AND Account.DN = GroupMembers.accountDN AND GroupMembers.groupID = Accessview.erGroupId AND GroupMembers.grouptype = Accessview.grouptype AND GroupMembers.serviceDN = Accessview.serviceDN AND GroupMembers.serviceDN = Service.DN AND Person.DN like '_USERINPUT_' AND OrganizationalContainer.DN like '_USERINPUT_' AND Accessview.DN like '_USERINPUT_' AND Service.DN like '_USERINPUT_']]></Filter>
+			</Query>
+		</Body>
+		<PageFooter>
+			<PageNumber Format="1OfN" show="YES"/>
+		</PageFooter>
+	</Page>
+</AdHocReport>

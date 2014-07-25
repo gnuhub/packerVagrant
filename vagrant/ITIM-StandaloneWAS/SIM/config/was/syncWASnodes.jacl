@@ -1,0 +1,17 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2007, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This jacl script is used to synchronize the file system on
+#  the managed nodes with the file system on the deployment manager
+#
+
+set config [$AdminControl queryNames *:*,type=ConfigRepository,process=dmgr]
+set dmgr [$AdminControl completeObjectName type=DeploymentManager,*]
+$AdminControl invoke $config refreshRepositoryEpoch
+$AdminControl invoke $dmgr syncActiveNodes false

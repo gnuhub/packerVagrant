@@ -1,0 +1,62 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This jacl script is to start of stop ITIM application cluster
+#    and ITIM JMS cluster.
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts " Usage:"
+  puts "        ssCluster <operation> cluster1 cluster2"
+  puts "        where, operation = start OR stop"
+  puts "	       cluster1  = ITIM application cluster"
+  puts "	       cluster1  = ITIM JMS cluster"
+  puts "  "
+  puts " If you are using wsadmin directly, invoke this script as follows:"
+  puts "   <WAS_HOME>/bin/wsadmin -profile <ITIM_HOME>/config/was/WasConfigUtil.jacl -f <ITIM_HOME>/config/was/ssCluster.jacl args.."
+  puts " "
+} else {
+  set operation   [lindex $argv 0]
+  set cluster1    [lindex $argv 1]
+  set cluster2    [lindex $argv 2]
+  
+  if { $operation != "start" }  {
+     if { $operation != "stop" } {
+     	  puts " Incorrect operation entered.  It must be \"start\" or \"stop\". "
+        exit
+     }
+  }
+
+  puts " "
+  puts "--> operation is $operation"
+  puts "--> cluster1 name is $cluster1"
+  puts "--> cluster2 name is $cluster2"
+  puts " "    
+  
+  set c1 [$AdminControl completeObjectName type=Cluster,name=$cluster1,*] 
+  if { $c1 == "" } {
+     puts "--> Failed to find cluster $cluster1. Please verify that $cluster1 exists"
+     exit
+  }
+
+  $AdminControl invoke $c1 $operation
+  puts "--> Operation $operation attempted on cluster $cluster1. "
+  puts "--> Please verify if operation completed successfully from the WebSphere AdminConsole"
+
+  set c2 [$AdminControl completeObjectName type=Cluster,name=$cluster2,*] 
+  if { $c2 == "" } {
+     puts "--> Failed to find cluster $cluster2. Please verify that $cluster2 exists"
+     exit
+  }
+
+  $AdminControl invoke $c2 $operation
+  puts "--> Operation $operation attempted on cluster $cluster2."
+  puts "--> Please verify if operation completed successfully from the WebSphere AdminConsole"
+}        

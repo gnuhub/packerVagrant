@@ -1,0 +1,34 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2005, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+
+if {$argc < 1} { 
+  puts "  "
+  puts "Incorrect number of args.  First two arguments are required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - server-name" 
+  puts " "
+} else {
+
+  set nodename   [lindex $argv 0]
+  set servername [lindex $argv 1]
+  
+  puts "Debug --> node name is $nodename"
+  puts "Debug --> server name is $servername"
+
+  set sid [$AdminConfig getid /Node:$nodename/Server:$servername]
+  set url_id [find_object_id $sid URLProvider name "itimhelp"]
+  puts "Debuf --> return IEHS URL provider ID is $url_id"
+  if { $url_id != "" } {
+     $AdminConfig remove $url_id
+     $AdminConfig save
+  }
+}

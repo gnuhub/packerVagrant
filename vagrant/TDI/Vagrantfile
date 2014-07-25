@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.omnibus.chef_version = :latest
+	config.vm.box = "CentOS65X32Test"
+	config.vm.hostname = "REUXGBLS291"
+	config.vm.network "private_network", ip: "10.0.15.3"
+	config.vm.network "forwarded_port", guest: 9060, host: 9060
+	config.vm.network "forwarded_port", guest: 9043, host: 9043
+	config.vm.network "forwarded_port", guest: 443, host: 8443
+	config.vm.network "forwarded_port", guest: 12100, host: 12100	
+	config.vm.provider "virtualbox" do |vb|
+		vb.name = "TDI"
+		vb.gui = false
+	end
+	
+	config.vm.provision :chef_solo do |chef|
+		chef.cookbooks_path = "../scriptLibrary/cookbooks"
+		chef.add_recipe "tdiNode::default"
+#		chef.add_recipe "wasNode::test"
+#		chef.add_recipe "wasNode::vCluster"
+#		chef.add_recipe "tdsNode::default"
+#		chef.log_level = :debug
+	end
+
+	config.vm.synced_folder "../software", "/installs"
+end

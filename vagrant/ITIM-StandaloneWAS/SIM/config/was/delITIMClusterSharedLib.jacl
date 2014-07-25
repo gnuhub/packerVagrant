@@ -1,0 +1,31 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This script will delete the ITIM_LIB shared library at the 
+#  ITIM application cluster scope.   
+#
+if {$argc < 1} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required."  
+  puts "   arg1 - cluster_name" 
+  puts " "
+} else {
+
+  set cluster     [lindex $argv 0]
+  set lib_name    "ITIM_LIB"
+
+  puts "--> cluster name is $cluster"
+
+  set cid [$AdminConfig getid /ServerCluster:$cluster]
+  set itim_slib [find_shared_lib $cid $lib_name]
+  if { $itim_slib != "" } {
+     $AdminConfig remove $itim_slib
+     $AdminConfig save
+  }
+}

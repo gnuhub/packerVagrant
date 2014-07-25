@@ -1,0 +1,49 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This script invoke the utility in WasConfigUtil.jacl to 
+# add the path of the ITIM property files to the WAS JVM 
+# classpath.  Also it sets the maximum pool size, the minimum pool
+# size, and the inactive timeout of the server thread pool; as well
+# as sets the lifetime timeout and the client inactivity timeout for 
+# the server transaction.
+#
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - server-name" 
+  puts "   arg3 - itim-path"  
+} else {
+
+  set node    [lindex $argv 0]
+  set server  [lindex $argv 1]
+  set path    [lindex $argv 2]
+
+  puts "--> node name is   $node"  
+  puts "--> server name is $server"
+  puts "--> itim path is   $path"
+
+  # call the update_jvm proc in WasConfigUtil.jacl
+  set sid [$AdminConfig getid /Node:$node/Server:$server]
+  set rc [update_jvm $sid $path]
+  puts "--> return from update_jvm. rc: $rc"
+  set rc1 [update_trans_service $sid 1200 600]
+  puts "--> return from update_trans_service. rc1: $rc1"
+
+  set rc2 [set_default_thread_pool $sid 50 5 5000]
+  puts "--> return from set_default_thread_pool. rc2: $rc2"
+
+  if { ($rc=="SUCCESS" || $rc=="UNCHANGED") &&   \
+       ($rc1=="SUCCESS" || $rc1=="UNCHANGED") && \
+       ($rc2=="SUCCESS" || $rc2=="UNCHANGED")}  {
+      puts "--> Save update"
+      $AdminConfig save
+  }
+}

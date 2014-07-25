@@ -1,0 +1,63 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to create a new environment variable
+# require input 
+#     $nodename - nodename 
+#     $varname  - variable name  
+#     $varvalue - value of the variable
+#
+# wsadmin.bat -f g:\was5\setEV.jacl DB2_JDBC_DRIVER_PATH "g:\\program files\\sqllib\\java12"
+#   (if use the above varialbe value, cannot have the end file separator - scripting error..)
+#   (better to enter "g:/program files/sqllib/java12/"
+#
+# this script add or update an environment variable in 
+#                 $WAS_HOME\config\cells\<cellName>\nodes\<nodeName>\variables.xml
+#
+#
+
+if {$argc < 2} { 
+  puts "  "
+  puts "Incorrect number of args.  First two arguments are required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - variable-name" 
+  puts "   arg3 - the value of the variable"
+  puts "   arg4 - description of the variable (optional)"
+  puts " "
+} else {
+
+  set nodename [lindex $argv 0]
+  set varname   [lindex $argv 1]
+  set varvalue  [lindex $argv 2]
+  set descript  [lindex $argv 3]
+  puts " "
+  set server    [lindex $argv 4]
+  if { $server == "" } {
+     set server server1
+  }
+  
+  puts "Debug --> node name is $nodename"
+  puts "Debug --> server name is $server"
+  puts "Debug --> environement variable name is $varname"
+  puts "Debug --> the value of the varialbe is  $varvalue"
+ 
+  puts " "
+ 
+  # setting vars at server level not working right now
+  # set sid [$AdminConfig getid /Node:$nodename/Server:$server]
+  
+  # set rc [set_env_var_server $nodename $server $varname $varvalue $descript]
+  # set rc [set_env_var_server $sid $varname $varvalue $descript]
+  set rc [set_env_var_node $nodename $varname $varvalue $descript]
+  if { $rc == "SUCCESS" } {
+     $AdminConfig save
+  }
+}

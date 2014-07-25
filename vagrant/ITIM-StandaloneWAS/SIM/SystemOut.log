@@ -1,0 +1,703 @@
+************ Start Display Current Environment ************
+WebSphere Platform 7.0.0.0 [ND 7.0.0.0 r0835.03] running with process name REUXGBLS291Node01Cell\REUXGBLS291Node01\server1 and process id 21467
+Host Operating System is Linux, version 2.6.32-431.el6.i686
+Java version = 1.6.0, Java Compiler = j9jit24, Java VM name = IBM J9 VM
+was.install.root = /opt/IBM/WebSphere/AppServer
+user.install.root = /opt/IBM/WebSphere/AppServer/profiles/AppSrv01
+Java Home = /opt/IBM/WebSphere/AppServer/java/jre
+ws.ext.dirs = /opt/IBM/WebSphere/AppServer/java/lib:/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/classes:/opt/IBM/WebSphere/AppServer/classes:/opt/IBM/WebSphere/AppServer/lib:/opt/IBM/WebSphere/AppServer/installedChannels:/opt/IBM/WebSphere/AppServer/lib/ext:/opt/IBM/WebSphere/AppServer/web/help:/opt/IBM/WebSphere/AppServer/deploytool/itp/plugins/com.ibm.etools.ejbdeploy/runtime
+Classpath = /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/properties:/opt/IBM/WebSphere/AppServer/properties:/opt/IBM/WebSphere/AppServer/lib/startup.jar:/opt/IBM/WebSphere/AppServer/lib/bootstrap.jar:/opt/IBM/WebSphere/AppServer/lib/jsf-nls.jar:/opt/IBM/WebSphere/AppServer/lib/lmproxy.jar:/opt/IBM/WebSphere/AppServer/lib/urlprotocols.jar:/opt/IBM/WebSphere/AppServer/deploytool/itp/batchboot.jar:/opt/IBM/WebSphere/AppServer/deploytool/itp/batch2.jar:/opt/IBM/WebSphere/AppServer/java/lib/tools.jar
+Java Library path = /opt/IBM/WebSphere/AppServer/java/jre/lib/i386:/opt/IBM/WebSphere/AppServer/bin::/usr/lib
+************* End Display Current Environment *************
+[7/22/14 23:40:06:871 BST] 00000000 ManagerAdmin  I   TRAS0017I: The startup trace state is *=info.
+[7/22/14 23:40:07:413 BST] 00000000 ManagerAdmin  I   TRAS0111I: The message IDs that are in use are deprecated
+[7/22/14 23:40:07:476 BST] 00000000 ModelMgr      I   WSVR0800I: Initializing core configuration models
+[7/22/14 23:40:08:305 BST] 00000000 ComponentMeta I   WSVR0179I: The runtime provisioning feature is disabled. All components will be started.
+[7/22/14 23:40:08:546 BST] 00000000 ProviderTrack I com.ibm.ffdc.osgi.ProviderTracker AddingService FFDC1007I: FFDC Provider Installed: com.ibm.ws.ffdc.impl.FfdcProvider@43324332
+[7/22/14 23:40:08:737 BST] 00000000 AdminInitiali A   ADMN0015I: The administration service is initialized.
+[7/22/14 23:40:09:370 BST] 00000000 PluginConfigS I   PLGC0057I: The plug-in configuration service started successfully.
+[7/22/14 23:40:09:520 BST] 00000000 SSLComponentI I   CWPKI0001I: SSL service is initializing the configuration
+[7/22/14 23:40:09:532 BST] 00000000 WSKeyStore    W   CWPKI0041W: One or more key stores are using the default password.
+[7/22/14 23:40:09:555 BST] 00000000 SSLConfigMana I   CWPKI0027I: Disabling default hostname verification for HTTPS URL connections.
+[7/22/14 23:40:09:575 BST] 00000000 SSLDiagnostic I   CWPKI0014I: The SSL component's FFDC Diagnostic Module com.ibm.ws.ssl.core.SSLDiagnosticModule registered successfully: true.
+[7/22/14 23:40:09:583 BST] 00000000 SSLComponentI I   CWPKI0002I: SSL service initialization completed successfully
+[7/22/14 23:40:09:596 BST] 00000000 DiagnosticCon I com.ibm.wsspi.rasdiag.DiagnosticConfigHome setStateCollectionSpec RASD0012I: Updating State Collection Spec from Uninitialized Value to .*:.*=0
+[7/22/14 23:40:09:614 BST] 00000000 PMIImpl       A   CWPMI1001I: PMI is enabled
+[7/22/14 23:40:10:203 BST] 00000000 SibMessage    I   [:] CWSIU0000I: Release: WAS70.SIB Level: o0833.67
+[7/22/14 23:40:10:367 BST] 00000000 SecurityDM    I   SECJ0231I: The Security component's FFDC Diagnostic Module com.ibm.ws.security.core.SecurityDM registered successfully: true.
+[7/22/14 23:40:10:449 BST] 00000000 distSecurityC I   SECJ6004I: Security Auditing is disabled. 
+[7/22/14 23:40:10:454 BST] 00000000 distSecurityC I   SECJ0309I: Java 2 Security is disabled.
+[7/22/14 23:40:10:456 BST] 00000000 Configuration A   SECJ0215I: Successfully set JAAS login provider configuration class to com.ibm.ws.security.auth.login.Configuration.
+[7/22/14 23:40:10:502 BST] 00000000 distSecurityC I   SECJ0240I: Security service initialization completed successfully
+[7/22/14 23:40:11:109 BST] 00000000 JAASLoginConf I   SECJ0212I: WCCM JAAS configuration information successfully pushed to login provider class.
+[7/22/14 23:40:11:131 BST] 00000000 J2EEServiceMa I   ASYN0059I: Work Manager service initialized successfully.
+[7/22/14 23:40:11:212 BST] 00000000 CScopeCompone I   CSCP0002I: Compensation service is disabled.
+[7/22/14 23:40:11:321 BST] 00000000 SibMessage    I   [:] CWSID0006I: The SIB service was not enabled and will not be started.
+[7/22/14 23:40:11:325 BST] 00000000 ActivitySessi I   WACS0045I: ActivitySession service is disabled.
+[7/22/14 23:40:11:337 BST] 00000000 AppProfileCom I   ACIN0030I: Application Profiling service is disabled.
+[7/22/14 23:40:11:369 BST] 00000000 SOAPContainer I   WSWS1062I: The SOAP Container service has been initialized.
+[7/22/14 23:40:11:522 BST] 00000000 SchedulerServ I   SCHD0036I: The Scheduler Service is initializing.
+[7/22/14 23:40:11:538 BST] 00000000 SchedulerServ I   SCHD0037I: The Scheduler Service has been initialized.
+[7/22/14 23:40:11:551 BST] 00000000 JPAComponentI I   CWWJP0026I: The Java Persistence API (JPA) component is initializing.
+[7/22/14 23:40:11:568 BST] 00000000 JPAComponentI I   CWWJP0006I: The com.ibm.websphere.persistence.PersistenceProviderImpl class is loaded as the default Java Persistence API (JPA) provider.
+[7/22/14 23:40:11:570 BST] 00000000 JPAComponentI I   CWWJP0027I: The Java Persistence API (JPA) component has initialized.
+[7/22/14 23:40:11:899 BST] 00000000 ApplicationRe I ApplicationRepositoryFactory  CWSCT0405I: The application router is configured to select applications by the weight.
+[7/22/14 23:40:11:905 BST] 00000000 DefaultApplic I DefaultApplicationRouter  CWSCT0401I: Default application router has been initialized.
+[7/22/14 23:40:11:920 BST] 00000000 WebsphereComm I WebsphereCommonLauncher  CWSCT0332I: SIP Container was launched successfully but will only be initialized when first SIP application is loaded.
+[7/22/14 23:40:11:964 BST] 00000000 StartUpServic I   STUP0008I: The Startup Beans service is disabled.
+[7/22/14 23:40:11:983 BST] 00000000 I18nService   I   I18N0010I: The Internationalization service is created on server1.
+[7/22/14 23:40:11:985 BST] 00000000 I18nServiceSe I   I18N0010I: The Internationalization service is disabled on server1.
+[7/22/14 23:40:12:142 BST] 00000000 ThreadPoolMgr W   WSVR0626W: The ThreadPool setting on the ObjectRequestBroker service is deprecated.
+[7/22/14 23:40:12:151 BST] 00000000 SSLComponentI I   CWPKI0003I: SSL service is starting
+[7/22/14 23:40:12:165 BST] 00000000 SSLComponentI I   CWPKI0004I: SSL service started successfully
+[7/22/14 23:40:12:351 BST] 00000000 SecurityConne A   JSAS0006I: Security connection interceptor initialized.
+[7/22/14 23:40:12:363 BST] 00000000 ServiceInit   A   JSAS0001I: Security configuration initialized.
+[7/22/14 23:40:12:366 BST] 00000000 ServiceInit   A   JSAS0003I: Authentication mechanism: LTPA
+[7/22/14 23:40:12:368 BST] 00000000 ServiceInit   A   JSAS0004I: Principal name: defaultWIMFileBasedRealm/
+[7/22/14 23:40:12:402 BST] 00000000 CSIClientRI   A   JSAS0007I: Client request interceptor registered.
+[7/22/14 23:40:12:468 BST] 00000000 CSIServerRI   A   JSAS0008I: Server request interceptor registered.
+[7/22/14 23:40:12:484 BST] 00000000 SecurityCompo A   JSAS0009I: IOR interceptor registered.
+[7/22/14 23:40:13:093 BST] 00000000 CoordinatorIm I   HMGR0206I: The Coordinator is an Active Coordinator for core group DefaultCoreGroup. The active coordinator set is [REUXGBLS291Node01Cell\REUXGBLS291Node01\server1].
+[7/22/14 23:40:13:136 BST] 00000000 DCSPluginSing I   HMGR0005I: The Single Server DCS Core Stack transport has been started for core group DefaultCoreGroup.
+[7/22/14 23:40:13:362 BST] 00000000 NameServerImp A   NMSV0018I: Name server available on bootstrap port 2809.
+[7/22/14 23:40:13:385 BST] 00000000 CGBridgeSubsc I   CWRCB0102I: The core group bridge service has started the subscription router.
+[7/22/14 23:40:15:635 BST] 00000000 authz         I   CWWIM2000I Initialization of the authorization component completed successfully.
+[7/22/14 23:40:15:649 BST] 00000000 UserRegistryI A   SECJ0136I: Custom Registry:com.ibm.ws.wim.registry.WIMUserRegistry has been initialized
+[7/22/14 23:40:15:655 BST] 00000000 JMSRegistrati A   WMSG1611I: The installed level of the WebSphere MQ messaging provider is 7.0.0.0.
+[7/22/14 23:40:15:695 BST] 00000000 ObjectPoolSer I   OBPL0010I: The Object Pool service started successfully.
+[7/22/14 23:40:18:115 BST] 00000000 JMXSoapAdapte A   ADMC0013I: The SOAP connector is available at port 8880
+[7/22/14 23:40:18:180 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCPInboundChannel_ipcc.Default is listening on host localhost  (IPv4: 127.0.0.1) port 9633.
+[7/22/14 23:40:18:187 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain IPCCInboundChain.Default.
+[7/22/14 23:40:18:191 BST] 00000000 IPCConnectorS I   ADMC0070I: The IPC connector is available at port 9633
+[7/22/14 23:40:18:198 BST] 00000000 distSecurityC I   securityServiceStarted is true
+[7/22/14 23:40:18:200 BST] 00000000 distSecurityC I   SECJ0243I: Security service started successfully
+[7/22/14 23:40:18:203 BST] 00000000 distSecurityC I   SECJ0210I: Security enabled true
+[7/22/14 23:40:18:217 BST] 00000000 J2EEServiceMa I   ASYN0055I: The Work Manager service started successfully.
+[7/22/14 23:40:18:301 BST] 00000000 RecoveryDirec I   CWRLS0010I: Performing recovery processing for local WebSphere server (REUXGBLS291Node01Cell\REUXGBLS291Node01\server1).
+[7/22/14 23:40:18:318 BST] 00000000 RecoveryDirec I   CWRLS0012I: All persistent services have been directed to perform recovery processing for this WebSphere server (REUXGBLS291Node01Cell\REUXGBLS291Node01\server1).
+[7/22/14 23:40:18:336 BST] 00000006 LogHandle     I   CWRLS0007I: No existing recovery log files found in /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/tranlog/REUXGBLS291Node01Cell/REUXGBLS291Node01/server1/transaction/tranlog. Cold starting the recovery log.
+[7/22/14 23:40:18:353 BST] 00000006 LogFileHandle I   CWRLS0006I: Creating new recovery log file /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/tranlog/REUXGBLS291Node01Cell/REUXGBLS291Node01/server1/transaction/tranlog/log1.
+[7/22/14 23:40:18:385 BST] 00000006 LogFileHandle I   CWRLS0006I: Creating new recovery log file /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/tranlog/REUXGBLS291Node01Cell/REUXGBLS291Node01/server1/transaction/tranlog/log2.
+[7/22/14 23:40:18:409 BST] 00000006 LogHandle     I   CWRLS0007I: No existing recovery log files found in /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/tranlog/REUXGBLS291Node01Cell/REUXGBLS291Node01/server1/transaction/partnerlog. Cold starting the recovery log.
+[7/22/14 23:40:18:411 BST] 00000006 LogFileHandle I   CWRLS0006I: Creating new recovery log file /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/tranlog/REUXGBLS291Node01Cell/REUXGBLS291Node01/server1/transaction/partnerlog/log1.
+[7/22/14 23:40:18:427 BST] 00000006 LogFileHandle I   CWRLS0006I: Creating new recovery log file /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/tranlog/REUXGBLS291Node01Cell/REUXGBLS291Node01/server1/transaction/partnerlog/log2.
+[7/22/14 23:40:18:499 BST] 00000006 RecoveryManag A   WTRN0028I: Transaction service recovering 0 transactions.
+[7/22/14 23:40:18:628 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding AsyncRequestDispatcherWorkManager as wm/ard
+[7/22/14 23:40:18:714 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding DefaultEJBTimerDataSource as jdbc/DefaultEJBTimerDataSource
+[7/22/14 23:40:18:736 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding Default_CF as eis/DefaultDatasource_CMP
+[7/22/14 23:40:18:750 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding Default Datasource as DefaultDatasource
+[7/22/14 23:40:18:759 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding DefaultWorkManager as wm/default
+[7/22/14 23:40:18:766 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding DefaultTimerManager as tm/default
+[7/22/14 23:40:19:328 BST] 00000000 WorkAreaServi A   ACWA0002I: WorkArea service not enabled on server1.
+[7/22/14 23:40:19:346 BST] 00000000 SOAPAcceptorC I   WSSC1019I: The SOAP Acceptor Channel has been configured.
+[7/22/14 23:40:19:372 BST] 00000000 CacheServiceI I   DYNA1054I: Dynamic Cache (core cache) initialized successfully.
+[7/22/14 23:40:19:391 BST] 00000000 ObjectCacheSe I   DYNA1056I: Dynamic Cache (object cache) initialized successfully.
+[7/22/14 23:40:19:413 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.websvcs.extension.WASAxis2ExtensionFactory] was registered successfully.
+[7/22/14 23:40:19:415 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.websvcs.extension.WASAxis2ExtensionFactory] has been associated with patterns [""].
+[7/22/14 23:40:19:417 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.websvcs.extension.AsyncServletExtensionFactory] was registered successfully.
+[7/22/14 23:40:19:419 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.websvcs.extension.AsyncServletExtensionFactory] has been associated with patterns [""].
+[7/22/14 23:40:19:449 BST] 00000000 WASAxis2Compo I   WSWS7001I: The Axis2 service has been started.
+[7/22/14 23:40:19:923 BST] 00000000 SchedulerServ I   SCHD0031I: The Scheduler Service is starting.
+[7/22/14 23:40:19:928 BST] 00000000 SchedulerServ I   SCHD0001I: The Scheduler Service has started.
+[7/22/14 23:40:19:932 BST] 00000000 JPAComponentI I   CWWJP0028I: The Java Persistence API (JPA) component is starting.
+[7/22/14 23:40:19:937 BST] 00000000 JPAComponentI I   CWWJP0017I: The Java Persistence API (JPA) component has started.
+[7/22/14 23:40:19:984 BST] 00000000 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/com.ibm.ws.wssecurity.sctClientCacheMap initialized successfully.
+[7/22/14 23:40:19:986 BST] 00000000 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[7/22/14 23:40:19:995 BST] 00000000 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/com.ibm.ws.wssecurity.sctServiceCacheMap initialized successfully.
+[7/22/14 23:40:19:997 BST] 00000000 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[7/22/14 23:40:20:041 BST] 00000000 RegistryConfi I   CWXRS0017I: Extension Registry objects storage: /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/temp/REUXGBLS291Node01/server1/_extensionregistry
+[7/22/14 23:40:20:058 BST] 00000000 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/com.ibm.workplace/ExtensionRegistryCache1406068820055 initialized successfully.
+[7/22/14 23:40:20:059 BST] 00000000 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[7/22/14 23:40:20:061 BST] 00000000 RegistryCache I   CWXRS0002I: DynaCache instance for Extension Registry created with CACHE_SIZE: 5000
+[7/22/14 23:40:20:721 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.portletcontainer.webextension.PortletExtensionFactory] was registered successfully.
+[7/22/14 23:40:20:722 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.portletcontainer.webextension.PortletExtensionFactory] has been associated with patterns [""].
+[7/22/14 23:40:20:725 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.portletcontainer.portletserving.PortletServingExtensionFactory] was registered successfully.
+[7/22/14 23:40:20:729 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.portletcontainer.portletserving.PortletServingExtensionFactory] has been associated with patterns [""].
+[7/22/14 23:40:20:743 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.jsf.extprocessor.JSFExtensionFactory] was registered successfully.
+[7/22/14 23:40:20:746 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.jsf.extprocessor.JSFExtensionFactory] has been associated with patterns [""].
+[7/22/14 23:40:20:762 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.jsp.webcontainerext.ws.WASJSPExtensionFactory] was registered successfully.
+[7/22/14 23:40:20:763 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.jsp.webcontainerext.ws.WASJSPExtensionFactory] has been associated with patterns [*.jsp *.jspx *.jsw *.jsv ].
+[7/22/14 23:40:20:841 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.ard.extension.ARDExtensionFactory] was registered successfully.
+[7/22/14 23:40:20:843 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.ard.extension.ARDExtensionFactory] has been associated with patterns [""].
+[7/22/14 23:40:21:058 BST] 00000008 ApplicationMg A   WSVR0200I: Starting application: filetransferSecured
+[7/22/14 23:40:21:057 BST] 00000007 ApplicationMg A   WSVR0200I: Starting application: ManagementEJB
+[7/22/14 23:40:21:061 BST] 00000008 ApplicationMg A   WSVR0204I: Application: filetransferSecured  Application build level: Unknown
+[7/22/14 23:40:21:066 BST] 00000009 ApplicationMg A   WSVR0200I: Starting application: SchedulerCalendars
+[7/22/14 23:40:21:067 BST] 00000009 ApplicationMg A   WSVR0204I: Application: SchedulerCalendars  Application build level: Unknown
+[7/22/14 23:40:21:063 BST] 00000007 ApplicationMg A   WSVR0204I: Application: ManagementEJB  Application build level: Unknown
+[7/22/14 23:40:21:451 BST] 00000007 EJBContainerI I   WSVR0037I: Starting EJB jar: mejb.jar
+[7/22/14 23:40:21:452 BST] 00000009 EJBContainerI I   WSVR0037I: Starting EJB jar: Calendars.jar
+[7/22/14 23:40:21:483 BST] 00000008 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer initialize SRVE0161I: IBM WebSphere Application Server - Web Container.  Copyright IBM Corp. 1998-2008
+[7/22/14 23:40:21:488 BST] 00000008 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer initialize SRVE0162I: Servlet Specification Level: 2.5
+[7/22/14 23:40:21:496 BST] 00000008 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer initialize SRVE0163I: Supported JSP Specification Level: 2.1
+[7/22/14 23:40:21:578 BST] 00000008 collaborator  I com.ibm.ws.webcontainer.collaborator.WebAppSecurityCollaboratorImpl createSecurityCollabImpl using default ejs collaborator since there is nothing in the extension points
+[7/22/14 23:40:21:499 BST] 00000009 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.scheduler.UserCalendarHome interface of the DefaultUserCalendar enterprise bean in the Calendars.jar module of the SchedulerCalendars application.  The binding location is: com/ibm/websphere/scheduler/calendar/DefaultUserCalendarHome
+[7/22/14 23:40:21:659 BST] 00000007 EJBContainerI I   CNTR0167I: The server is binding the javax.management.j2ee.ManagementHome interface of the Management enterprise bean in the mejb.jar module of the ManagementEJB application.  The binding location is: ejb/mgmt/MEJB
+[7/22/14 23:40:21:661 BST] 00000009 EJBContainerI I   WSVR0057I: EJB jar started: Calendars.jar
+[7/22/14 23:40:21:688 BST] 00000007 EJBContainerI I   WSVR0057I: EJB jar started: mejb.jar
+[7/22/14 23:40:21:750 BST] 00000007 ApplicationMg A   WSVR0221I: Application started: ManagementEJB
+[7/22/14 23:40:21:749 BST] 00000009 ApplicationMg A   WSVR0221I: Application started: SchedulerCalendars
+[7/22/14 23:40:21:770 BST] 00000008 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer addVirtualHostExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.webcontainer.extension.ExtHandshakeVHostExtensionFactory] was registered successfully.
+[7/22/14 23:40:21:773 BST] 00000009 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=isclite in BLA WebSphere:blaname=isclite.
+[7/22/14 23:40:21:774 BST] 00000008 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer addVirtualHostExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.webcontainer.extension.ExtHandshakeVHostExtensionFactory] has been associated with patterns [VH:_WS_EH* ].
+[7/22/14 23:40:21:769 BST] 00000007 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=ibmasyncrsp in BLA WebSphere:blaname=ibmasyncrsp.
+[7/22/14 23:40:21:806 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WebSphere Admin File Transfer Application.
+[7/22/14 23:40:21:842 BST] 00000007 ApplicationMg A   WSVR0200I: Starting application: ibmasyncrsp
+[7/22/14 23:40:21:843 BST] 00000007 ApplicationMg A   WSVR0203I: Application: ibmasyncrsp  Application build level: 1 [3]
+[7/22/14 23:40:21:999 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/FileTransfer
+[7/22/14 23:40:22:020 BST] 00000009 ApplicationMg A   WSVR0200I: Starting application: isclite
+[7/22/14 23:40:22:022 BST] 00000009 ApplicationMg A   WSVR0203I: Application: isclite  Application build level: WASX.WSC [rr0823.55]
+[7/22/14 23:40:22:548 BST] 00000008 servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [filetransferSecured] [/FileTransfer] [transfer]: Initialization successful.
+[7/22/14 23:40:22:590 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WebSphere Admin File Transfer Application has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:22:643 BST] 00000007 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WebSphere ASYNC Response Servlet Application.
+[7/22/14 23:40:22:650 BST] 00000008 ApplicationMg A   WSVR0221I: Application started: filetransferSecured
+[7/22/14 23:40:22:661 BST] 00000008 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=query in BLA WebSphere:blaname=query.
+[7/22/14 23:40:22:704 BST] 00000007 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key default_host/IBM_WS_SYS_RESPONSESERVLET
+[7/22/14 23:40:22:763 BST] 00000009 ExtensionPoin I   CWXRS0034I: Extension com.ibm.ws.isc.ibmautogeneratedidentifier1 connected with Extension Point com.ibm.ws.portletcontainer.collaborator-config
+[7/22/14 23:40:22:761 BST] 00000008 ApplicationMg A   WSVR0200I: Starting application: query
+[7/22/14 23:40:22:771 BST] 00000008 ApplicationMg A   WSVR0204I: Application: query  Application build level: Unknown
+[7/22/14 23:40:22:809 BST] 00000007 servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [ibmasyncrsp] [/IBM_WS_SYS_RESPONSESERVLET] [rspservlet]: Initialization successful.
+[7/22/14 23:40:22:821 BST] 00000007 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WebSphere ASYNC Response Servlet Application has been bound to default_host[*:9080,*:80,*:9443,*:5060,*:5061,*:443].
+[7/22/14 23:40:22:840 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: isclite.
+[7/22/14 23:40:22:860 BST] 00000007 ApplicationMg A   WSVR0221I: Application started: ibmasyncrsp
+[7/22/14 23:40:22:861 BST] 00000007 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=ibmasyncrsp in BLA WebSphere:blaname=ibmasyncrsp started.
+[7/22/14 23:40:22:864 BST] 00000007 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=ivtApp in BLA WebSphere:blaname=ivtApp.
+[7/22/14 23:40:22:895 BST] 00000008 EJBContainerI I   WSVR0037I: Starting EJB jar: querybean.jar
+[7/22/14 23:40:22:897 BST] 00000008 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.ejbquery.QueryHome interface of the Query enterprise bean in the querybean.jar module of the query application.  The binding location is: com/ibm/websphere/ejbquery/Query
+[7/22/14 23:40:22:917 BST] 00000008 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.ejbquery.QueryLocalHome interface of the Query enterprise bean in the querybean.jar module of the query application.  The binding location is: ejblocal:com/ibm/websphere/ejbquery/Query
+[7/22/14 23:40:22:937 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/ibm/console
+[7/22/14 23:40:23:002 BST] 00000007 ApplicationMg A   WSVR0200I: Starting application: ivtApp
+[7/22/14 23:40:23:003 BST] 00000008 EJBContainerI I   WSVR0057I: EJB jar started: querybean.jar
+[7/22/14 23:40:23:006 BST] 00000007 ApplicationMg A   WSVR0203I: Application: ivtApp  Application build level: WASX.SERV1 [qq0723.30]
+[7/22/14 23:40:23:030 BST] 00000008 ApplicationMg A   WSVR0221I: Application started: query
+[7/22/14 23:40:23:036 BST] 00000008 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=query in BLA WebSphere:blaname=query started.
+[7/22/14 23:40:23:109 BST] 00000008 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=DefaultApplication in BLA WebSphere:blaname=DefaultApplication.
+[7/22/14 23:40:23:247 BST] 00000008 ApplicationMg A   WSVR0200I: Starting application: DefaultApplication
+[7/22/14 23:40:23:253 BST] 00000008 ApplicationMg A   WSVR0204I: Application: DefaultApplication  Application build level: Unknown
+[7/22/14 23:40:23:281 BST] 00000007 EJBContainerI I   WSVR0037I: Starting EJB jar: ivtEJB.jar
+[7/22/14 23:40:23:290 BST] 00000007 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.ivt.ivtEJB.ivtEJBHome interface of the ivtEJBObject enterprise bean in the ivtEJB.jar module of the ivtApp application.  The binding location is: ejb/ivtEJBObject
+[7/22/14 23:40:23:324 BST] 00000007 EJBContainerI I   WSVR0057I: EJB jar started: ivtEJB.jar
+[7/22/14 23:40:23:437 BST] 00000008 EJBContainerI I   WSVR0037I: Starting EJB jar: Increment.jar
+[7/22/14 23:40:23:469 BST] 00000008 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.defaultapplication.IncrementHome interface of the Increment enterprise bean in the Increment.jar module of the DefaultApplication application.  The binding location is: Increment
+[7/22/14 23:40:23:511 BST] 00000008 EJBContainerI I   WSVR0057I: EJB jar started: Increment.jar
+[7/22/14 23:40:23:578 BST] 00000009 servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [isclite] [/ibm/console] [EventInitializer]: Initialization successful.
+[7/22/14 23:40:23:595 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module isclite has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:23:601 BST] 00000007 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: IVT Application.
+[7/22/14 23:40:23:652 BST] 00000007 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key default_host/ivt
+[7/22/14 23:40:23:677 BST] 00000007 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module IVT Application has been bound to default_host[*:9080,*:80,*:9443,*:5060,*:5061,*:443].
+[7/22/14 23:40:23:684 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: Default Web Application.
+[7/22/14 23:40:23:705 BST] 00000007 ApplicationMg A   WSVR0221I: Application started: ivtApp
+[7/22/14 23:40:23:706 BST] 00000007 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=ivtApp in BLA WebSphere:blaname=ivtApp started.
+[7/22/14 23:40:23:716 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key default_host/
+[7/22/14 23:40:23:813 BST] 00000008 servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [DefaultApplication] [/] [Snoop Servlet]: Initialization successful.
+[7/22/14 23:40:23:844 BST] 00000008 servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [DefaultApplication] [/] [Hit Count Servlet]: Initialization successful.
+[7/22/14 23:40:23:865 BST] 00000008 servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [DefaultApplication] [/] [Hello Pervasive Servlet]: Initialization successful.
+[7/22/14 23:40:23:873 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module Default Web Application has been bound to default_host[*:9080,*:80,*:9443,*:5060,*:5061,*:443].
+[7/22/14 23:40:23:876 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: adminconsole redirector.
+[7/22/14 23:40:23:904 BST] 00000008 ApplicationMg A   WSVR0221I: Application started: DefaultApplication
+[7/22/14 23:40:23:905 BST] 00000008 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=DefaultApplication in BLA WebSphere:blaname=DefaultApplication started.
+[7/22/14 23:40:23:909 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/admin
+[7/22/14 23:40:23:939 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module adminconsole redirector has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:23:976 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: EHS3.01.
+[7/22/14 23:40:23:988 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/ibm/help
+[7/22/14 23:40:24:016 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module EHS3.01 has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:24:354 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: Integrated Solutions Console.
+[7/22/14 23:40:24:384 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/ISCAdminPortlet
+[7/22/14 23:40:24:433 BST] 00000009 MBeanDescript I   ADMN1216I: One or more methods in Portlet mbean is excluded from access check.
+[7/22/14 23:40:24:455 BST] 00000009 MBeanDescript I   ADMN1216I: One or more methods in PortletApplication mbean is excluded from access check.
+[7/22/14 23:40:24:596 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module Integrated Solutions Console has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:24:702 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WIM.
+[7/22/14 23:40:24:723 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/wim
+[7/22/14 23:40:24:859 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WIM has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:24:907 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WebSphere Application Server.
+[7/22/14 23:40:24:926 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/wasportlet
+[7/22/14 23:40:24:962 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WebSphere Application Server has been bound to admin_host[*:9060,*:9043].
+[7/22/14 23:40:24:978 BST] 00000009 ApplicationMg A   WSVR0221I: Application started: isclite
+[7/22/14 23:40:24:984 BST] 00000009 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=isclite in BLA WebSphere:blaname=isclite started.
+[7/22/14 23:40:25:017 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_1 is listening on host *  (IPv6) port 9060.
+[7/22/14 23:40:25:039 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundAdmin.
+[7/22/14 23:40:25:045 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_2 is listening on host *  (IPv6) port 9080.
+[7/22/14 23:40:25:051 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundDefault.
+[7/22/14 23:40:25:060 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain HttpQueueInboundDefault.
+[7/22/14 23:40:25:067 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_4 is listening on host *  (IPv6) port 9443.
+[7/22/14 23:40:25:073 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain HttpQueueInboundDefaultSecure.
+[7/22/14 23:40:25:080 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_3 is listening on host *  (IPv6) port 9043.
+[7/22/14 23:40:25:083 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundAdminSecure.
+[7/22/14 23:40:25:087 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundDefaultSecure.
+[7/22/14 23:40:25:091 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain1.
+[7/22/14 23:40:25:094 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain2.
+[7/22/14 23:40:25:095 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain3.
+[7/22/14 23:40:25:100 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain4.
+[7/22/14 23:40:25:102 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain5.
+[7/22/14 23:40:25:103 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain6.
+[7/22/14 23:40:25:106 BST] 00000007 SchedulerServ I   SCHD0077I: The Scheduler Service is starting the Schedulers.
+[7/22/14 23:40:25:111 BST] 00000007 SchedulerServ I   SCHD0078I: The Scheduler Service has completed starting the Schedulers.
+[7/22/14 23:40:25:158 BST] 00000000 RMIConnectorC A   ADMC0026I: The RMI Connector is available at port 2809
+[7/22/14 23:40:25:185 BST] 00000000 JMXConnectors I   ADMC0058I: The JMX JSR160RMI connector is available at port 2809
+[7/22/14 23:40:25:354 BST] 00000000 WsServerImpl  A   WSVR0001I: Server server1 open for e-business
+[7/22/14 23:41:11:190 BST] 0000000f ModelMgr      I   WSVR0801I: Initializing all server configuration models
+[7/22/14 23:41:11:913 BST] 0000000f WorkSpaceMana A   WKSP0500I: Workspace configuration consistency check is disabled.
+[7/22/14 23:41:12:432 BST] 0000000f FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/server:REUXGBLS291Node01Cell_REUXGBLS291Node01_server1 modified document cells/REUXGBLS291Node01Cell/security.xml.
+[7/22/14 23:41:40:131 BST] 00000010 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/WSSecureMap initialized successfully.
+[7/22/14 23:41:40:133 BST] 00000010 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[7/22/14 23:41:40:283 BST] 00000010 AdminHelper   A   ADMN1020I: An attempt is made to stop the server1 server. (User ID = defaultWIMFileBasedRealm/wasadmin)
+[7/22/14 23:41:40:351 BST] 0000000e TCPChannel    I   TCPC0002I: TCP Channel TCP_1 has stopped listening on host *  (IPv6) port 9060.
+[7/22/14 23:41:40:354 BST] 0000000e TCPChannel    I   TCPC0002I: TCP Channel TCP_4 has stopped listening on host *  (IPv6) port 9443.
+[7/22/14 23:41:40:359 BST] 0000000e TCPChannel    I   TCPC0002I: TCP Channel TCP_2 has stopped listening on host *  (IPv6) port 9080.
+[7/22/14 23:41:40:361 BST] 0000000e TCPChannel    I   TCPC0002I: TCP Channel TCP_3 has stopped listening on host *  (IPv6) port 9043.
+[7/22/14 23:41:45:377 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: DefaultApplication
+[7/22/14 23:41:45:390 BST] 0000000e servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper doDestroy SRVE0253I: [DefaultApplication] [/] [Hit Count Servlet]: Destroy successful.
+[7/22/14 23:41:45:400 BST] 0000000e servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper doDestroy SRVE0253I: [DefaultApplication] [/] [Hello Pervasive Servlet]: Destroy successful.
+[7/22/14 23:41:45:401 BST] 0000000e servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper doDestroy SRVE0253I: [DefaultApplication] [/] [Snoop Servlet]: Destroy successful.
+[7/22/14 23:41:45:415 BST] 0000000e EJBContainerI I   WSVR0041I: Stopping EJB jar: Increment.jar
+[7/22/14 23:41:45:418 BST] 0000000e EJBContainerI I   WSVR0059I: EJB jar stopped: Increment.jar
+[7/22/14 23:41:45:435 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: DefaultApplication
+[7/22/14 23:41:45:436 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: ivtApp
+[7/22/14 23:41:45:457 BST] 0000000e EJBContainerI I   WSVR0041I: Stopping EJB jar: ivtEJB.jar
+[7/22/14 23:41:45:459 BST] 0000000e EJBContainerI I   WSVR0059I: EJB jar stopped: ivtEJB.jar
+[7/22/14 23:41:45:472 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: ivtApp
+[7/22/14 23:41:45:477 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: query
+[7/22/14 23:41:45:487 BST] 0000000e EJBContainerI I   WSVR0041I: Stopping EJB jar: querybean.jar
+[7/22/14 23:41:45:493 BST] 0000000e EJBContainerI I   WSVR0059I: EJB jar stopped: querybean.jar
+[7/22/14 23:41:45:504 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: query
+[7/22/14 23:41:45:510 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: isclite
+[7/22/14 23:41:45:583 BST] 0000000e servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper doDestroy SRVE0253I: [isclite] [/ibm/console] [EventInitializer]: Destroy successful.
+[7/22/14 23:41:45:638 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: isclite
+[7/22/14 23:41:45:645 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: ibmasyncrsp
+[7/22/14 23:41:45:664 BST] 0000000e servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper doDestroy SRVE0253I: [ibmasyncrsp] [/IBM_WS_SYS_RESPONSESERVLET] [rspservlet]: Destroy successful.
+[7/22/14 23:41:45:678 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: ibmasyncrsp
+[7/22/14 23:41:45:684 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: SchedulerCalendars
+[7/22/14 23:41:45:694 BST] 0000000e EJBContainerI I   WSVR0041I: Stopping EJB jar: Calendars.jar
+[7/22/14 23:41:45:699 BST] 0000000e EJBContainerI I   WSVR0059I: EJB jar stopped: Calendars.jar
+[7/22/14 23:41:45:708 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: SchedulerCalendars
+[7/22/14 23:41:45:709 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: filetransferSecured
+[7/22/14 23:41:45:718 BST] 0000000e servlet       I com.ibm.ws.webcontainer.servlet.ServletWrapper doDestroy SRVE0253I: [filetransferSecured] [/FileTransfer] [transfer]: Destroy successful.
+[7/22/14 23:41:45:737 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: filetransferSecured
+[7/22/14 23:41:45:742 BST] 0000000e ApplicationMg A   WSVR0217I: Stopping application: ManagementEJB
+[7/22/14 23:41:45:750 BST] 0000000e EJBContainerI I   WSVR0041I: Stopping EJB jar: mejb.jar
+[7/22/14 23:41:45:756 BST] 0000000e EJBContainerI I   WSVR0059I: EJB jar stopped: mejb.jar
+[7/22/14 23:41:45:765 BST] 0000000e ApplicationMg A   WSVR0220I: Application stopped: ManagementEJB
+[7/22/14 23:41:45:838 BST] 0000000e SchedulerServ I   SCHD0040I: The Scheduler Service is stopping.
+[7/22/14 23:41:45:840 BST] 0000000e SchedulerServ I   SCHD0002I: The Scheduler Service has stopped.
+[7/22/14 23:41:45:844 BST] 0000000e AppProfileCom I   ACIN0009I: The application profiling service is stopping.
+[7/22/14 23:41:45:849 BST] 0000000e ActivitySessi I   WACS0049I: The ActivitySession service is stopping.
+[7/22/14 23:41:45:875 BST] 0000000e ObjectPoolSer I   OBPL0011I: The Object Pool service is stopping.
+[7/22/14 23:41:45:877 BST] 0000000e distSecurityC I   securityServiceStarted is false
+[7/22/14 23:41:45:883 BST] 0000000e CGBridgeSubsc I   CWRCB0104I: The core group bridge service has stopped the subscription router.
+[7/22/14 23:41:45:892 BST] 0000000e CGBridgeServi I   CWRCB0103I: The core group bridge service has stopped.
+[7/22/14 23:41:45:908 BST] 0000000e TCPChannel    I   TCPC0002I: TCP Channel TCPInboundChannel_ipcc.Default has stopped listening on host localhost  (IPv4: 127.0.0.1) port 9633.
+[7/22/14 23:41:46:000 BST] 0000000e FailureScopeC A   WTRN0105I: The transaction service has shutdown successfully with no transactions requiring recovery.
+[7/22/14 23:41:46:020 BST] 0000000e ServerCollabo A   WSVR0024I: Server server1 stopped
+************ Start Display Current Environment ************
+WebSphere Platform 7.0.0.31 [ND 7.0.0.31 cf311348.05] running with process name REUXGBLS291Node01Cell\REUXGBLS291Node01\server1 and process id 24285
+Host Operating System is Linux, version 2.6.32-431.el6.i686
+Java version = 1.6.0, Java Compiler = j9jit24, Java VM name = IBM J9 VM
+was.install.root = /opt/IBM/WebSphere/AppServer
+user.install.root = /opt/IBM/WebSphere/AppServer/profiles/AppSrv01
+Java Home = /opt/IBM/WebSphere/AppServer/java/jre
+ws.ext.dirs = /opt/IBM/WebSphere/AppServer/java/lib:/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/classes:/opt/IBM/WebSphere/AppServer/classes:/opt/IBM/WebSphere/AppServer/lib:/opt/IBM/WebSphere/AppServer/installedChannels:/opt/IBM/WebSphere/AppServer/lib/ext:/opt/IBM/WebSphere/AppServer/web/help:/opt/IBM/WebSphere/AppServer/deploytool/itp/plugins/com.ibm.etools.ejbdeploy/runtime
+Classpath = /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/properties:/opt/IBM/WebSphere/AppServer/properties:/opt/IBM/WebSphere/AppServer/lib/startup.jar:/opt/IBM/WebSphere/AppServer/lib/bootstrap.jar:/opt/IBM/WebSphere/AppServer/lib/jsf-nls.jar:/opt/IBM/WebSphere/AppServer/lib/lmproxy.jar:/opt/IBM/WebSphere/AppServer/lib/urlprotocols.jar:/opt/IBM/WebSphere/AppServer/deploytool/itp/batchboot.jar:/opt/IBM/WebSphere/AppServer/deploytool/itp/batch2.jar:/opt/IBM/WebSphere/AppServer/java/lib/tools.jar
+Java Library path = /opt/IBM/WebSphere/AppServer/java/jre/lib/i386:/opt/IBM/WebSphere/AppServer/bin::/usr/lib
+************* End Display Current Environment *************
+[22/07/14 23:47:35:436 BST] 00000000 ManagerAdmin  I   TRAS0017I: The startup trace state is *=info.
+[22/07/14 23:47:35:817 BST] 00000000 ManagerAdmin  I   TRAS0111I: The message IDs that are in use are deprecated
+[22/07/14 23:47:35:873 BST] 00000000 ModelMgr      I   WSVR0800I: Initializing core configuration models
+[22/07/14 23:47:36:726 BST] 00000000 ComponentMeta I   WSVR0179I: The runtime provisioning feature is disabled. All components will be started.
+[22/07/14 23:47:36:858 BST] 00000000 ProviderTrack I com.ibm.ffdc.osgi.ProviderTracker AddingService FFDC1007I: FFDC Provider Installed: com.ibm.ffdc.EmptyProvider(silent)
+[22/07/14 23:47:36:890 BST] 00000000 ProviderTrack I com.ibm.ffdc.osgi.ProviderTracker AddingService FFDC1007I: FFDC Provider Installed: com.ibm.ws.ffdc.impl.FfdcProvider@b780b78
+[22/07/14 23:47:37:154 BST] 00000000 AdminInitiali A   ADMN0015I: The administration service is initialized.
+[22/07/14 23:47:37:215 BST] 00000000 AlarmThreadPo I   UTLS0015I: Hung thread detection for alarm thread pools is enabled with a 40000 millisecond threshold.
+[22/07/14 23:47:37:780 BST] 00000000 PluginConfigS I   PLGC0057I: The plug-in configuration service started successfully.
+[22/07/14 23:47:37:936 BST] 00000000 FileRepositor A   ADMR0010I: Document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/node-metadata.properties is modified.
+[22/07/14 23:47:37:992 BST] 00000000 SSLComponentI I   CWPKI0001I: SSL service is initializing the configuration
+[22/07/14 23:47:38:005 BST] 00000000 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[22/07/14 23:47:38:010 BST] 00000000 WSKeyStore    W   CWPKI0041W: One or more key stores are using the default password.
+[22/07/14 23:47:38:031 BST] 00000000 SSLConfigMana I   CWPKI0027I: Disabling default hostname verification for HTTPS URL connections.
+[22/07/14 23:47:38:048 BST] 00000000 SSLDiagnostic I   CWPKI0014I: The SSL component's FFDC Diagnostic Module com.ibm.ws.ssl.core.SSLDiagnosticModule registered successfully: true.
+[22/07/14 23:47:38:056 BST] 00000000 SSLComponentI I   CWPKI0002I: SSL service initialization completed successfully
+[22/07/14 23:47:38:068 BST] 00000000 DiagnosticCon I com.ibm.wsspi.rasdiag.DiagnosticConfigHome setStateCollectionSpec RASD0012I: Updating State Collection Spec from Uninitialized Value to .*:.*=0
+[22/07/14 23:47:38:074 BST] 00000000 PMIImpl       A   CWPMI1001I: PMI is enabled
+[22/07/14 23:47:38:660 BST] 00000000 SibMessage    I   [:] CWSIU0000I: Release: WAS70.SIB Level: o1348.02
+[22/07/14 23:47:38:861 BST] 00000000 SecurityDM    I   SECJ0231I: The Security component's FFDC Diagnostic Module com.ibm.ws.security.core.SecurityDM registered successfully: true.
+[22/07/14 23:47:38:968 BST] 00000000 distSecurityC I   SECJ6004I: Security Auditing is disabled. 
+[22/07/14 23:47:38:973 BST] 00000000 distSecurityC I   SECJ0309I: Java 2 Security is disabled.
+[22/07/14 23:47:38:976 BST] 00000000 Configuration A   SECJ0215I: Successfully set JAAS login provider configuration class to com.ibm.ws.security.auth.login.Configuration.
+[22/07/14 23:47:39:018 BST] 00000000 distSecurityC I   SECJ0240I: Security service initialization completed successfully
+[22/07/14 23:47:39:610 BST] 00000000 JAASLoginConf I   SECJ0212I: WCCM JAAS configuration information successfully pushed to login provider class.
+[22/07/14 23:47:39:629 BST] 00000000 J2EEServiceMa I   ASYN0059I: Work Manager service initialized successfully.
+[22/07/14 23:47:39:708 BST] 00000000 CScopeCompone I   CSCP0002I: Compensation service is disabled.
+[22/07/14 23:47:39:825 BST] 00000000 SibMessage    I   [:] CWSID0006I: The SIB service was not enabled and will not be started.
+[22/07/14 23:47:39:827 BST] 00000000 ActivitySessi I   WACS0045I: ActivitySession service is disabled.
+[22/07/14 23:47:39:838 BST] 00000000 AppProfileCom I   ACIN0030I: Application Profiling service is disabled.
+[22/07/14 23:47:39:868 BST] 00000000 SOAPContainer I   WSWS1062I: The SOAP Container service has been initialized.
+[22/07/14 23:47:40:035 BST] 00000000 SchedulerServ I   SCHD0036I: The Scheduler Service is initializing.
+[22/07/14 23:47:40:049 BST] 00000000 SchedulerServ I   SCHD0037I: The Scheduler Service has been initialized.
+[22/07/14 23:47:40:060 BST] 00000000 JPAComponentI I   CWWJP0026I: The Java Persistence API (JPA) component is initializing.
+[22/07/14 23:47:40:075 BST] 00000000 JPAComponentI I   CWWJP0006I: The com.ibm.websphere.persistence.PersistenceProviderImpl class is loaded as the default Java Persistence API (JPA) provider.
+[22/07/14 23:47:40:077 BST] 00000000 JPAComponentI I   CWWJP0027I: The Java Persistence API (JPA) component has initialized.
+[22/07/14 23:47:40:390 BST] 00000000 ApplicationRe I ApplicationRepositoryFactory  CWSCT0405I: The application router is configured to select applications by the weight.
+[22/07/14 23:47:40:396 BST] 00000000 DefaultApplic I DefaultApplicationRouter  CWSCT0401I: Default application router has been initialized.
+[22/07/14 23:47:40:449 BST] 00000000 WebsphereComm I WebsphereCommonLauncher  CWSCT0332I: SIP Container was launched successfully but will only be initialized when first SIP application is loaded.
+[22/07/14 23:47:40:493 BST] 00000000 StartUpServic I   STUP0008I: The Startup Beans service is disabled.
+[22/07/14 23:47:40:510 BST] 00000000 I18nService   I   I18N0010I: The Internationalization service is created on server1.
+[22/07/14 23:47:40:514 BST] 00000000 I18nServiceSe I   I18N0010I: The Internationalization service is disabled on server1.
+[22/07/14 23:47:40:645 BST] 00000000 SSLComponentI I   CWPKI0003I: SSL service is starting
+[22/07/14 23:47:40:653 BST] 00000000 SSLComponentI I   CWPKI0004I: SSL service started successfully
+[22/07/14 23:47:40:824 BST] 00000000 SecurityConne A   JSAS0006I: Security connection interceptor initialized.
+[22/07/14 23:47:40:834 BST] 00000000 ServiceInit   A   JSAS0001I: Security configuration initialized.
+[22/07/14 23:47:40:836 BST] 00000000 ServiceInit   A   JSAS0003I: Authentication mechanism: LTPA
+[22/07/14 23:47:40:837 BST] 00000000 ServiceInit   A   JSAS0004I: Principal name: defaultWIMFileBasedRealm/
+[22/07/14 23:47:40:873 BST] 00000000 CSIClientRI   A   JSAS0007I: Client request interceptor registered.
+[22/07/14 23:47:40:940 BST] 00000000 CSIServerRI   A   JSAS0008I: Server request interceptor registered.
+[22/07/14 23:47:40:954 BST] 00000000 SecurityCompo A   JSAS0009I: IOR interceptor registered.
+[22/07/14 23:47:41:589 BST] 00000000 CoordinatorIm I   HMGR0206I: The Coordinator is an Active Coordinator for core group DefaultCoreGroup. The active coordinator set is [REUXGBLS291Node01Cell\REUXGBLS291Node01\server1].
+[22/07/14 23:47:41:633 BST] 00000000 DCSPluginSing I   HMGR0005I: The Single Server DCS Core Stack transport has been started for core group DefaultCoreGroup.
+[22/07/14 23:47:41:650 BST] 00000000 CoordinatorCo I   HMGR0011I: The High Availability Manager is configured to be the bulletin board provider. 
+[22/07/14 23:47:41:814 BST] 00000000 NameServerImp A   NMSV0018I: Name server available on bootstrap port 2809.
+[22/07/14 23:47:41:833 BST] 00000000 CGBridgeSubsc I   CWRCB0102I: The core group bridge service has started the subscription router.
+[22/07/14 23:47:44:245 BST] 00000000 authz         I   CWWIM2000I Initialization of the authorization component completed successfully.
+[22/07/14 23:47:44:259 BST] 00000000 UserRegistryI A   SECJ0136I: Custom Registry:com.ibm.ws.wim.registry.WIMUserRegistry has been initialized
+[22/07/14 23:47:44:266 BST] 00000000 JMSRegistrati A   WMSG1611I: The installed level of the WebSphere MQ messaging provider is 7.0.0.0.
+[22/07/14 23:47:44:273 BST] 00000000 JMSRegistrati I   WMSG1703I: RAR implementation version 7.0.0.0-k700-L080820
+[22/07/14 23:47:44:304 BST] 00000000 ObjectPoolSer I   OBPL0010I: The Object Pool service started successfully.
+[22/07/14 23:47:46:793 BST] 00000000 JMXSoapAdapte A   ADMC0013I: The SOAP connector is available at port 8880
+[22/07/14 23:47:46:864 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCPInboundChannel_ipcc.Default_IPC_Connector_Name is listening on host localhost  (IPv4: 127.0.0.1) port 9633.
+[22/07/14 23:47:46:872 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain IPCCInboundChain.Default_IPC_Connector_Name.
+[22/07/14 23:47:46:877 BST] 00000000 IPCConnectorS I   ADMC0070I: The IPC connector is available at port 9633
+[22/07/14 23:47:46:884 BST] 00000000 distSecurityC I   securityServiceStarted is true
+[22/07/14 23:47:46:890 BST] 00000000 distSecurityC I   SECJ0243I: Security service started successfully
+[22/07/14 23:47:46:892 BST] 00000000 distSecurityC I   SECJ0210I: Security enabled true
+[22/07/14 23:47:46:907 BST] 00000000 J2EEServiceMa I   ASYN0055I: The Work Manager service started successfully.
+[22/07/14 23:47:47:008 BST] 00000000 RecoveryDirec I   CWRLS0010I: Performing recovery processing for local WebSphere server (REUXGBLS291Node01Cell\REUXGBLS291Node01\server1).
+[22/07/14 23:47:47:025 BST] 00000000 RecoveryDirec I   CWRLS0012I: All persistent services have been directed to perform recovery processing for this WebSphere server (REUXGBLS291Node01Cell\REUXGBLS291Node01\server1).
+[22/07/14 23:47:47:139 BST] 00000007 RecoveryManag A   WTRN0132I: Transaction recovery for REUXGBLS291Node01Cell\REUXGBLS291Node01\server1 initiated with server uuid c43099dbeb28c6db0d957e7968a6d0c78f81fd46 and restart epoch 0
+[22/07/14 23:47:47:151 BST] 00000007 RecoveryManag A   WTRN0135I: Transaction service recovering no transactions.
+[22/07/14 23:47:47:153 BST] 00000007 RecoveryManag A   WTRN0134I: Recovering 0 XA resource manager(s) from the transaction partner logs
+[22/07/14 23:47:47:169 BST] 00000007 RecoveryManag A   WTRN0133I: Transaction recovery processing for this server is complete
+[22/07/14 23:47:47:328 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding AsyncRequestDispatcherWorkManager as wm/ard
+[22/07/14 23:47:47:470 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding DefaultEJBTimerDataSource as jdbc/DefaultEJBTimerDataSource
+[22/07/14 23:47:47:497 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding Default_CF as eis/DefaultDatasource_CMP
+[22/07/14 23:47:47:508 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding Default Datasource as DefaultDatasource
+[22/07/14 23:47:47:515 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding DefaultWorkManager as wm/default
+[22/07/14 23:47:47:524 BST] 00000000 ResourceMgrIm I   WSVR0049I: Binding DefaultTimerManager as tm/default
+[22/07/14 23:47:48:054 BST] 00000000 WorkAreaServi A   ACWA0002I: WorkArea service not enabled on server1.
+[22/07/14 23:47:48:084 BST] 00000000 SOAPAcceptorC I   WSSC1019I: The SOAP Acceptor Channel has been configured.
+[22/07/14 23:47:48:110 BST] 00000000 CacheServiceI I   DYNA1054I: Dynamic Cache (core cache) initialized successfully.
+[22/07/14 23:47:48:132 BST] 00000000 ObjectCacheSe I   DYNA1056I: Dynamic Cache (object cache) initialized successfully.
+[22/07/14 23:47:48:155 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.websvcs.extension.WASAxis2ExtensionFactory] was registered successfully.
+[22/07/14 23:47:48:156 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.websvcs.extension.WASAxis2ExtensionFactory] has been associated with patterns [""].
+[22/07/14 23:47:48:158 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.websvcs.extension.AsyncServletExtensionFactory] was registered successfully.
+[22/07/14 23:47:48:159 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.websvcs.extension.AsyncServletExtensionFactory] has been associated with patterns [""].
+[22/07/14 23:47:48:197 BST] 00000000 WASAxis2Compo I   WSWS7001I: The Axis2 service has been started.
+[22/07/14 23:47:48:635 BST] 00000000 SchedulerServ I   SCHD0031I: The Scheduler Service is starting.
+[22/07/14 23:47:48:638 BST] 00000000 SchedulerServ I   SCHD0001I: The Scheduler Service has started.
+[22/07/14 23:47:48:641 BST] 00000000 JPAComponentI I   CWWJP0028I: The Java Persistence API (JPA) component is starting.
+[22/07/14 23:47:48:645 BST] 00000000 JPAComponentI I   CWWJP0017I: The Java Persistence API (JPA) component has started.
+[22/07/14 23:47:48:689 BST] 00000000 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/com.ibm.ws.wssecurity.sctClientCacheMap initialized successfully.
+[22/07/14 23:47:48:690 BST] 00000000 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[22/07/14 23:47:48:699 BST] 00000000 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/com.ibm.ws.wssecurity.sctServiceCacheMap initialized successfully.
+[22/07/14 23:47:48:701 BST] 00000000 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[22/07/14 23:47:48:805 BST] 00000000 RegistryConfi I   CWXRS0017I: Extension Registry objects storage: /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/temp/REUXGBLS291Node01/server1/_extensionregistry
+[22/07/14 23:47:48:823 BST] 00000000 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/com.ibm.workplace/ExtensionRegistryCache initialized successfully.
+[22/07/14 23:47:48:825 BST] 00000000 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[22/07/14 23:47:48:826 BST] 00000000 RegistryCache I   CWXRS0002I: DynaCache instance for Extension Registry created with CACHE_SIZE: 5000
+[22/07/14 23:47:49:356 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.portletcontainer.webextension.PortletExtensionFactory] was registered successfully.
+[22/07/14 23:47:49:358 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.portletcontainer.webextension.PortletExtensionFactory] has been associated with patterns [""].
+[22/07/14 23:47:49:362 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.portletcontainer.portletserving.PortletServingExtensionFactory] was registered successfully.
+[22/07/14 23:47:49:366 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.portletcontainer.portletserving.PortletServingExtensionFactory] has been associated with patterns [""].
+[22/07/14 23:47:49:381 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.jsf.extprocessor.JSFExtensionFactory] was registered successfully.
+[22/07/14 23:47:49:383 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.jsf.extprocessor.JSFExtensionFactory] has been associated with patterns [""].
+[22/07/14 23:47:49:394 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.jsp.webcontainerext.ws.WASJSPExtensionFactory] was registered successfully.
+[22/07/14 23:47:49:395 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.jsp.webcontainerext.ws.WASJSPExtensionFactory] has been associated with patterns [*.jsp *.jspx *.jsw *.jsv ].
+[22/07/14 23:47:49:460 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.ard.extension.ARDExtensionFactory] was registered successfully.
+[22/07/14 23:47:49:461 BST] 00000000 WebContainer  I com.ibm.ws.webcontainer.WebContainer addExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.ard.extension.ARDExtensionFactory] has been associated with patterns [""].
+[22/07/14 23:47:49:567 BST] 00000000 OAuth20Provid I   CWOAU0001I: Initializing OAuth 20 providers.
+[22/07/14 23:47:49:716 BST] 00000009 ApplicationMg A   WSVR0200I: Starting application: filetransferSecured
+[22/07/14 23:47:49:718 BST] 00000009 ApplicationMg A   WSVR0204I: Application: filetransferSecured  Application build level: Unknown
+[22/07/14 23:47:49:716 BST] 00000008 ApplicationMg A   WSVR0200I: Starting application: ManagementEJB
+[22/07/14 23:47:49:724 BST] 00000008 ApplicationMg A   WSVR0204I: Application: ManagementEJB  Application build level: Unknown
+[22/07/14 23:47:49:725 BST] 0000000a ApplicationMg A   WSVR0200I: Starting application: SchedulerCalendars
+[22/07/14 23:47:49:726 BST] 0000000a ApplicationMg A   WSVR0204I: Application: SchedulerCalendars  Application build level: Unknown
+[22/07/14 23:47:49:967 BST] 00000008 EJBContainerI I   WSVR0037I: Starting EJB jar: mejb.jar
+[22/07/14 23:47:49:970 BST] 0000000a EJBContainerI I   WSVR0037I: Starting EJB jar: Calendars.jar
+[22/07/14 23:47:49:991 BST] 00000009 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer initialize SRVE0161I: IBM WebSphere Application Server - Web Container.  Copyright IBM Corp. 1998-2008
+[22/07/14 23:47:49:999 BST] 00000009 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer initialize SRVE0162I: Servlet Specification Level: 2.5
+[22/07/14 23:47:50:003 BST] 00000009 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer initialize SRVE0163I: Supported JSP Specification Level: 2.1
+[22/07/14 23:47:50:005 BST] 00000008 EJBContainerI I   CNTR0167I: The server is binding the javax.management.j2ee.ManagementHome interface of the Management enterprise bean in the mejb.jar module of the ManagementEJB application.  The binding location is: ejb/mgmt/MEJB
+[22/07/14 23:47:50:027 BST] 00000009 collaborator  I com.ibm.ws.webcontainer.collaborator.WebAppSecurityCollaboratorImpl createSecurityCollabImpl using default ejs collaborator since there is nothing in the extension points
+[22/07/14 23:47:50:113 BST] 00000008 EJBContainerI I   WSVR0057I: EJB jar started: mejb.jar
+[22/07/14 23:47:50:119 BST] 0000000a EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.scheduler.UserCalendarHome interface of the DefaultUserCalendar enterprise bean in the Calendars.jar module of the SchedulerCalendars application.  The binding location is: com/ibm/websphere/scheduler/calendar/DefaultUserCalendarHome
+[22/07/14 23:47:50:160 BST] 0000000a EJBContainerI I   WSVR0057I: EJB jar started: Calendars.jar
+[22/07/14 23:47:50:275 BST] 0000000a ApplicationMg A   WSVR0221I: Application started: SchedulerCalendars
+[22/07/14 23:47:50:277 BST] 0000000a CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=DefaultApplication in BLA WebSphere:blaname=DefaultApplication.
+[22/07/14 23:47:50:280 BST] 00000008 ApplicationMg A   WSVR0221I: Application started: ManagementEJB
+[22/07/14 23:47:50:290 BST] 00000008 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=ivtApp in BLA WebSphere:blaname=ivtApp.
+[22/07/14 23:47:50:334 BST] 00000009 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer addVirtualHostExtensionFactory SRVE0239I: Extension Factory [class com.ibm.ws.webcontainer.extension.ExtHandshakeVHostExtensionFactory] was registered successfully.
+[22/07/14 23:47:50:336 BST] 00000009 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer addVirtualHostExtensionFactory SRVE0240I: Extension Factory [class com.ibm.ws.webcontainer.extension.ExtHandshakeVHostExtensionFactory] has been associated with patterns [VH:_WS_EH* ].
+[22/07/14 23:47:50:357 BST] 00000009 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WebSphere Admin File Transfer Application.
+[22/07/14 23:47:50:410 BST] 0000000a ApplicationMg A   WSVR0200I: Starting application: DefaultApplication
+[22/07/14 23:47:50:419 BST] 0000000a ApplicationMg A   WSVR0204I: Application: DefaultApplication  Application build level: Unknown
+[22/07/14 23:47:50:468 BST] 00000008 ApplicationMg A   WSVR0200I: Starting application: ivtApp
+[22/07/14 23:47:50:471 BST] 00000008 ApplicationMg A   WSVR0203I: Application: ivtApp  Application build level: WASX.SERV1 [qq0723.30]
+[22/07/14 23:47:50:538 BST] 00000009 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/FileTransfer
+[22/07/14 23:47:50:542 BST] 00000008 EJBContainerI I   WSVR0037I: Starting EJB jar: ivtEJB.jar
+[22/07/14 23:47:50:547 BST] 00000008 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.ivt.ivtEJB.ivtEJBHome interface of the ivtEJBObject enterprise bean in the ivtEJB.jar module of the ivtApp application.  The binding location is: ejb/ivtEJBObject
+[22/07/14 23:47:50:552 BST] 0000000a EJBContainerI I   WSVR0037I: Starting EJB jar: Increment.jar
+[22/07/14 23:47:50:572 BST] 00000008 EJBContainerI I   WSVR0057I: EJB jar started: ivtEJB.jar
+[22/07/14 23:47:50:585 BST] 0000000a EJBContainerI I   CNTR0167I: The server is binding the com.ibm.defaultapplication.IncrementHome interface of the Increment enterprise bean in the Increment.jar module of the DefaultApplication application.  The binding location is: Increment
+[22/07/14 23:47:50:620 BST] 0000000a EJBContainerI I   WSVR0057I: EJB jar started: Increment.jar
+[22/07/14 23:47:50:778 BST] 00000009 ServletWrappe I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [filetransferSecured] [/FileTransfer] [transfer]: Initialization successful.
+[22/07/14 23:47:50:792 BST] 00000009 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WebSphere Admin File Transfer Application has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:50:795 BST] 0000000a webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: Default Web Application.
+[22/07/14 23:47:50:811 BST] 00000009 ApplicationMg A   WSVR0221I: Application started: filetransferSecured
+[22/07/14 23:47:50:814 BST] 00000009 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=query in BLA WebSphere:blaname=query.
+[22/07/14 23:47:50:859 BST] 00000009 ApplicationMg A   WSVR0200I: Starting application: query
+[22/07/14 23:47:50:865 BST] 0000000a WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key default_host/
+[22/07/14 23:47:50:865 BST] 00000009 ApplicationMg A   WSVR0204I: Application: query  Application build level: Unknown
+[22/07/14 23:47:50:913 BST] 0000000a ServletWrappe I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [DefaultApplication] [/] [Snoop Servlet]: Initialization successful.
+[22/07/14 23:47:50:924 BST] 0000000a ServletWrappe I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [DefaultApplication] [/] [Hit Count Servlet]: Initialization successful.
+[22/07/14 23:47:50:943 BST] 0000000a ServletWrappe I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [DefaultApplication] [/] [Hello Pervasive Servlet]: Initialization successful.
+[22/07/14 23:47:50:944 BST] 0000000a webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module Default Web Application has been bound to default_host[*:9080,*:80,*:9443,*:5060,*:5061,*:443].
+[22/07/14 23:47:50:948 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: IVT Application.
+[22/07/14 23:47:50:967 BST] 0000000a ApplicationMg A   WSVR0221I: Application started: DefaultApplication
+[22/07/14 23:47:50:975 BST] 0000000a CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=DefaultApplication in BLA WebSphere:blaname=DefaultApplication started.
+[22/07/14 23:47:50:977 BST] 0000000a CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=ibmasyncrsp in BLA WebSphere:blaname=ibmasyncrsp.
+[22/07/14 23:47:51:000 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key default_host/ivt
+[22/07/14 23:47:51:110 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module IVT Application has been bound to default_host[*:9080,*:80,*:9443,*:5060,*:5061,*:443].
+[22/07/14 23:47:51:122 BST] 0000000a ApplicationMg A   WSVR0200I: Starting application: ibmasyncrsp
+[22/07/14 23:47:51:123 BST] 0000000a ApplicationMg A   WSVR0203I: Application: ibmasyncrsp  Application build level: 1 [3]
+[22/07/14 23:47:51:141 BST] 00000008 ApplicationMg A   WSVR0221I: Application started: ivtApp
+[22/07/14 23:47:51:143 BST] 00000008 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=ivtApp in BLA WebSphere:blaname=ivtApp started.
+[22/07/14 23:47:51:153 BST] 00000008 CompositionUn A   WSVR0190I: Starting composition unit WebSphere:cuname=isclite in BLA WebSphere:blaname=isclite.
+[22/07/14 23:47:51:168 BST] 00000009 EJBContainerI I   WSVR0037I: Starting EJB jar: querybean.jar
+[22/07/14 23:47:51:181 BST] 00000009 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.ejbquery.QueryHome interface of the Query enterprise bean in the querybean.jar module of the query application.  The binding location is: com/ibm/websphere/ejbquery/Query
+[22/07/14 23:47:51:192 BST] 00000009 EJBContainerI I   CNTR0167I: The server is binding the com.ibm.websphere.ejbquery.QueryLocalHome interface of the Query enterprise bean in the querybean.jar module of the query application.  The binding location is: ejblocal:com/ibm/websphere/ejbquery/Query
+[22/07/14 23:47:51:200 BST] 0000000a webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WebSphere ASYNC Response Servlet Application.
+[22/07/14 23:47:51:250 BST] 00000009 EJBContainerI I   WSVR0057I: EJB jar started: querybean.jar
+[22/07/14 23:47:51:253 BST] 0000000a WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key default_host/IBM_WS_SYS_RESPONSESERVLET
+[22/07/14 23:47:51:278 BST] 00000009 ApplicationMg A   WSVR0221I: Application started: query
+[22/07/14 23:47:51:281 BST] 00000009 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=query in BLA WebSphere:blaname=query started.
+[22/07/14 23:47:51:325 BST] 0000000a ServletWrappe I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [ibmasyncrsp] [/IBM_WS_SYS_RESPONSESERVLET] [rspservlet]: Initialization successful.
+[22/07/14 23:47:51:334 BST] 0000000a webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WebSphere ASYNC Response Servlet Application has been bound to default_host[*:9080,*:80,*:9443,*:5060,*:5061,*:443].
+[22/07/14 23:47:51:352 BST] 0000000a ApplicationMg A   WSVR0221I: Application started: ibmasyncrsp
+[22/07/14 23:47:51:353 BST] 0000000a CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=ibmasyncrsp in BLA WebSphere:blaname=ibmasyncrsp started.
+[22/07/14 23:47:51:401 BST] 00000008 ApplicationMg A   WSVR0200I: Starting application: isclite
+[22/07/14 23:47:51:403 BST] 00000008 ApplicationMg A   WSVR0203I: Application: isclite  Application build level: WASX.WSC [rr0823.55]
+[22/07/14 23:47:51:606 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: isclite.
+[22/07/14 23:47:51:627 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/ibm/console
+[22/07/14 23:47:51:763 BST] 00000008 ServletWrappe I com.ibm.ws.webcontainer.servlet.ServletWrapper init SRVE0242I: [isclite] [/ibm/console] [EventInitializer]: Initialization successful.
+[22/07/14 23:47:51:769 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module isclite has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:51:795 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: adminconsole redirector.
+[22/07/14 23:47:51:880 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/admin
+[22/07/14 23:47:51:894 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module adminconsole redirector has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:51:917 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: EHS3.01.
+[22/07/14 23:47:51:939 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/ibm/help
+[22/07/14 23:47:51:970 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module EHS3.01 has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:52:548 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: Integrated Solutions Console.
+[22/07/14 23:47:52:569 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/ISCAdminPortlet
+[22/07/14 23:47:52:592 BST] 00000008 MBeanDescript I   ADMN1216I: One or more methods in Portlet mbean is excluded from access check.
+[22/07/14 23:47:52:609 BST] 00000008 MBeanDescript I   ADMN1216I: One or more methods in PortletApplication mbean is excluded from access check.
+[22/07/14 23:47:52:633 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module Integrated Solutions Console has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:52:678 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WIM.
+[22/07/14 23:47:52:696 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/wim
+[22/07/14 23:47:52:718 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WIM has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:52:753 BST] 00000008 webapp        I com.ibm.ws.webcontainer.webapp.WebGroupImpl WebGroup SRVE0169I: Loading Web Module: WebSphere Application Server.
+[22/07/14 23:47:52:769 BST] 00000008 WASSessionCor I SessionContextRegistry getSessionContext SESN0176I: Will create a new session context for application key admin_host/wasportlet
+[22/07/14 23:47:52:782 BST] 00000008 webcontainer  I com.ibm.ws.wswebcontainer.VirtualHost addWebApplication SRVE0250I: Web Module WebSphere Application Server has been bound to admin_host[*:9060,*:9043].
+[22/07/14 23:47:52:791 BST] 00000008 ApplicationMg A   WSVR0221I: Application started: isclite
+[22/07/14 23:47:52:793 BST] 00000008 CompositionUn A   WSVR0191I: Composition unit WebSphere:cuname=isclite in BLA WebSphere:blaname=isclite started.
+[22/07/14 23:47:52:807 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_1 is listening on host *  (IPv6) port 9060.
+[22/07/14 23:47:52:817 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundAdmin.
+[22/07/14 23:47:52:819 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_2 is listening on host *  (IPv6) port 9080.
+[22/07/14 23:47:52:823 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundDefault.
+[22/07/14 23:47:52:828 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain HttpQueueInboundDefault.
+[22/07/14 23:47:52:831 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_4 is listening on host *  (IPv6) port 9443.
+[22/07/14 23:47:52:835 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain HttpQueueInboundDefaultSecure.
+[22/07/14 23:47:52:836 BST] 00000000 TCPChannel    I   TCPC0001I: TCP Channel TCP_3 is listening on host *  (IPv6) port 9043.
+[22/07/14 23:47:52:838 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundAdminSecure.
+[22/07/14 23:47:52:845 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain WCInboundDefaultSecure.
+[22/07/14 23:47:52:850 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain1.
+[22/07/14 23:47:52:851 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain2.
+[22/07/14 23:47:52:855 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain3.
+[22/07/14 23:47:52:856 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain4.
+[22/07/14 23:47:52:856 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain5.
+[22/07/14 23:47:52:857 BST] 00000000 WSChannelFram A   CHFW0019I: The Transport Channel Service has started chain SOAPAcceptorChain6.
+[22/07/14 23:47:52:861 BST] 00000000 webcontainer  I com.ibm.ws.webcontainer.WSWebContainer startChains SRVE0323I: The Asynchronous Request Dispatcher is not enabled. Requests sent through either the HttpQueueInboundDefault or the HttpQueueInboundDefaultSecure chain might not be properly handled.
+[22/07/14 23:47:52:862 BST] 00000009 SchedulerServ I   SCHD0077I: The Scheduler Service is starting the Schedulers.
+[22/07/14 23:47:52:863 BST] 00000009 SchedulerServ I   SCHD0078I: The Scheduler Service has completed starting the Schedulers.
+[22/07/14 23:47:52:907 BST] 00000000 RMIConnectorC A   ADMC0026I: The RMI Connector is available at port 2809
+[22/07/14 23:47:52:920 BST] 00000000 JMXConnectors I   ADMC0058I: The JMX JSR160RMI connector is available at port 2809
+[22/07/14 23:47:53:002 BST] 00000000 WsServerImpl  A   WSVR0001I: Server server1 open for e-business
+[22/07/14 23:55:34:312 BST] 00000014 ServerCache   I   DYNA1001I: WebSphere Dynamic Cache instance named ws/WSSecureMap initialized successfully.
+[22/07/14 23:55:34:314 BST] 00000014 ServerCache   I   DYNA1071I: The cache provider "default" is being used.
+[22/07/14 23:59:57:380 BST] 00000014 ModelMgr      I   WSVR0801I: Initializing all server configuration models
+[22/07/14 23:59:58:010 BST] 00000014 WorkSpaceMana A   WKSP0500I: Workspace configuration consistency check is disabled.
+[23/07/14 00:00:06:831 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/variables.xml.
+[23/07/14 00:00:15:619 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/variables.xml.
+[23/07/14 00:00:24:052 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/server.xml.
+[23/07/14 00:00:38:899 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/security.xml.
+[23/07/14 00:00:38:902 BST] 00000016 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[23/07/14 00:00:39:229 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/security.xml.
+[23/07/14 00:00:39:234 BST] 00000017 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[23/07/14 00:00:55:860 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/security.xml.
+[23/07/14 00:00:55:860 BST] 00000005 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[23/07/14 00:01:05:087 BST] 00000015 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document waspolicies/default/securitydomains/ISIMSecurityDomain/domain-security.xml.
+[23/07/14 00:01:05:088 BST] 00000015 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document waspolicies/default/securitydomains/ISIMSecurityDomain/domain-security-map.xml.
+[23/07/14 00:01:12:353 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources.xml.
+[23/07/14 00:01:12:472 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources.xml.
+[23/07/14 00:01:23:359 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/security.xml.
+[23/07/14 00:01:23:362 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources.xml.
+[23/07/14 00:01:23:357 BST] 00000011 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[23/07/14 00:01:24:938 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources.xml.
+[23/07/14 00:01:32:235 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources.xml.
+[23/07/14 00:02:01:208 BST] 00000005 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[23/07/14 00:02:01:211 BST] 00000014 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document cells/REUXGBLS291Node01Cell/buses/itim_bus/sib-authorisations.xml.
+[23/07/14 00:02:01:213 BST] 00000014 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document cells/REUXGBLS291Node01Cell/buses/itim_bus/sib-destinations.xml.
+[23/07/14 00:02:01:221 BST] 00000014 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document cells/REUXGBLS291Node01Cell/buses/itim_bus/sib-bus.xml.
+[23/07/14 00:02:01:224 BST] 00000014 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/sib-engines.xml.
+[23/07/14 00:02:01:229 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/security.xml.
+[23/07/14 00:02:01:232 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources.xml.
+[23/07/14 00:02:01:232 BST] 00000014 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/sib-service.xml.
+[23/07/14 00:02:01:677 BST] 00000019 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/buses/itim_bus/sib-authorisations.xml.
+[23/07/14 00:02:10:562 BST] 00000019 UserRegistryI E   SECJ0331E: The registry implementation file com.ibm.itim.authentication.registry.ItimUserRegistry cannot be initialized because of the following exception java.io.FileNotFoundException: Properties.properties
+	at com.ibm.itim.common.properties.PropertiesManager.findPropertiesFile(PropertiesManager.java:164)
+	at com.ibm.itim.common.properties.PropertiesManager.<init>(PropertiesManager.java:48)
+	at com.ibm.itim.common.properties.PropertiesManager.gInstance(PropertiesManager.java:80)
+	at com.ibm.itim.authentication.registry.ItimRegistryLdap.<init>(ItimRegistryLdap.java:103)
+	at com.ibm.itim.authentication.registry.ItimUserRegistry.initialize(ItimUserRegistry.java:266)
+	at com.ibm.ws.security.registry.UserRegistryImpl.initialize(UserRegistryImpl.java:261)
+	at com.ibm.ws.security.core.SecurityAdmin.getRegistry(SecurityAdmin.java:1987)
+	at com.ibm.ws.security.core.SecurityAdmin.getUsers(SecurityAdmin.java:878)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:60)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:69)
+	at sun.reflect.GeneratedMethodAccessor27.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:272)
+	at javax.management.modelmbean.RequiredModelMBean$4.run(RequiredModelMBean.java:1152)
+	at java.security.AccessController.doPrivileged(AccessController.java:298)
+	at com.ibm.oti.security.CheckedAccessControlContext.securityCheck(CheckedAccessControlContext.java:30)
+	at sun.misc.JavaSecurityAccessWrapper.doIntersectionPrivilege(JavaSecurityAccessWrapper.java:41)
+	at javax.management.modelmbean.RequiredModelMBean.invokeMethod(RequiredModelMBean.java:1146)
+	at javax.management.modelmbean.RequiredModelMBean.invoke(RequiredModelMBean.java:999)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:847)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:783)
+	at com.ibm.ws.management.AdminServiceImpl$1.run(AdminServiceImpl.java:1331)
+	at com.ibm.ws.security.util.AccessController.doPrivileged(AccessController.java:118)
+	at com.ibm.ws.management.AdminServiceImpl.invoke(AdminServiceImpl.java:1224)
+	at com.ibm.ws.security.admintask.securityDomain.SecConfigTaskHelper.isGoodServerId(SecConfigTaskHelper.java:338)
+	at com.ibm.ws.security.admintask.securityDomain.ConfigureCustomUserRegistry.afterStepsExecuted(ConfigureCustomUserRegistry.java:276)
+	at com.ibm.websphere.management.cmdframework.provider.AbstractTaskCommand.executeReal(AbstractTaskCommand.java:855)
+	at com.ibm.websphere.management.cmdframework.provider.AbstractTaskCommand.execute(AbstractTaskCommand.java:807)
+	at com.ibm.ws.management.cmdframework.impl.RemoteCommandMgrImpl.execute(RemoteCommandMgrImpl.java:370)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:60)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:69)
+	at sun.reflect.GeneratedMethodAccessor27.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:272)
+	at javax.management.modelmbean.RequiredModelMBean$4.run(RequiredModelMBean.java:1152)
+	at java.security.AccessController.doPrivileged(AccessController.java:298)
+	at com.ibm.oti.security.CheckedAccessControlContext.securityCheck(CheckedAccessControlContext.java:30)
+	at sun.misc.JavaSecurityAccessWrapper.doIntersectionPrivilege(JavaSecurityAccessWrapper.java:41)
+	at javax.management.modelmbean.RequiredModelMBean.invokeMethod(RequiredModelMBean.java:1146)
+	at javax.management.modelmbean.RequiredModelMBean.invoke(RequiredModelMBean.java:999)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:847)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:783)
+	at com.ibm.ws.management.AdminServiceImpl$1.run(AdminServiceImpl.java:1331)
+	at com.ibm.ws.security.util.AccessController.doPrivileged(AccessController.java:118)
+	at com.ibm.ws.management.AdminServiceImpl.invoke(AdminServiceImpl.java:1224)
+	at com.ibm.ws.management.connector.AdminServiceDelegator.invoke(AdminServiceDelegator.java:181)
+	at sun.reflect.GeneratedMethodAccessor28.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at com.ibm.ws.management.connector.soap.SOAPConnector.invoke(SOAPConnector.java:464)
+	at com.ibm.ws.management.connector.soap.SOAPConnector.service(SOAPConnector.java:297)
+	at com.ibm.ws.management.connector.soap.SOAPConnection.handleRequest(SOAPConnection.java:65)
+	at com.ibm.ws.http.HttpConnection.readAndHandleRequest(HttpConnection.java:733)
+	at com.ibm.ws.http.HttpConnection.run(HttpConnection.java:522)
+	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1660)
+
+[23/07/14 00:02:10:744 BST] 00000019 SecurityAdmin E   SECJ0074E: Error creation user registry.  The exception is java.io.FileNotFoundException: Properties.properties
+	at com.ibm.itim.common.properties.PropertiesManager.findPropertiesFile(PropertiesManager.java:164)
+	at com.ibm.itim.common.properties.PropertiesManager.<init>(PropertiesManager.java:48)
+	at com.ibm.itim.common.properties.PropertiesManager.gInstance(PropertiesManager.java:80)
+	at com.ibm.itim.authentication.registry.ItimRegistryLdap.<init>(ItimRegistryLdap.java:103)
+	at com.ibm.itim.authentication.registry.ItimUserRegistry.initialize(ItimUserRegistry.java:266)
+	at com.ibm.ws.security.registry.UserRegistryImpl.initialize(UserRegistryImpl.java:261)
+	at com.ibm.ws.security.core.SecurityAdmin.getRegistry(SecurityAdmin.java:1987)
+	at com.ibm.ws.security.core.SecurityAdmin.getUsers(SecurityAdmin.java:878)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:60)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:69)
+	at sun.reflect.GeneratedMethodAccessor27.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:272)
+	at javax.management.modelmbean.RequiredModelMBean$4.run(RequiredModelMBean.java:1152)
+	at java.security.AccessController.doPrivileged(AccessController.java:298)
+	at com.ibm.oti.security.CheckedAccessControlContext.securityCheck(CheckedAccessControlContext.java:30)
+	at sun.misc.JavaSecurityAccessWrapper.doIntersectionPrivilege(JavaSecurityAccessWrapper.java:41)
+	at javax.management.modelmbean.RequiredModelMBean.invokeMethod(RequiredModelMBean.java:1146)
+	at javax.management.modelmbean.RequiredModelMBean.invoke(RequiredModelMBean.java:999)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:847)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:783)
+	at com.ibm.ws.management.AdminServiceImpl$1.run(AdminServiceImpl.java:1331)
+	at com.ibm.ws.security.util.AccessController.doPrivileged(AccessController.java:118)
+	at com.ibm.ws.management.AdminServiceImpl.invoke(AdminServiceImpl.java:1224)
+	at com.ibm.ws.security.admintask.securityDomain.SecConfigTaskHelper.isGoodServerId(SecConfigTaskHelper.java:338)
+	at com.ibm.ws.security.admintask.securityDomain.ConfigureCustomUserRegistry.afterStepsExecuted(ConfigureCustomUserRegistry.java:276)
+	at com.ibm.websphere.management.cmdframework.provider.AbstractTaskCommand.executeReal(AbstractTaskCommand.java:855)
+	at com.ibm.websphere.management.cmdframework.provider.AbstractTaskCommand.execute(AbstractTaskCommand.java:807)
+	at com.ibm.ws.management.cmdframework.impl.RemoteCommandMgrImpl.execute(RemoteCommandMgrImpl.java:370)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:60)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:69)
+	at sun.reflect.GeneratedMethodAccessor27.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:272)
+	at javax.management.modelmbean.RequiredModelMBean$4.run(RequiredModelMBean.java:1152)
+	at java.security.AccessController.doPrivileged(AccessController.java:298)
+	at com.ibm.oti.security.CheckedAccessControlContext.securityCheck(CheckedAccessControlContext.java:30)
+	at sun.misc.JavaSecurityAccessWrapper.doIntersectionPrivilege(JavaSecurityAccessWrapper.java:41)
+	at javax.management.modelmbean.RequiredModelMBean.invokeMethod(RequiredModelMBean.java:1146)
+	at javax.management.modelmbean.RequiredModelMBean.invoke(RequiredModelMBean.java:999)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:847)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:783)
+	at com.ibm.ws.management.AdminServiceImpl$1.run(AdminServiceImpl.java:1331)
+	at com.ibm.ws.security.util.AccessController.doPrivileged(AccessController.java:118)
+	at com.ibm.ws.management.AdminServiceImpl.invoke(AdminServiceImpl.java:1224)
+	at com.ibm.ws.management.connector.AdminServiceDelegator.invoke(AdminServiceDelegator.java:181)
+	at sun.reflect.GeneratedMethodAccessor28.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:37)
+	at java.lang.reflect.Method.invoke(Method.java:611)
+	at com.ibm.ws.management.connector.soap.SOAPConnector.invoke(SOAPConnector.java:464)
+	at com.ibm.ws.management.connector.soap.SOAPConnector.service(SOAPConnector.java:297)
+	at com.ibm.ws.management.connector.soap.SOAPConnection.handleRequest(SOAPConnection.java:65)
+	at com.ibm.ws.http.HttpConnection.readAndHandleRequest(HttpConnection.java:733)
+	at com.ibm.ws.http.HttpConnection.run(HttpConnection.java:522)
+	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1660)
+
+[23/07/14 00:02:19:593 BST] 00000019 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document waspolicies/default/securitydomains/ISIMSecurityDomain/domain-security-map.xml.
+[23/07/14 00:02:26:495 BST] 00000014 FileRepositor A   ADMR0015I: User defaultWIMFileBasedRealm/wasadmin created document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/libraries.xml.
+[23/07/14 00:02:33:762 BST] 00000019 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/nodes/REUXGBLS291Node01/servers/server1/resources-pme502.xml.
+[23/07/14 00:02:42:530 BST] 00000005 FIPSManager   I   CWPKI0044I: FIPS security mode is : No FIPS property found. 
+[23/07/14 00:02:42:531 BST] 00000015 FileRepositor A   ADMR0016I: User defaultWIMFileBasedRealm/wasadmin modified document cells/REUXGBLS291Node01Cell/security.xml.
+[23/07/14 00:02:10:595 BST] 00000019 FfdcProvider  W com.ibm.ws.ffdc.impl.FfdcProvider logIncident FFDC1003I: FFDC Incident emitted on /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/server1_70cf70cf_14.07.23_00.02.10.5788184716498226670648.txt com.ibm.websphere.security.CustomRegistryException 190
+[23/07/14 00:02:10:711 BST] 00000019 DMAdapter     I com.ibm.ws.ffdc.impl.DMAdapter getAnalysisEngine FFDC1009I: Analysis Engine using data base: /opt/IBM/WebSphere/AppServer/properties/logbr/ffdc/adv/ffdcdb.xml
+[23/07/14 00:02:10:732 BST] 00000019 FfdcProvider  W com.ibm.ws.ffdc.impl.FfdcProvider logIncident FFDC1003I: FFDC Incident emitted on /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/server1_70cf70cf_14.07.23_00.02.10.6135261820250738883182.txt com.ibm.ws.security.registry.UserRegistryImpl.initialize 272
+[23/07/14 00:02:10:739 BST] 00000019 FfdcProvider  W com.ibm.ws.ffdc.impl.FfdcProvider logIncident FFDC1003I: FFDC Incident emitted on /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/server1_70cf70cf_14.07.23_00.02.10.7377478985794969063175.txt com.ibm.ws.security.core.SecurityAdmin.getRegistry 1998
+[23/07/14 00:02:10:893 BST] 00000019 FfdcProvider  W com.ibm.ws.ffdc.impl.FfdcProvider logIncident FFDC1003I: FFDC Incident emitted on /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/server1_70cf70cf_14.07.23_00.02.10.7514183233800089617511.txt com.ibm.ws.management.AdminServiceImpl.invoke 679
+[23/07/14 00:02:10:900 BST] 00000019 FfdcProvider  W com.ibm.ws.ffdc.impl.FfdcProvider logIncident FFDC1003I: FFDC Incident emitted on /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/server1_70cf70cf_14.07.23_00.02.10.894513571487450375781.txt com.ibm.ws.security.commands.securityDomain.ConfigureCustomUserRegistry 219
+[23/07/14 00:02:56:830 BST] 00000019 UserRegistryI A   SECJ0136I: Custom Registry:com.ibm.ws.wim.registry.WIMUserRegistry has been initialized

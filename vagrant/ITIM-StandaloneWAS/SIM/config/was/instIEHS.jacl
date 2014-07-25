@@ -1,0 +1,61 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2005, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to install an application on WebSphere 
+#
+puts "----- in instApp.jacl "
+if {$argc < 1} { 
+  puts "Incorrect number of args.  At lease one is required."
+  puts "   arg1 - fully qualified ear file name, ie - c:/itim/IEHS.ear (note \"/\", not \"\\\")"
+  puts "   arg2 - server name"
+  puts "   args - node name"
+  puts "   arg4 - ITIM type (Enterprise or Express)"
+}
+
+if { $argc >= 1 } {
+
+  set earloc  [lindex $argv 0]
+  set server  [lindex $argv 1]
+  set node    [lindex $argv 2]
+  set timtype [lindex $argv 3]
+
+  if { $server == "" } {
+     set server server1
+  } 
+  if { $node == "" } {
+     set node [$AdminControl getNode]
+  }
+  if { $timtype == "" } {
+     set timtype "Express"
+  #   set timtype "Enterprise"
+  } 
+
+  puts "----- server name is $server"
+  puts "----- node name is $node"
+  puts "----- fully qualified ear file name is $earloc"
+  puts "----- itim type is $timtype"
+
+  # The following command is to install the application with proper 
+  # attribute settings.  Note that different application might require
+  # different setting set.
+  
+    puts "----- ready to apply IEHS --- "
+  
+    set vh   [list [list "EHS3.01" user_helpsystem.war,WEB-INF/web.xml default_host]	   \
+		   [list "EHS3.01" useradmin_helpsystem.war,WEB-INF/web.xml default_host] \
+		   [list "EHS3.01" sysadmin_helpsystem.war,WEB-INF/web.xml default_host]  \
+		   [list "EHS3.01" infocenter.war,WEB-INF/web.xml default_host]]
+
+    set attr [list -verbose -node $node -server $server -MapWebModToVH $vh]
+    # set attr [list -verbose -appname IEHS -server $server -contextroot itimhelp]
+    puts "----- attr list is $attr"
+    $AdminApp install $earloc $attr    
+
+  $AdminConfig save
+}

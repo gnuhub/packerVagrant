@@ -1,0 +1,71 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2005, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+#
+# This script performs:
+#
+# 	- stop the messaging engine under itim_bus
+#	- delete itim_bus (and objects under the itim_bus)
+#	- delete ITIM queue connection factory
+#	- delete ITIM queues
+#  	- delete ITIM activation specification points
+#
+
+if {$argc < 1} { 
+  puts "  "
+  puts "Incorrect number of args.  One argument is required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - server-name"
+} else {
+
+  set node_name [lindex $argv 0]
+  set server    [lindex $argv 1]
+  if {$server == ""} {
+    set server "server1"
+  }
+
+  puts "--> node name is $node_name"
+  puts "--> server name is $server"
+
+  # Stop the messaging engine to release the SIBOWNER table
+  set objNameString [$AdminControl completeObjectName WebSphere:type=SIBMessagingEngine,node=$node_name,process=$server,*] 
+  if {$objNameString != ""} { 
+     $AdminControl invoke $objNameString stop
+  }
+
+  # delete JMS bus, bus member, and message engine
+  $AdminTask  deleteSIBus {-bus "itim_bus"}
+   
+  # cleanup the itim qcf and itim queues 
+  set sid [$AdminConfig getid /Node:$node_name/Server:$server]
+  puts "--> sid: $sid"
+  if {$sid != ""} {
+
+    # Find and remove the existing ITIM queue connection factory
+    set itim_qcf [find_object_id $sid "J2CConnectionFactory" \
+                              "jndiName" "enrole.jms.QueueConnectionFactory"]
+    if {$itim_qcf != ""} {
+        $AdminConfig remove $itim_qcf
+    }
+
+    # Find and remove the existing ITIM shared queue connection factory
+    set itim_qcf [find_object_id $sid "J2CConnectionFactory" \
+                              "jndiName" "enrole.jms.SharedQueueConnectionFactory"]
+    if {$itim_qcf != ""} {
+        $AdminConfig remove $itim_qcf
+    }
+
+    # remove ITIM shared queues
+    set rc [remove_itim_objects "listSIBJMSQueues" "itim_" $sid]
+
+    # remove ITIM shared activation spec
+    set rc [remove_itim_objects "listSIBJMSActivationSpecs" "ITIM" $sid]
+  }
+ 
+  $AdminConfig save
+}

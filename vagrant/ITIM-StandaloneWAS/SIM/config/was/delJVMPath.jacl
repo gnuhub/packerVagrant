@@ -1,0 +1,48 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This script will delete the specified path to the WAS JVM 
+# classpath.  Currently, it does not verify the existence
+# of the added path.  It simply duplicates the path.
+#
+# This script will update the following xml file:
+#
+#	<WAS_HOME>\config\cells\<cell_name>\nodes\<node_name>\servers\server1\server.xml   
+#
+if {$argc < 2} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - itim-base" 
+} else {
+
+  set node   [lindex $argv 0]
+  set path   [lindex $argv 1]
+  set server [lindex $argv 2]
+
+  if { $server == "" } {
+     set server server1
+  }
+  puts "node name is $node"
+  puts "server name is $server"
+  puts "itim path is $path"
+
+  # call the del_jvm_path proc in WASConfigUtil.jacl
+  set sid [$AdminConfig getid /Node:$node/Server:$server]
+  puts "Debug --> sid is $sid"
+  if { $sid != "" }  {
+    set rc [del_jvm_path $sid $path]
+    puts "Debug --> rc: $rc"
+    if {$rc == "SUCCESS"} {
+      $AdminConfig save
+    }
+  }
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/********************************************************************
+*
+* Licensed Materials - Property of IBM
+*
+* (C) Copyright IBM Corp. 2005, 2012 All Rights Reserved.
+*
+* US Government Users Restricted Rights - Use, duplication, or
+* disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+*
+*
+*******************************************************************/-->
+<AdHocReport Version="1.1">
+	<Created>
+		<Time>2004-08-10 14:00:10.333</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</Created>
+	<LastUpdate>
+		<Time>2004-08-10 14:00:10.333</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</LastUpdate>
+	<Style>standard</Style>
+	<ReportHeader>
+		<Title>dummy</Title>
+	</ReportHeader>
+	<Page Lines="45">
+		<PageHeader>
+			<TimeStamp TimeZone="GMT" show="YES"/>
+			<User show="YES"/>
+			<Logo show="YES"/>
+		</PageHeader>
+		<Body>
+			<Query>
+				<Columns>
+					<Column Width="5" id="1">
+						<Header>approver</Header>
+						<Source>Person.cn</Source>
+						<Sort Order="2" Type="ASC"/>
+					</Column>
+					<Column Width="6" id="2">
+						<Header>timeOfApprovalOrRejection</Header>
+						<Source>ACTIVITY.COMPLETED</Source>
+						<Sort Order="1" Type="ASC"/>
+					</Column>
+					<Column Width="4" id="3">
+						<Header>serviceType</Header>
+						<Source>Service.servicetype</Source>
+						<Sort Order="3" Type="ASC"/>
+					</Column>
+					<Column Width="3" id="4">
+						<Header>serviceName</Header>
+						<Source>Service.erservicename</Source>
+						<Sort Order="4" Type="ASC"/>
+					</Column>
+					<Column Width="3" id="5">
+						<Header>userId</Header>
+						<Source>PROCESS.SUBJECT</Source>
+						<Sort Order="5" Type="ASC"/>
+					</Column>
+					<Column Width="2" id="6">
+						<Header>status</Header>
+						<Source>ACTIVITY.RESULT_SUMMARY</Source>
+						<Sort Order="6" Type="ASC"/>
+					</Column>
+					<Column Width="5" id="7">
+						<Header>approvalActivity</Header>
+						<Source>ACTIVITY.NAME</Source>
+						<Sort Order="7" Type="ASC"/>
+					</Column>
+				</Columns>
+				<Tables>
+					<Table>Service</Table>
+					<Table>PROCESS</Table>
+					<Table>PROCESSLOG</Table>
+					<Table>ACTIVITY</Table>
+					<Table>Person</Table>
+					<Table>SERVICE_ACCOUNT_MAPPING</Table>
+				</Tables>
+				<Filter><![CDATA[PROCESSLOG.PROCESS_ID = PROCESS.ID AND ACTIVITY.ID = PROCESSLOG.ACTIVITY_ID AND PROCESSLOG.EVENTTYPE = 'CM' AND PROCESS.SUBJECT_PROFILE = SERVICE_ACCOUNT_MAPPING.ACCOUNTPROFILE AND SERVICE_ACCOUNT_MAPPING.SERVICEPROFILE = Service.servicetype AND Person.cn = PROCESSLOG.REQUESTOR AND Person.DN like '_USERINPUT_' AND ACTIVITY.COMPLETED > '_USERINPUT_' AND ACTIVITY.COMPLETED < '_USERINPUT_' AND Service.servicetype like '_USERINPUT_' AND Service.DN like '_USERINPUT_' AND Service.erservicename = PROCESS.SUBJECT_SERVICE AND ACTIVITY.PROCESS_ID = PROCESS.ID AND ACTIVITY.SUBTYPE = 'AP' AND PROCESS.SUBJECT like '_USERINPUT_' AND ACTIVITY.RESULT_SUMMARY like '_USERINPUT_' AND ACTIVITY.NAME like '_USERINPUT_' ]]></Filter>
+			</Query>
+		</Body>
+		<PageFooter>
+			<PageNumber Format="1OfN" show="YES"/>
+		</PageFooter>
+	</Page>
+</AdHocReport>

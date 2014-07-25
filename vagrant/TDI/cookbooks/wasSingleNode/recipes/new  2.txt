@@ -1,0 +1,26 @@
+# Cookbook Name:: WAS
+# Recipe:: default
+#
+# Copyright 2014, Dennis English <devop@nomoreheroes.org.uk>
+#
+# To do
+# * Create hosts file from template, not executing shell commands.
+# * Create WAS rsp file from a template & place local to install command for a shorter execute command.
+# * Delay between DM/Node agent start and server, if required.
+# * Alternative way to tar/untar files and, generally, replace any use of bash commands where possible.
+# * Add more "guards" and checks to make sure everything is working!
+# * Ensure variables only work when the host has a specific name - needed as soon as install goes multi-node!
+# * Use chef resources to enable/disable services, not bash shell commands.
+
+
+service "wasDM" do
+  action	:start
+end
+
+service "wasNode" do
+  action   [ :start]
+end
+
+service "wasServer" do
+  action   [ :start]
+end

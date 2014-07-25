@@ -1,0 +1,33 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This script will delete the ITIM_LIB shared library at the server level.
+#
+if {$argc < 2} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required."  
+  puts "   arg1 - node name" 
+  puts "   arg2 - server name"
+  puts " "
+} else {
+
+  set node        [lindex $argv 0]
+  set server      [lindex $argv 1]
+  set lib_name    "ITIM_LIB"
+
+  puts "--> node name is $node"
+  puts "--> server name is $server"
+
+  set sid [$AdminConfig getid /Node:$node/Server:$server]
+  set itim_slib [find_shared_lib $sid $lib_name]
+  if { $itim_slib != "" } {
+     $AdminConfig remove $itim_slib
+     $AdminConfig save
+  }
+}

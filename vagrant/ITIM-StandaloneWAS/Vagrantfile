@@ -1,0 +1,71 @@
+# Issues: None
+# Note: Look in /root/waslogs/ for log files and install problems!
+#
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+#
+# Reduce to two VMs - only rebuild what *must* be rebuilt during attempts to install ISIM!
+#	* One hosting WAS & DB2
+#	* One hosting TDS & TDI
+#	Alternatively, copy work and have WAS & TDI on one, and TDS/DB2 on the other.
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.vm.synced_folder "../software", "/installs"
+#	config.ssh.username = "root"
+#	config.ssh.password = "vagrant"
+	
+#	config.omnibus.chef_version = :latest
+	
+	config.vm.define "tds" do |tds|
+		tds.vm.box = "centos65x32chef"
+		tds.vm.network "private_network", ip: "10.0.15.4"
+		tds.vm.provider "virtualbox" do |vb|
+			vb.name = "TDStim"
+			vb.gui = false
+		end
+		tds.vm.network "forwarded_port", guest: 12100, host: 12100
+		tds.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "tdsNode::default"
+#			chef.log_level = :debug
+		end
+	end
+	
+	config.vm.define "db2" do |db2|
+		db2.vm.box = "centos65x64chef"
+		db2.vm.network "private_network", ip: "10.0.15.5"
+		db2.vm.provider "virtualbox" do |vb|
+			vb.name = "DB2tim"
+			vb.gui = false
+		end
+		db2.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "db2Node::default"
+#			chef.log_level = :debug
+		end
+	end
+
+	config.vm.define "was" do |was|
+		was.vm.box = "centos65x32chef"
+		was.vm.network "private_network", ip: "10.0.15.3"
+		was.vm.provider "virtualbox" do |vb|
+			vb.name = "singleWAS"
+			vb.gui = false
+			vb.customize ["modifyvm", :id, "--memory", "2048"]
+		end
+		was.vm.network "forwarded_port", guest: 9080, host: 9080
+		was.vm.network "forwarded_port", guest: 80, host: 2080
+		was.vm.network "forwarded_port", guest: 9060, host: 9060
+		was.vm.network "forwarded_port", guest: 9043, host: 9043
+		was.vm.network "forwarded_port", guest: 443, host: 8443	
+		was.vm.network "forwarded_port", guest: 9443, host: 9443			
+		was.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "WAS::standalone"
+#			chef.log_level = :debug
+		end
+	end	
+
+end

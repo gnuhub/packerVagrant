@@ -1,0 +1,26 @@
+<!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 6.0//EN" "http://www.bea.com/servers/wls600/dtd/weblogic-web-jar.dtd">
+<weblogic-web-app>
+     <description>
+        enRole Web App WebLogic Descriptor
+     </description>
+    <jsp-descriptor>
+        <jsp-param>
+            <param-name>
+                precompile
+            </param-name>
+            <param-value>
+                true
+            </param-value>
+        </jsp-param>
+        <jsp-param>
+            <param-name>
+                compileCommand
+            </param-name>
+            <param-value>
+                %JAVAC_PATH%
+            </param-value>
+        </jsp-param>
+    </jsp-descriptor>
+</weblogic-web-app>
+
+

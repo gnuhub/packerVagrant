@@ -1,0 +1,33 @@
+    1  updatedb
+    2  locate -i update
+    3  locate -i update | grep web
+    4  locate -i updateinst | grep web
+    5  cd /installFiles/UpdateInstaller/
+    6  s
+    7  ls
+    8  ./install -options /vagrant/WAS/updateInstaller.rsp -silent
+    9  /opt/IBM/WebSphere/UpdateInstaller/update.sh -options /vagrant/WAS/was-fp31.rsp -silent
+   10  /opt/IBM/WebSphere/AppServer/bin/versionInfo.sh 
+   11  /opt/IBM/WebSphere/AppServer/bin/versionInfo.sh /tmp/x
+   12  /opt/IBM/WebSphere/AppServer/bin/versionInfo.sh > /tmp/x
+   13  more /tmp/x 
+   14  cd /vagrant/SIM/
+   15  ./installSIM.sh 
+   16  /opt/IBM/WebSphere/AppServer/bin/versionInfo.sh > /tmp/x
+   17  more /tmp/x 
+   18  /opt/IBM/WebSphere/UpdateInstaller/update.sh -options /vagrant/WAS/was-fp31.rsp -silent
+   19  ./installSIM.sh 
+   20  clear
+   21  rm -rf /opt/IBM/isim/
+   22  ./installSIM.sh 
+   23  ls -ltr /opt/IBM/isim/install_logs/
+   24  vi /opt/IBM/isim/install_logs/itim_install_activity.log 
+   25  rm -rf /opt/IBM/isim/
+   26  cd |/
+   27  pwd
+   28  ./installSIM.sh 
+   29  pwd
+   30  rm -rf /opt/IBM/isim/
+   31  ./installSIM.sh 
+   32  history
+   33  history > /vagrant/SIM/instFixPak.txt

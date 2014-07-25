@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/********************************************************************
+*
+* Licensed Materials - Property of IBM
+*
+* (C) Copyright IBM Corp. 2005, 2012 All Rights Reserved.
+*
+* US Government Users Restricted Rights - Use, duplication, or
+* disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+*
+*
+*******************************************************************/-->
+<AdHocReport Version="1.1">
+	<Created>
+		<Time>2004-08-09 19:44:45.04</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</Created>
+	<LastUpdate>
+		<Time>2004-08-09 19:44:45.04</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</LastUpdate>
+	<Style>standard</Style>
+	<ReportHeader>
+		<Title>dummy</Title>
+	</ReportHeader>
+	<Page Lines="45">
+		<PageHeader>
+			<TimeStamp TimeZone="GMT" show="YES"/>
+			<User show="YES"/>
+			<Logo show="YES"/>
+		</PageHeader>
+		<Body>
+			<Query>
+				<Columns>
+					<Column Width="8" id="1">
+						<Header>fullName</Header>
+						<Source>Person.cn</Source>
+						<Sort Order="3" Type="ASC"/>
+					</Column>
+					<Column Width="8" id="2">
+						<Header>organizationalContainer</Header>
+						<Source>OrganizationalContainer.name</Source>
+						<Sort Order="2" Type="ASC"/>
+					</Column>
+					<Column Width="8" id="3">
+						<Header>suspendedSince</Header>
+						<Source>SUSPENDED_USERS.COMPLETED</Source>
+						<Sort Order="1" Type="ASC"/>
+					</Column>
+				</Columns>
+				<Tables>
+					<Table>OrganizationalContainer</Table>
+					<Table>Person</Table>
+					<Table>SUSPENDED_USERS</Table>
+				</Tables>
+				<Filter><![CDATA[Person.erparent = OrganizationalContainer.DN AND Person.DN = SUSPENDED_USERS.REQUESTEE AND Person.erPersonStatus = '1' AND Person.DN like '_USERINPUT_' AND OrganizationalContainer.DN like '_USERINPUT_' AND SUSPENDED_USERS.COMPLETED < '_USERINPUT_' ]]></Filter>
+			</Query>
+		</Body>
+		<PageFooter>
+			<PageNumber Format="1OfN" show="YES"/>
+		</PageFooter>
+	</Page>
+</AdHocReport>

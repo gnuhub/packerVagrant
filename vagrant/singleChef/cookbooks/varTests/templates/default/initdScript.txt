@@ -1,0 +1,33 @@
+#!/bin/bash
+. /etc/rc.d/init.d/functions
+[ -f /etc/sysconfig/network ] && . /etc/sysconfig/network
+
+[ "" = "no" ] && exit 0
+
+start() {
+	<%= @start %>
+}
+
+stop() {
+	<%= @stop %>
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        stop
+        sleep 3
+        start
+        ;;
+  enable)
+		echo "enable server" > /vagrant/enable
+		;;
+  *)
+        echo "Usage: $0 {start|stop|restart|enable}"
+        exit 1
+esac

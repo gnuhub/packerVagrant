@@ -1,0 +1,60 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to update attributes of "ITIM Data Source".
+#
+#
+
+set rc  ""
+if {$argc < 1} { 
+  puts "  "
+  puts "Incorrect number of args.  Three arguments are required."  
+  puts "   arg1 - node-name" 
+  puts "   arg2 - minimum pool size (default is 5)"
+  puts "   arg3 - maximum pool size (default is 30)"
+  puts "   arg4 - statement cache size (default is 2000)"
+}
+if {$argc >= 1} {
+
+  set nodename       [lindex $argv 0]
+  set server         [lindex $argv 1]
+  set minPoolSize    [lindex $argv 2]
+  set maxPoolSize    [lindex $argv 3]
+  set stateCacheSize [lindex $argv 4]
+
+
+  if { $server == "" } {
+     set server server1
+  }
+  if {$minPoolSize == ""} {
+	set minPoolSize 5
+  }
+  if {$maxPoolSize == ""} {
+	set maxPoolSize 30
+  }   
+  if {$stateCacheSize == ""} {
+	set stateCacheSize 2000
+  }
+  puts "--> node name is $nodename"
+  puts "--> server name is $server"
+  puts "--> minimun pool size is $minPoolSize"
+  puts "--> maximun pool size is $maxPoolSize"
+  puts "--> state cache size is $stateCacheSize"
+
+  set sid [$AdminConfig getid /Node:$nodename/Server:$server]
+  
+  set ds_id [find_object_id $sid "DataSource" "jndiName" "enroleDataSource"]
+  puts "--> ITIM WAS datasource id is $ds_id"
+  if { $ds_id != "" } {
+     set rc [update_itim_datasource_props $ds_id $minPoolSize $maxPoolSize]
+  }
+     if { $rc == "SUCCESS" } {
+        $AdminConfig save
+     }
+}   
