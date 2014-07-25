@@ -1,0 +1,4 @@
+Minimal Desktop: 955 packages
+
+Gnome ?
+KDE ?
