@@ -1,0 +1,75 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to start of stop an application in a application server.
+# If the application server name is not inputed, "server1" is used.
+# require input 
+#     $appname  - appliation name of the application to be started  
+#     $operator - start or stop
+#     $sername  - the server where the application to be run
+#
+
+if {$argc < 2} { 
+  puts "  "
+  puts "You have to enter the application name of the application to be started." 
+  puts "     arg1 -- appName "
+  puts "     arg2 -- operator (start or stop) "
+  puts "     arg2 -- serName (optional - default to \"server1\")"  
+  puts " "
+}
+if {$argc >= 2} {
+
+  #  set nodename [lindex $argv 0]
+  set appname   [lindex $argv 0]
+  set sername   [lindex $argv 1]  
+  set operator  [lindex $argv 2]
+  
+  if { $sername == "" } {
+     set sername server1
+  }
+ 
+  if { $operator != "start" }  {
+     if { $operator != "stop" } {
+     	  puts " Incorrect operator entered.  It must be \"start\" or \"stop\". "
+        exit
+     }
+  }
+
+  puts " "
+  #  puts "node name is $nodename"
+  puts "application name is $appname"
+  puts "operator type is $operator"
+  puts "server name is $sername"
+  puts " "
+    
+  # start the application
+  set myserv [$AdminControl completeObjectName type=ApplicationManager,process=$sername,*] 
+  if { $operator == "start" }  {  
+  	$AdminControl invoke $myserv startApplication $appname
+  
+  	# get the complete object name of the just started application.  
+  	# if the object name can be successfully retrieved, the application has
+  	# been started ??
+  	set objname [$AdminControl completeObjectName process=$sername,name=$appname,*]
+  	if { $objname == "" } {
+    		# How can I pass the error info out this jacl file ??
+    		puts " Failed to start the application $appname.  Please check  "  
+  	}
+  	if { $objname != "" } {
+    		puts " The application $appname has been started successfully "
+  	}
+  }
+  if { $operator == "stop" } {
+	$AdminControl invoke $myserv stopApplication $appname
+  }
+
+  $AdminConfig save
+}        

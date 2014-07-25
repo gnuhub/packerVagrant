@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dsml>
+  <directory-entries>
+
+  <!-- ******************************************************** -->
+  <!--                   Default organizational scope data      -->
+  <!-- ******************************************************** -->  
+    <!--                                                          -->
+    <!-- Predefined Properties:                                   -->
+    <!--  tenant.dn                                               -->
+    <!--  org.id                                              -->
+    <!--  org.name                                            -->
+    <!--  enrole.manager.bucket                                   -->
+    <!--  enrole.manager.id                                       -->
+    <!--  dummy.id                                                -->
+    <!--  enrole.manager.acct.password                            -->
+    <!--                                                          -->
+
+
+  <!-- ******************************************************** -->
+    <!--              Roles node and ITIM Admin role            -->
+    <!-- ******************************************************** -->  
+    
+    <entry dn="erglobalid=<%role.default.id=00000000000000000001%>,ou=roles,erglobalid=<%org.id%>,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erRole</oc-value>
+        <oc-value>erManagedItem</oc-value>
+        <oc-value>erAccessItem</oc-value>
+      </objectclass>
+      <attr name="erglobalid"><value><%role.default.id%></value></attr>
+      <attr name="errolename"><value>ITIM Administrators</value></attr>
+      <attr name="description"><value>Predefined system administrator role.</value></attr>
+      <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+    </entry>
+
+    <entry dn="erglobalid=<%service.enrole.id=00000000000000000002%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erITIMService</oc-value>
+        <oc-value>erServiceItem</oc-value>
+        <oc-value>erManagedItem</oc-value>
+      </objectclass>
+      <attr name="erglobalid"><value><%service.enrole.id%></value></attr>
+      <attr name="erservicename"><value>ITIM Service</value></attr>
+      <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="errepositoryservice"><value>erglobalid=<%service.enrole.id=00000000000000000002%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+    </entry>
+
+    <entry dn="erglobalid=<%sysrole.admin.id=00000000000000000003%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erSystemRole</oc-value>
+        <oc-value>erManagedItem</oc-value>
+      </objectclass>
+      <attr name="erglobalid"><value><%sysrole.admin.id%></value></attr>
+      <attr name="errolename"><value>System Administrator</value></attr>
+      <attr name="description"><value>System Administrator Group</value></attr>
+      <attr name="ersystemrolecategory"><value>3</value></attr>
+      <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+    </entry>
+    
+    <entry dn="erglobalid=<%enrole.manager.id%>,ou=<%enrole.manager.bucket%>,ou=people,erglobalid=<%org.id%>,<%tenant.dn%>">
+        <objectclass>
+          <oc-value>inetOrgPerson</oc-value>
+          <oc-value>top</oc-value>
+          <oc-value>person</oc-value>
+          <oc-value>organizationalPerson</oc-value>
+          <oc-value>erManagedItem</oc-value>
+          <oc-value>erPersonItem</oc-value>
+        </objectclass>
+        <attr name="erglobalid"><value><%enrole.manager.id%></value></attr>
+        <attr name="erpersonstatus"><value>0</value></attr>
+        <attr name="cn"><value>System Administrator</value></attr>
+        <attr name="uid"><value>itimadmin</value></attr>
+        <attr name="givenname"><value>Administrator</value></attr>
+        <attr name="sn"><value>Administrator</value></attr>
+        <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+        <attr name="erroles"><value>erglobalid=<%role.default.id%>,ou=roles,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+    </entry>
+    
+    <entry dn="eruid=ITIM Manager,ou=systemUser,ou=itim,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erSystemUser</oc-value>
+        <oc-value>erAccountItem</oc-value>
+        <oc-value>erManagedItem</oc-value>
+      </objectclass>
+      <attr name="owner"><value>erglobalid=<%enrole.manager.id%>,ou=<%enrole.manager.bucket%>,ou=people,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="erlostpasswordanswer"><value><%enrole.manager.acct.lostpswdanswer%></value></attr>
+      <attr name="eruid"><value>ITIM Manager</value></attr>
+      <attr name="erlostpasswordquestion"><value><%enrole.manager.acct.lostpswdquestion%></value></attr>
+      <attr name="erservice"><value>erglobalid=<%service.enrole.id%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="erpassword"><value><%enrole.manager.acct.password%></value></attr>
+      <attr name="erchangepswdrequired"><value>true</value></attr>
+      <attr name="erpswdlastchanged"><value><%current.datetime%></value></attr>
+      <attr name="erroles"><value>erglobalid=<%sysrole.admin.id%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="eraccountstatus"><value>0</value></attr>
+      <attr name="erObjectType"><value>1</value></attr>
+    </entry>    
+
+  <!-- ******************************************************** -->
+    <!--            Default ITIM provisioning policy            -->
+    <!-- ******************************************************** -->  
+    
+    <entry dn="erglobalid=<%policy.enrole.id=00000000000000000005%>,ou=policies,erglobalid=<%org.id%>,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erProvisioningPolicy</oc-value>
+        <oc-value>erPolicyBase</oc-value>
+        <oc-value>erPolicyItemBase</oc-value>
+        <oc-value>erManagedItem</oc-value>
+      </objectclass>
+      <attr name="erglobalid"><value><%policy.enrole.id%></value></attr>
+      <attr name="erpolicyitemname"><value>Default provisioning policy for ITIM</value></attr>
+      <attr name="erpolicymembership"><value>2;*</value></attr>
+      <attr name="erentitlements"><value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ENTITLEMENT policyparent="Default provisioning policy for ITIM" name="ITIM" id="<%dummy.id=guid%>" type="REQUIRED" version="1.2">
+  <TARGET type="1">erglobalid=<%service.enrole.id%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%></TARGET>
+</ENTITLEMENT>]]></value></attr>
+      <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="erlabel"><value>ITIM account policy</value></attr>
+      <attr name="erpriority"><value>10000000</value></attr>
+      <attr name="erenabled"><value>true</value></attr>
+      <attr name="erpolicytarget"><value>1;erglobalid=<%service.enrole.id%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="description"><value>Allow everyone to be provisioned for an ITIM account.</value></attr>
+    </entry>
+    
+  <!-- ******************************************************** -->
+    <!--            Default ITIM adoption policy                -->
+    <!-- ******************************************************** -->  
+    
+    <entry dn="erglobalid=<%policy.enrole.id=00000000000000000031%>,ou=policies,erglobalid=<%org.id%>,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erAdoptionPolicy</oc-value>
+        <oc-value>erPolicyBase</oc-value>
+        <oc-value>erPolicyItemBase</oc-value>
+        <oc-value>erManagedItem</oc-value>
+      </objectclass>
+      <attr name="erglobalid"><value><%policy.enrole.id%></value></attr>
+      <attr name="erpolicyitemname"><value>Default adoption policy for ITIM</value></attr>
+      <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="erenabled"><value>true</value></attr>
+      <attr name="erpolicytarget"><value>2;*</value></attr>
+      <attr name="erjavascript"><value><![CDATA[
+if ((subject[ "eruid"]==null)){
+  return null;
+}else if (subject["eruid"]!=null){
+  var buff='(|'; 
+  for(i=0;i<subject["eruid"].length;i++){
+  var escaped = "";
+    var obj = subject["eruid"][i];
+         for(var j=0;j<obj.length;j++) {
+                 var ch =  obj.charAt(j);
+                 if(ch == '\\') {   escaped += '\\5C';    }      
+                 else if (ch == '*') {  escaped += '\\2A';   }         
+                 else if (ch == '(') {  escaped += '\\28';   }          
+                 else if (ch == ')') {  escaped += '\\29';   }           
+                 else if (ch == '?') {  escaped += '\\3F';   }        
+                 else if (ch == '+') {  escaped += '\\2B';   }          
+                 else if (ch == '[') {  escaped += '\\5B';   }        
+                 else if (ch == ']') {  escaped += '\\5D';   }       
+                 else if (ch == '^') {  escaped += '\\5E';   }      
+                 else if (ch == '$') {  escaped += '\\24';   }       
+                 else if (ch == '\"') {  escaped += '\\22';   }         
+                 else if (ch == '\'') {  escaped += '\\27';   }        
+                 else if (ch == '=') {  escaped += '\\3D';   }         
+                 else if (ch == ';') {  escaped += '\\3B';   }        
+                 else if (ch == '<') {  escaped += '\\3C';   }         
+                 else if (ch == '>') {  escaped += '\\3E';   } 
+                 else if (ch == '{') {  escaped += '\\7B';   }     
+                 else if (ch == '}') {  escaped += '\\7D';   }
+                 else { escaped += ch; }
+         }
+   buff+='(uid='+escaped+')';
+  }
+  buff+=')';
+  var ps = new PersonSearch(); 
+  var searchResult = ps.searchByFilter("",buff, 2);
+  if (searchResult!=null && searchResult.length>0) 
+    return searchResult;
+  else {
+    return null;
+  }
+}]]></value></attr>
+      <attr name="description"><value>Default adoption policy for all services and service types.</value></attr>     
+    </entry>
+    
+    <!-- ******************************************************** -->
+    <!--            Default ITIM password policy                  -->
+    <!-- ******************************************************** -->  
+    <entry dn="erglobalid=<%policy.enrole.id=00000000000000000101%>,ou=policies,erglobalid=<%org.id%>,<%tenant.dn%>">
+      <objectclass>
+        <oc-value>top</oc-value>
+        <oc-value>erPasswordPolicy</oc-value>
+        <oc-value>erPolicyBase</oc-value>
+        <oc-value>erPolicyItemBase</oc-value>
+        <oc-value>erManagedItem</oc-value>
+      </objectclass>
+      <attr name="erglobalid"><value><%policy.enrole.id%></value></attr>
+      <attr name="erpolicyitemname"><value>Default password policy for ITIM service</value></attr>
+      <attr name="erscope"><value>2</value></attr>
+      <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="erenabled"><value>true</value></attr>
+      <attr name="erpolicytarget"><value>1;erglobalid=<%service.enrole.id%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+      <attr name="erlabel"><value>ITIM's default password policy</value></attr>
+      <attr name="description"><value>Disallow empty password for ITIM service</value></attr>     
+      <attr name="erxml"><value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PasswordRuleSet version="1.1">  <MinLengthConstraint Min="1" /></PasswordRuleSet>]]></value></attr>
+    </entry>     
+          
+  </directory-entries>
+</dsml>

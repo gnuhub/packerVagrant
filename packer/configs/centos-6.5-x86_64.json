@@ -1,9 +1,13 @@
 {
+	"variables": {
+		"vboxVersion": "4.3.10"
+	 },
+
     "builders": [{
         "type": "virtualbox-iso",
         "virtualbox_version_file": ".vbox_version",
         "headless": false,
-		"vm_name": "CentOS-6.5-amd64",
+		"vm_name": "CentOS-6.5-amd64_{{user `vboxVersion`}}",
         "guest_os_type": "RedHat_64",
         "disk_size": 40960,
 
@@ -18,7 +22,7 @@
 
         "http_directory": "../http",
         "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-		"guest_additions_url":	"../iso/VBoxGuestAdditions_4.3.8.iso",
+		"guest_additions_url":	"../iso/VBoxGuestAdditions_{{.Version}}.iso",
 		
         "ssh_username": "vagrant",
         "ssh_password": "vagrant",
@@ -33,7 +37,7 @@
         "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
     }],
     "post-processors": [{
-        "output": "../build/centos-6.5-x86_64.box",
+        "output": "../build/centos-6.5-x86_64_{{user `vboxVersion`}}_chef.box",
         "type": "vagrant"
     }],
     "provisioners": [{
@@ -42,7 +46,8 @@
         "scripts": [
             "../scripts/vagrant.sh",
             "../scripts/vboxguest.sh",
-            "../scripts/compact.sh"
+            "../scripts/compact.sh",
+            "../scripts/installChef.sh"
         ]
     }]
 }

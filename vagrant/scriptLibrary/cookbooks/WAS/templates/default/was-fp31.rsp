@@ -1,0 +1,3 @@
+-W maintenance.package=" /installFiles/fixpacks/7.0.0-WS-WAS-LinuxX32-FP0000031.pak; /installFiles/fixpacks/7.0.0-WS-WASSDK-LinuxX32-FP0000031.pak"
+-W product.location="/opt/IBM/WebSphere/AppServer"
+-W update.type="install"

@@ -1,0 +1,55 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This script will add the ITIM_LIB shared library and the classpath to the 
+# application server.  
+#
+# This script will update the following xml file:
+#
+#     <WAS_HOME>\config\cells\<cell_name>\nodes\<node_name>\servers\<server_name>\libraries.xml
+#     <WAS_HOME>\config\cells\<cell_name>\nodes\<node_name>\servers\<server_name>\server.xml   
+#
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required."  
+  puts "   arg1 - node name" 
+  puts "   arg2 - server name"
+  puts "   arg3 - file name, the file contains the name of jar files which are to be added" 
+  puts " "
+} else {
+
+  set node        [lindex $argv 0]
+  set server      [lindex $argv 1]
+  set file_name   [lindex $argv 2]
+  set lib_name    "ITIM_LIB"
+
+  puts "--> node name is $node"
+  puts "--> server name is $server"
+  puts "--> file name (containing jar list) is $file_name"
+
+  set count 0
+  set jar_list [list ]
+  set input_file [open $file_name r]
+  while { [gets $input_file jar_member] >= 0 } {
+     string trim $jar_member
+     lappend jar_list $jar_member
+     incr count
+     puts "--> $jar_member"
+  }
+  close $input_file
+  puts "--> total number of jar members is $count"
+
+  # call the add_shared_lib proc in WASConfigUtil.jacl
+  set sid [$AdminConfig getid /Node:$node/Server:$server]
+  set rc [add_shared_lib $sid $jar_list $lib_name]
+  puts "--> rc: $rc"
+  if {$rc == "SUCCESS"} {
+    $AdminConfig save
+  }
+}

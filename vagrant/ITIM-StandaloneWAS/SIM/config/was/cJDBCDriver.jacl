@@ -1,0 +1,58 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This jacl script is to invoke WasConfigUtil.crt_jdbc_driver to
+#  create the configuration of "ITIM XA JDBC driver Provider" and 
+#  "ITIM non-XA JDBC driver Provider" at the server scope if it 
+#  does not exist.
+#
+#  wsadmin.bat -f g:\was\cJDBCDriver.jacl "node1" "server1" "IBM_DB"
+#
+#  this script will add or update an environment variable in
+#      $WAS_HOME\config\cells\<cellName>\nodes\<nodeName>\resources.xml
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Three arguments are required."  
+  puts "   arg1 - WebSphere node name" 
+  puts "   arg2 - WebSphere server name"  
+  puts "   arg3 - database type (IBM_DB, IBM_ZDB, ORACLE_DB, or MS_DB)"
+} else {
+
+  set node_name    [lindex $argv 0]
+  set server_name  [lindex $argv 1]
+  set db_type      [lindex $argv 2]
+
+  puts "--> node name is $node_name"
+  puts "--> server name is $server_name"
+  puts "--> db type is $db_type"
+
+  set sid [$AdminConfig getid /Node:$node_name/Server:$server_name]
+  set is_xa true
+  
+  # Create the ITIM XA JDBC driver provider to host the datasource for
+  # ITIM JMS queues.
+
+  set jdbc_id [crt_jdbc_driver $sid $db_type $is_xa]
+  puts "--> the XA jdbc driver provider id is: $jdbc_id"
+  if {$jdbc_id != ""} {
+     $AdminConfig save
+  }  
+
+  # Create the ITIM non-XA JDBC driver provider to host the datasource for
+  # the messaging engine used by ITIM.
+
+  set is_xa false
+  set jdbc_id [crt_jdbc_driver $sid $db_type $is_xa]
+  puts "--> the non-XA jdbc driver provider id is: $jdbc_id"
+  if {$jdbc_id != ""} {
+     $AdminConfig save
+  }
+}

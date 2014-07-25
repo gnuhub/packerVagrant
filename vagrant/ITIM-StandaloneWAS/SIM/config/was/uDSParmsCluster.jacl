@@ -1,0 +1,47 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to update attributes of "ITIM Data Source".
+#
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Three arguments are required."  
+  puts "   arg1 - cluster-name" 
+  puts "   arg2 - minimum pool size (default is 5)"
+  puts "   arg3 - maximum pool size (default is 30)"
+} else {
+
+  set cluster      [lindex $argv 0]
+  set minPoolSize  [lindex $argv 1]
+  set maxPoolSize  [lindex $argv 2]
+
+  if {$minPoolSize == ""} {
+	set minPoolSize 5
+  }
+  if {$maxPoolSize == ""} {
+	set maxPoolSize 30
+  }   
+
+  puts "--> cluster name is $cluster"
+  puts "--> minimun pool size is $minPoolSize"
+  puts "--> maximun pool size is $maxPoolSize"
+  
+  set cid [$AdminConfig getid /ServerCluster:$cluster]
+  set ds_id [find_object_id $cid "DataSource" "jndiName" "enroleDataSource"]
+  if { $ds_id != "" }  {
+     set rc [update_itim_datasource_props $ds_id $minPoolSize $maxPoolSize]
+     if { $rc == "SUCCESS" } {
+        $AdminConfig save
+     }
+  } else {
+     puts "--> Did not find the enroleDataSource object identifier"
+  }
+}

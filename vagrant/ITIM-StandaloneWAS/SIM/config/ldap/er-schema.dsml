@@ -1,0 +1,2627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dsml>
+
+  <directory-schema>
+
+<!-- 
+
+******************************************************
+      OIDs
+      
+OIDs are constructed in the following manner:
+
+enterprise id (access360 1.3.6.1.4.1.6054)
+product id (enrole 1)
+class (attribute 1, object class 2)
+instance id (sequential)
+
+example attribute object id: 1.3.6.1.4.1.6054.1.1.1
+example class object id: 1.3.6.1.4.1.6054.1.2.1
+
+********************************************************
+                   ITIM LDAP attributes
+                   
+Below is a list of syntaxes that iPlanet supports.  A directory
+server determines how many syntaxes it supports.
+
+      iPlanet supported syntaxes
+      ==========================
+
+  1.3.6.1.4.1.1466.115.121.1.15 cis (case-ignore string) 
+  1.3.6.1.4.1.1466.115.121.1.5 bin (binary) 
+  1.3.6.1.4.1.1466.115.121.1.50 tel (telephone number) 
+  1.3.6.1.4.1.1466.115.121.1.26 ces (case-exact string) 
+  1.3.6.1.4.1.1466.115.121.1.27 int (integer) 
+  1.3.6.1.4.1.1466.115.121.1.12 dn (distinguished name) 
+
+
+Below is a list of all available LDAP syntaxes defined thus far 
+and their OIDs that you can use for your attributes.  In addition, 
+there's an OID for each syntax to be used for its matching rule. You 
+should use the OID and not the String representation of it.
+
+      LDAP syntaxes
+      =============
+
+   ACI Item                          1.3.6.1.4.1.1466.115.121.1.1
+   Access Point                      1.3.6.1.4.1.1466.115.121.1.2
+   Attribute Type Description        1.3.6.1.4.1.1466.115.121.1.3
+   Audio                             1.3.6.1.4.1.1466.115.121.1.4
+   Binary                            1.3.6.1.4.1.1466.115.121.1.5
+   Bit String                        1.3.6.1.4.1.1466.115.121.1.6 'bitStringMatch' 2.5.13.16  
+   Boolean                           1.3.6.1.4.1.1466.115.121.1.7 'booleanMatch' 2.5.13.13 (no IDS 6.0)
+   Certificate                       1.3.6.1.4.1.1466.115.121.1.8
+   Certificate List                  1.3.6.1.4.1.1466.115.121.1.9
+   Certificate Pair                  1.3.6.1.4.1.1466.115.121.1.10
+   Country String                    1.3.6.1.4.1.1466.115.121.1.11
+   DN                                1.3.6.1.4.1.1466.115.121.1.12  'distinguishedNameMatch' 2.5.13.1 
+   Data Quality Syntax               1.3.6.1.4.1.1466.115.121.1.13
+   Delivery Method                   1.3.6.1.4.1.1466.115.121.1.14
+   Directory String                  1.3.6.1.4.1.1466.115.121.1.15  'caseIgnoreMatch' 2.5.13.2 Or 'caseExactMatch' 2.5.13.5
+   DIT Content Rule Description      1.3.6.1.4.1.1466.115.121.1.16
+   DIT Structure Rule Description    1.3.6.1.4.1.1466.115.121.1.17
+   DL Submit Permission              1.3.6.1.4.1.1466.115.121.1.18
+   DSA Quality Syntax                1.3.6.1.4.1.1466.115.121.1.19
+   DSE Type                          1.3.6.1.4.1.1466.115.121.1.20
+   Enhanced Guide                    1.3.6.1.4.1.1466.115.121.1.21
+   Facsimile Telephone Number        1.3.6.1.4.1.1466.115.121.1.22
+   Fax                               1.3.6.1.4.1.1466.115.121.1.23
+   Generalized Time                  1.3.6.1.4.1.1466.115.121.1.24  'generalizedTimeMatch' 2.5.13.27  
+   Guide                             1.3.6.1.4.1.1466.115.121.1.25
+   IA5 String                        1.3.6.1.4.1.1466.115.121.1.26  'caseExactIA5Match' 1.3.6.1.4.1.1466.109.114.1 Or 'caseIgnoreIA5Match' 1.3.6.1.4.1.1466.109.114.2
+   INTEGER                           1.3.6.1.4.1.1466.115.121.1.27  'integerMatch' 2.5.13.14  
+   JPEG                              1.3.6.1.4.1.1466.115.121.1.28
+   LDAP Syntax Description           1.3.6.1.4.1.1466.115.121.1.54
+   LDAP Schema Definition            1.3.6.1.4.1.1466.115.121.1.56
+   LDAP Schema Description           1.3.6.1.4.1.1466.115.121.1.57
+   Master And Shadow Access Points   1.3.6.1.4.1.1466.115.121.1.29
+   Matching Rule Description         1.3.6.1.4.1.1466.115.121.1.30
+   Matching Rule Use Description     1.3.6.1.4.1.1466.115.121.1.31
+   Mail Preference                   1.3.6.1.4.1.1466.115.121.1.32
+   MHS OR Address                    1.3.6.1.4.1.1466.115.121.1.33
+   Modify Rights                     1.3.6.1.4.1.1466.115.121.1.55
+   Name And Optional UID             1.3.6.1.4.1.1466.115.121.1.34  'uniqueMemberMatch' 2.5.13.23  
+   Name Form Description             1.3.6.1.4.1.1466.115.121.1.35
+   Numeric String                    1.3.6.1.4.1.1466.115.121.1.36  'numericStringMatch' 2.5.13.8  
+   Object Class Description          1.3.6.1.4.1.1466.115.121.1.37
+   Octet String                      1.3.6.1.4.1.1466.115.121.1.40
+   OID                               1.3.6.1.4.1.1466.115.121.1.38  'objectIdentifierMatch' 2.5.13.0 
+   Other Mailbox                     1.3.6.1.4.1.1466.115.121.1.39
+   Postal Address                    1.3.6.1.4.1.1466.115.121.1.41  'caseIgnoreListMatch' 2.5.13.11  
+   Protocol Information              1.3.6.1.4.1.1466.115.121.1.42  'protocolInformationMatch' 2.5.13.24  
+   Presentation Address              1.3.6.1.4.1.1466.115.121.1.43  'presentationAddressMatch' 2.5.13.22  
+   Printable String                  1.3.6.1.4.1.1466.115.121.1.44
+   Substring Assertion               1.3.6.1.4.1.1466.115.121.1.58
+   Subtree Specification             1.3.6.1.4.1.1466.115.121.1.45
+   Supplier Information              1.3.6.1.4.1.1466.115.121.1.46
+   Supplier Or Consumer              1.3.6.1.4.1.1466.115.121.1.47
+   Supplier And Consumer             1.3.6.1.4.1.1466.115.121.1.48
+   Supported Algorithm               1.3.6.1.4.1.1466.115.121.1.49
+   Telephone Number                  1.3.6.1.4.1.1466.115.121.1.50  'telephoneNumberMatch' 2.5.13.20  
+   Teletex Terminal Identifier       1.3.6.1.4.1.1466.115.121.1.51
+   Telex Number                      1.3.6.1.4.1.1466.115.121.1.52
+   UTC Time                          1.3.6.1.4.1.1466.115.121.1.53
+                   
+******************************************************** 
+
+-->  
+  
+    <attribute-type single-value="true">
+      <name>erOrgStatus</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.1</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+        <name>erAccountStatus</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.2</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+
+      <attribute-type single-value="true">
+      <name>erUseWorkflow</name>
+        <description>A boolean flag used on a DSMLInfoService to indicate that people should be processed via the workflow engine.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.3</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erSharedSecret</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.4</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erType</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.5</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRoleName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.6</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erPersonStatus</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.7</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erServiceName</name>
+        <description>The display name for service instances</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.8</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erPolicyItemName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.9</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erObjectProfileName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.10</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15{2048}</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erCategory</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.11</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erCustomClass</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.12</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRdnAttr</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.13</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+
+    <attribute-type>
+      <name>erAttrMap</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.14</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erOid</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.15</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>
+
+      <attribute-type single-value="true">
+      <name>erIsReadOnly</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.16</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>
+
+    <attribute-type>
+      <name>erDefaultValue</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.17</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+
+    <attribute-type>
+      <name>erCustomConstraint</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.18</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+ 
+      <attribute-type>
+        <name>erRoles</name>
+          <object-identifier>1.3.6.1.4.1.6054.1.1.19</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+ 
+    <attribute-type single-value="true">
+      <name>erService</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.20</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+ 
+    <attribute-type single-value="true">
+      <name>erAccountClass</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.21</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type> 
+ 
+      <attribute-type single-value="true">
+      <name>erBPOrgStatus</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.22</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type> 
+ 
+    <attribute-type>
+      <name>erAcl</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.23</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+        <!--<substring>2.5.13.4</substring>-->
+      </attribute-type>  
+ 
+    <attribute-type single-value="true">
+      <name>erPassword</name>
+        <description>A password used to authenticate a user.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.24</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+      </attribute-type>   
+ 
+    <attribute-type>
+      <name>erHistoricalPassword</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.25</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+      </attribute-type>    
+ 
+    <attribute-type>
+      <name>erJavaScript</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.26</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+      </attribute-type>   
+ 
+    <attribute-type>
+      <name>erPolicyTarget</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.27</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15{512}</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>  
+ 
+    <attribute-type>
+      <name>erKeywords</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.28</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>   
+ 
+    <attribute-type single-value="true">
+      <name>erEnabled</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.29</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>    
+ 
+    <attribute-type single-value="true">
+      <name>erPolicyType</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.30</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>   
+ 
+    <attribute-type>
+      <name>erEntitlements</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.31</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+        <!--<equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>-->
+      </attribute-type>   
+      
+    <attribute-type>
+      <name>erPolicyMembership</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.32</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>         
+      
+      <attribute-type>
+      <name>erXML</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.33</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+      </attribute-type>       
+      
+    <attribute-type>
+      <name>erSponsor</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.34</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>       
+      
+    <attribute-type>
+      <name>erLostPasswordQuestion</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.35</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erLostPasswordAnswer</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.36</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erIsDelegated</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.37</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erSupervisor</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.38</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>         
+      
+      <attribute-type single-value="true">
+      <name>erSystemRoleCategory</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.39</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>         
+      
+      <attribute-type single-value="true">
+      <name>erParent</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.40</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erUserClass</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.41</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>           
+      
+    <attribute-type single-value="true">
+      <name>erWorkflow</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.42</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15{1024}</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erPriority</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.43</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erOverride</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.44</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>       
+          
+    <attribute-type single-value="true">
+      <name>erAccountName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.45</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>         
+      
+    <attribute-type>
+      <name>erAuthorizationOwner</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.46</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>         
+      
+    <attribute-type>
+      <name>erLabel</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.47</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>     
+      
+    <attribute-type single-value="true">
+      <name>erProcessName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.48</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>       
+      
+    <attribute-type>
+      <name>erDelegate</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.49</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>         
+      
+    <attribute-type single-value="true">
+      <name>erGlobalId</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.50</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.36</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erIsDeleted</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.51</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>         
+      
+    <attribute-type>
+      <name>erAliases</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.52</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erCheckPolicy</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.53</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>       
+      
+      <attribute-type single-value="true">
+      <name>erDisallowedAction</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.54</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erConstraintViolationAction</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.55</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>     
+      
+    <attribute-type single-value="true">
+      <name>erIdentityLookupMethod</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.56</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>       
+      
+    <attribute-type single-value="true">
+      <name>erDSMLFileName</name>
+        <description>The name of a DSML file stored on disk.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.57</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>       
+
+      <attribute-type single-value="true">
+      <name>erDictionaryName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.58</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>  
+
+    <attribute-type single-value="true">
+      <name>erWord</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.59</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>  
+
+    <attribute-type single-value="true">
+      <name>erFormName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.60</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>  
+
+    <attribute-type single-value="true">
+      <name>erHomePage</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.61</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>  
+
+    <attribute-type single-value="true">
+      <name>erIsActive</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.62</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erLostPswdByMail</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.63</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erPswdEditAllowed</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.64</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erBucketCount</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.65</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>  
+      
+    <attribute-type>
+        <name>erPrerequisite</name>
+          <object-identifier>1.3.6.1.4.1.6054.1.1.66</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erLastAccessDate</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.67</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.24</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erUid</name>
+        <description>A identifier used to uniquely identify a user of a service.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.68</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erHost</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.69</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercompname</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.70</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erdeptname</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.71</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercompaddr</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.72</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercompcity</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.73</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercompstate</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.74</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercompzip</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.75</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercompcountry</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.76</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erocfname</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.77</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>eroclname</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.78</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>eroctitle</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.79</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erocemail</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.80</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erocphone</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.81</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erocfax</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.82</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ertcfname</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.83</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ertclname</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.84</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ertctitle</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.85</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ertcemail</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.86</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ertcphone</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.87</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erdunsnumber</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.88</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erorgapproved</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.89</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erorgcontacted</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.90</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erpmtrecvd</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.91</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ercomment</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.92</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erPlacementRule</name>
+      <description>A script fragment defining the location of the user within the organization chart.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.93</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erPswdLastChanged</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.94</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.24</syntax>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erServiceActivationDate</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.95</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erServiceExpirationDate</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.96</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erPswdExpirationPeriod</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.97</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>         
+
+    <attribute-type single-value="true">
+      <name>erPswdTransactionExpPeriod</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.98</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>         
+    
+    <attribute-type single-value="true">
+      <name>erLogonCount</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.99</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>         
+    
+    <attribute-type single-value="true">
+      <name>erNumLogonAttempt</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.100</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erChangePswdRequired</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.101</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+
+    <attribute-type>
+      <name>erAdministrator</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.102</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erDirectiveType</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.103</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erCustomData</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.104</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erPrecedenceSequence</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.105</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erAttributeName</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.106</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erTenantStatus</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.107</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>       
+
+    <attribute-type>
+      <name>erSearchAttr</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.108</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erCustomDisplay</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.109</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+    
+    <attribute-type single-value="true">
+      <name>erResponseEnable</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.110</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erResponseDescription</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.111</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erResponseEmail</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.112</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type> 
+
+    <attribute-type single-value="true">
+      <name>erChallengeMode</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.113</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erRequiredChallenges</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.114</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>       
+    
+    <attribute-type single-value="true">
+      <name>erRandomChallenges</name>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.115</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>       
+    
+    <attribute-type single-value="true">
+      <name>erHashedEnable</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.116</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+      </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erScope</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.117</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erRespLastChange</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.118</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.24</syntax>
+      </attribute-type>
+
+    <attribute-type>
+      <name>erAccountID</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.119</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erReqPolicyTarget</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.120</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>  
+    
+    <attribute-type single-value="true">
+        <name>erAccountCompliance</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.121</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+        <name>erNonComplianceAction</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.122</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erPswdSyncAllowed</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.123</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erChallengeDefMode</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.124</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>    
+    
+    <attribute-type single-value="true">
+      <name>erLastModifiedTime</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.125</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>    
+    
+    <attribute-type single-value="false">
+      <name>erproperties</name>
+      <description>Defines protocol and behavior properties for service profiles.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.126</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>    
+    
+    <attribute-type single-value="false">
+      <name>erprotocolmappings</name>
+      <description>This attribute specifies the service attributes that should be used in messages sent to managed resources.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.127</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>    
+    
+    <attribute-type single-value="true">
+      <name>erserviceproviderfactory</name>
+      <description>Defines the name of the Java class for creating the ServiceProvider used to communicate with the managed resource.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.128</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erxforms</name>
+      <description>Defines transforms for TIM agents.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.129</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erURL</name>
+      <description>Generic URL string.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.130</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>ernamingattribute</name>
+      <description>The naming attribute on a service used to define the distinguished names of entries in event notification.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.131</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erVersionID</name>
+      <description>version number of an object</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.132</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.36</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erLocale</name>
+      <description>Preferred locale for a user</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.133</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erDraft</name>
+      <description>Indication whether the policy is saved as a draft</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.134</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erOriginalPolicyDN</name>
+      <description>Distinguished name of original policy</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.135</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>   
+
+    <attribute-type>
+      <name>erLifecycleRule</name>
+      <description>Lifecycle rule data</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.136</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>   
+    
+    <attribute-type single-value="true">
+	<name>erPOInterval</name>
+	<description>Time interval for Post Office Delivery</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.137</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+	<name>erReminderInterval</name>
+	<description>Time interval for Workflow Reminder Delivery</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.138</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type> 
+    
+    <attribute-type single-value="true">
+	<name>erSubject</name>
+	<description>Subject of the Notification Template</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.139</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>  
+    
+    <attribute-type single-value="true">
+	<name>erText</name>
+	<description>Text of the Notification Template</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.140</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erCreateDate</name>
+      <description> Time when the object is created </description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.141</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erLastStatusChangeDate</name>
+      <description>Time when the status is updated</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.142</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erSynchPassword</name>
+      <description>Password to be used for account creation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.143</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erEntityTarget</name>
+      <description>Entity target for lifecycle operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.144</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+      <name>erLifecycleEnable</name>
+      <description>Flag for lifecycle operation on an entity</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.145</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+	<name>erEscalationPeriod</name>
+	<description>Time till next escalation</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.146</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+    
+    <attribute-type single-value="true">
+	<name>erXHTML</name>
+	<description>XHTML of the Notification Template</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.147</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>   
+
+    <attribute-type>
+	<name>erAlertOption</name>
+	<description>option settings for compliance alert</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.148</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>   
+
+    <attribute-type>
+	<name>erAttributeAction</name>
+	<description>operation for the attribute value</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.149</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>   
+
+    <attribute-type>
+	<name>erLastOperation</name>
+	<description>Available for custom use for lifecycle event</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.150</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>  
+    
+    <attribute-type>
+      <name>erLastCertifiedDate</name>
+      <description> Time when the object was last certified </description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.151</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="false">
+      <name>erservicesupportclass</name>
+      <description>Stores service supporting data objectclass names.</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.152</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>   
+    
+    <attribute-type single-value="true">
+        <name>erAssemblyLine</name>
+        <description>Assemblyline data of service profile</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.153</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>   
+
+    <attribute-type single-value="true">
+	 <name>erALConfig</name>
+	 <description>Configuration for Assemblyline of service profile</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.154</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>   
+
+    <attribute-type>
+      	<name>erOperationNames</name>
+      	<description>List of operations supported by Assemblyline</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.155</object-identifier>
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+        <description>Value of the non-compliant attribute</description>
+        <name>erBigCustomData</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.156</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type> 
+
+    <attribute-type single-value="true">
+      <name>erCSVFileName</name>
+        <description>The name of a CSV file stored on disk.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.157</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>       
+
+    <attribute-type single-value="true">
+	<name>erTemplateName</name>
+	<description>The name of the notification template</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.158</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+	<name>erPersonPassword</name>
+	<description>person account password</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.159</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>       
+
+    <attribute-type single-value="true">
+      <name>erLastRecertificationAction</name>
+      <description>Recertification action the object last had applied</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.161</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erIsCustom</name>
+      <description>Boolean for if policy has a custom workflow (true/false)</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.162</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRecertifier</name>
+      <description>String representation of the participant who will receive the recertification notice/workitem</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.163</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erSchedulingMode</name>
+      <description>String representing the recertification schedule type</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.164</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRollingInterval</name>
+      <description>Integer representing the recertification period (in days) if erSchedulingMode is ROLLING</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.165</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erTimeoutAction</name>
+      <description>String representing the action to take upon recertification timeout</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.166</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erTimeoutPeriod</name>
+      <description>Integer value representing the timeout period for recertification process (in days)</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.167</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRejectAction</name>
+      <description>String representing the action to take on the account/access when recertification is rejected</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.168</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRejectNotify</name>
+      <description>String representing the participant who will receive the rejection notice upon rejection of the recert</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.169</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRecertTemplateDN</name>
+      <description>DN pointing to the notification template used for the initial recertification notice</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.170</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erRecertRejectTemplateDN</name>
+      <description>DN pointing to the notification template used for the notification of recert rejection</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.171</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erSchedule</name>
+      <description>String representing the schedule for the recertification policy</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.172</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+	<attribute-type>
+	  <name>ergroupmappings</name>
+	    <object-identifier>1.3.6.1.4.1.6054.1.1.173</object-identifier>  
+	    <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+	  </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erAccessName</name>
+      <description>Name of the access entitlement</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.174</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erApprovalProcessID</name>
+      <description>Distinguished Name of the approval process</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.175</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erNotifyAccessProvision</name>
+      <description>Notify on access provisioning</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.176</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erNotifyAccessDeprovision</name>
+      <description>Notify on access de-provisioning</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.177</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+
+    <attribute-type>
+      <name>erAccessOption</name>
+      <description>option settings for access entitlement</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.178</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+
+    <attribute-type>
+      <name>erAccessDescription</name>
+      <description>description for access entitlement</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.179</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1024}</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erGroupId</name>
+      <description>Id of the service group</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.180</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erGroupName</name>
+      <description>Name of the service group</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.181</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type>
+      <name>erGroupDescription</name>
+      <description>description for group</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.182</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1024}</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erStaticDefaultAttrMap</name>
+      <description>Global default attr=value pair for account template</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.183</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erScriptedDefaultAttrMap</name>
+      <description>Global default attr=script-value pair for account template</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.184</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.5</syntax>
+    </attribute-type>
+
+    <attribute-type>
+      <name>erAccessLastCertifiedDate</name>
+      <description>Time when the access was last certified</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.185</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+
+    <attribute-type>
+      <name>erAccessRecertificationLastAction</name>
+      <description>Recertification action the access last had applied</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.186</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erOpRequired</name>
+      <description>List of required attributes per service or account operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.187</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1000}</syntax>
+    </attribute-type>    
+
+    <attribute-type>
+      <name>erOpSend</name>
+      <description>List of send-only attributes per operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.188</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1000}</syntax>
+    </attribute-type>    
+
+    <attribute-type>
+      <name>erOpMultiReplace</name>
+      <description>List of replace-multi-value attributes per operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.189</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1000}</syntax>
+    </attribute-type>    
+
+    <attribute-type>
+      <name>erattributehandler</name>
+      <description>List of replace-multi-value attributes per operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.190</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1000}</syntax>
+    </attribute-type>    
+
+    <attribute-type>
+      <name>ercomplexattributes</name>
+      <description>List of replace-multi-value attributes per operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.191</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1000}</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erObjectType</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.192</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erPwdEnabled</name>
+      <description>Indication whether password is enabled</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.193</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>         
+    
+    <attribute-type single-value="true">
+      <name>erProfileName</name>
+      <description>Profile name of an object</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.194</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      <equality>2.5.13.2</equality>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erNamingContexts</name>
+      <description>The values of this attribute correspond to naming contexts.</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.195</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+      <equality>2.5.13.1</equality>
+    </attribute-type>    
+
+    <attribute-type>
+      <name>erAttrMapFilename</name>
+      <description>Pathname of Attribute Mapping property file</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.196</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      <equality>2.5.13.5</equality>
+    </attribute-type>    
+      
+    <attribute-type single-value="true">
+      <name>erPersonProfileName</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.197</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erpersonsearchfilter</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.198</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erAutoGroupMembershipEnabled</name>
+      <description>Indication whether automatic TIM Group membership of certain TIM Accounts is enabled</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.199</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>         
+
+    <attribute-type single-value="true">
+	<name>erShowGenPwd</name>
+	<description>Hide generated passwords when creating account for others</description>
+	<object-identifier>1.3.6.1.4.1.6054.1.1.200</object-identifier>  
+	<syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>       
+    
+    <attribute-type>
+      <name>erOpSingleAddDelete</name>
+      <description>List of add-delete-single-value attributes per operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.201</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15{1000}</syntax>
+    </attribute-type>  
+    
+    <attribute-type>
+      <name>erCustomProperties</name>
+      <description>List of group profile names that support group management</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.203</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>  
+    
+    <attribute-type>
+      <name>erSubRoles</name>
+      <description>The dummy sub role attribute for the attribute level ACI of parent role</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.204</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      <equality>2.5.13.5</equality>
+    </attribute-type>
+       
+    <attribute-type single-value="true">
+      <name>erLastRecertificationActionDate</name>
+      <description>Date that the last recertification action was applied</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.205</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erAccessRecertificationLastActionDate</name>
+      <description>Date that the last recertification action was applied to access</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.206</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erRoleRecertificationLastAction</name>
+      <description>Last recertification action applied to roles</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.207</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erRoleRecertificationLastActionDate</name>
+      <description>Date that the last recertification action was applied to roles</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.208</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erAffectedRoles</name>
+      <description>A set of strings containing the roledn added to the policy and all role dns in its ancestry</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.209</object-identifier>  
+      <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+      <equality>2.5.13.1</equality>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erCardinality</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.210</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erRoleClassification</name>
+      <description>Classification for a role</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.211</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      <equality>2.5.13.5</equality>
+    </attribute-type>
+           
+    <attribute-type single-value="true">
+      <name>erEvaluateSoD</name>
+      <description>A Boolean flag on the service object to evaluate segregation of duties during identity feed</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.212</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+         <name>erServiceSSOMapping</name>
+         <description>The corresponding TAM ESSO Service ID for a service item</description>
+         <object-identifier>1.3.6.1.4.1.6054.1.1.213</object-identifier>
+         <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+         <equality>2.5.13.2</equality>
+    </attribute-type>
+	
+     <attribute-type single-value="true">
+      <name>erPasswordLastChangedBy</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.214</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+      
+	<attribute-type single-value="true">
+      <name>erAccountOwnershipType</name>
+      <description>Account Ownership Type</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.215</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>        
+	
+	<attribute-type single-value="true">
+      <name>erConnectionMode</name>
+      <description>Current Connection Mode of the Service Instance (Manual/Automatic)</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.216</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>        
+
+    <attribute-type>
+      <name>erEntitlementOwnershipTypes</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.217</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+    </attribute-type>  
+    
+    <attribute-type single-value="false">
+      <name>erRoleAssignmentKey</name>
+      <description>Assignment Attributes for a role</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.218</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      <equality>2.5.13.5</equality>
+    </attribute-type>
+    
+    <attribute-type single-value="false">
+      <name>erRoleAssignments</name>
+      <description>Person Role Assignment information</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.219</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>
+    
+    <attribute-type>
+      <name>erURI</name>
+        <description>universal resource identifier of an object</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.220</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.5</equality>
+        <substring>2.5.13.7</substring>
+    </attribute-type>  
+    
+    <attribute-type>
+      <name>erAccount</name>
+        <description>holds the DN of the account</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.221</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>   
+    
+    <attribute-type single-value="true">
+      <name>erCVCatalog</name>
+        <description>holds the DN of the credential object</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.222</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erSearchOption</name>
+      <description>A Boolean flag on the credential object to indicate if credential can be searched during check-out operation</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.223</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erMaxCheckoutTime</name>
+      <description>Maximum check-out duration in hours</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.224</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erResetPassword</name>
+      <description>A Boolean flag on the credential object to indicate if password will be reset at check-in</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.225</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>    
+
+    <attribute-type single-value="true">
+      <name>erExclusive</name>
+      <description>A enum on the credential object to indicate the access mode</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.226</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erRepositoryService</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.227</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+    </attribute-type>    
+
+    <attribute-type>
+      <name>erServiceGroup</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.228</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+    </attribute-type>  
+    
+    <attribute-type>
+  		<name>erSharedAccessRole</name>
+    	<object-identifier>1.3.6.1.4.1.6054.1.1.229</object-identifier>  
+    	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    	<equality>2.5.13.2</equality>
+    	<substring>2.5.13.4</substring>
+  	</attribute-type>  
+  	
+  	<attribute-type>
+  		<name>erSharedAccessTarget</name>
+    	<object-identifier>1.3.6.1.4.1.6054.1.1.230</object-identifier>  
+    	<syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+  	</attribute-type> 
+  	
+  	<attribute-type single-value="true">
+      <name>erPolicyEnabled</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.231</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>    
+    
+    <attribute-type>
+    	<name>erTag</name>        
+    	<object-identifier>1.3.6.1.4.1.6054.1.1.232</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+    </attribute-type>   	                 
+      
+    <attribute-type single-value="true">
+      <name>erLessee</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.233</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erLeaseExpirationTime</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.234</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erJustification</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.235</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+
+    <attribute-type>
+      <name>erDaoClass</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.237</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erPasswordViewable</name>
+      <description>A Boolean flag on the credential object to indicate if credential pwd is viewable during check-out</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.238</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+    
+    <attribute-type single-value="true">
+      <name>erCustomAttribute1</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.239</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erCustomAttribute2</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.240</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erCustomAttribute3</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.241</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erCustomAttribute4</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.242</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erCustomAttribute5</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.243</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erCredentialPoolDN</name>
+      <description>holds the DN of the pool, if the lease was created via a checkout pool</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.244</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.12</syntax>
+        <equality>2.5.13.1</equality>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erLeaseStatus</name>
+      <description>A enumeration containing lease pending checkin/checkout status</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.245</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.27</syntax>
+    </attribute-type>  
+    
+    <attribute-type single-value="true">
+      <name>erUseGlobalSettings</name>
+      <description>A Boolean flag on the credential object to indicate if global settings are used</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.246</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.7</syntax>
+    </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erLastNotification</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.247</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+
+    <attribute-type single-value="true">
+      <name>erLeaseCreateTime</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.248</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+        <equality>2.5.13.2</equality>
+        <substring>2.5.13.4</substring>
+      </attribute-type>
+      
+    <attribute-type single-value="true">
+      <name>erCredentialName</name>
+      <description>Name of the credential</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.1.249</object-identifier>
+      <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+    </attribute-type>      
+
+    <attribute-type single-value="true">
+      <name>erLesseeName</name>
+        <description>The name of the person who checked out a credential</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.1.250</object-identifier>  
+        <syntax>1.3.6.1.4.1.1466.115.121.1.15</syntax>
+      </attribute-type>
+      
+    <!-- ******************************************************** -->
+    <!--                 ITIM LDAP objectclasses                  -->
+    <!-- ******************************************************** -->  
+
+  <class superior="top" type="auxiliary">
+      <name>erOrganizationItem</name>
+        <description>ITIM auxiliary class for an organization</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.1</object-identifier>
+        <attribute ref="o" required="false" />
+        <attribute ref="erOrgStatus" required="false" />
+        <attribute ref="erURI" required="false" />
+    </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erAccountItem</name>
+        <description>ITIM auxiliary class for an account</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.2</object-identifier>
+        <attribute ref="erUid" required="false" />
+        <attribute ref="owner" required="false" />
+        <attribute ref="erAccountStatus" required="false" />
+        <attribute ref="erAccountCompliance" required="false" />
+        <attribute ref="erPassword" required="false" /> 
+        <attribute ref="erHistoricalPassword" required="false" /> 
+        <attribute ref="erService" required="false" /> 
+        <attribute ref="erLastAccessDate" required="false" /> 
+        <attribute ref="erPswdLastChanged" required="false" />
+    	<attribute ref="erPasswordLastChangedBy" required="false" />
+        <attribute ref="erCreateDate" required="false" />
+        <attribute ref="erLastStatusChangeDate" required="false" />
+    	<attribute ref="erLastOperation" required="false" />
+    	<attribute ref="erLastCertifiedDate" required="false" />
+    	<attribute ref="erLastRecertificationAction" required="false" />
+	   	<attribute ref="erLastRecertificationActionDate" required="false" />
+    	<attribute ref="erAccessLastCertifiedDate" required="false" />
+    	<attribute ref="erAccessRecertificationLastAction" required="false" />
+    	<attribute ref="erAccessRecertificationLastActionDate" required="false" />
+    	<attribute ref="erObjectType" required="false" />
+    	<attribute ref="erSponsor" required="false" />
+    	<attribute ref="erAccountOwnershipType" required="false" />
+    	<attribute ref="erURI" required="false" />
+    	<attribute ref="erCVCatalog" required="false" />
+       </class>
+
+  <class superior="top">
+        <name>erRole</name>
+        <description>ITIM structural class for a role</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.3</object-identifier>
+        <attribute ref="erRoleName" required="true" />
+        <attribute ref="description" required="false" />
+        <attribute ref="erSubRoles" required="false" />
+        <attribute ref="owner" required="false" />
+        <attribute ref="erRoleClassification" required="false" />
+        <attribute ref="erRoleAssignmentKey" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erSystemRole</name>
+        <description>ITIM structural class for a system role</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.4</object-identifier>
+        <attribute ref="erRoleName" required="true" />
+        <attribute ref="description" required="false" />        
+        <attribute ref="erSystemRoleCategory" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erPersonItem</name>
+        <description>ITIM auxiliary class for a person</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.5</object-identifier>
+        <attribute ref="mail" required="false" />
+        <attribute ref="cn" required="false" />
+        <attribute ref="erPersonStatus" required="false" />       
+        <attribute ref="erRoles" required="false" /> 
+        <attribute ref="erAliases" required="false" /> 
+    	<attribute ref="erSupervisor" required="false" />
+    	<attribute ref="erSharedSecret" required="false" />
+    	<attribute ref="erCustomDisplay" required="false" />
+    	<attribute ref="erLocale" required="false" />
+    	<attribute ref="erSynchPassword" required="false" />
+    	<attribute ref="erCreateDate" required="false" />
+    	<attribute ref="erLastStatusChangeDate" required="false" />
+    	<attribute ref="erLastOperation" required="false" />
+    	<attribute ref="erPswdLastChanged" required="false" />
+    	<attribute ref="erLastCertifiedDate" required="false" />
+        <attribute ref="erPersonPassword" required="false" />
+        <attribute ref="erRoleRecertificationLastAction" required="false" />
+    	<attribute ref="erRoleRecertificationLastActionDate" required="false" />
+    	<attribute ref="erRoleAssignments" required="false" />
+    	<attribute ref="erURI" required="false" />
+    </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erServiceItem</name>
+        <description>ITIM auxiliary class for a service</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.6</object-identifier>
+        <attribute ref="erServiceName" required="false" />        
+        <attribute ref="owner" required="false" /> 
+        <attribute ref="erPrerequisite" required="false" />
+        <attribute ref="erNonComplianceAction" required="false" /> 
+        <attribute ref="erAlertOption" required="false" /> 
+        <attribute ref="description" required="false" />
+        <attribute ref="erConnectionMode" required="false" />
+        <attribute ref="erURI" required="false" />
+        <attribute ref="erTag" required="false" />
+        <attribute ref="erServiceSSOMapping" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erObjectProfile</name>
+        <description>ITIM structural class for an object profile</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.7</object-identifier>
+        <attribute ref="erObjectProfileName" required="true" />
+        <attribute ref="erCategory" required="false" />
+        <attribute ref="erCustomClass" required="false" />        
+        <attribute ref="erRdnAttr" required="false" />
+        <attribute ref="erSearchAttr" required="false" />
+        <attribute ref="erAttrMap" required="false" />
+        <attribute ref="erXML" required="false" />
+        <attribute ref="erLifecycleRule" required="false" />
+        <attribute ref="description" required="false" />
+        <attribute ref="erCustomProperties" required="false" />
+        <attribute ref="erDaoClass" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erAttributeConstraint</name>
+        <description>ITIM structural class for an attribute constraint</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.8</object-identifier>
+        <attribute ref="erOid" required="true" />
+        <attribute ref="cn" required="false" />
+        <attribute ref="erType" required="false" />       
+        <attribute ref="erIsReadOnly" required="false" /> 
+        <attribute ref="erDefaultValue" required="false" />
+        <attribute ref="erCustomConstraint" required="false" />
+      </class>
+
+  <class superior="erObjectProfile">
+        <name>erServiceProfile</name>
+        <description>ITIM structural class for a service profile</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.9</object-identifier>
+        <attribute ref="erAccountClass" required="false" />
+        <attribute ref="erAccountName" required="false" /> 
+        <attribute ref="erproperties" required="false" /> 
+        <attribute ref="erprotocolmappings" required="false" /> 
+        <attribute ref="erserviceproviderfactory" required="false" /> 
+        <attribute ref="erxforms" required="false" /> 
+        <attribute ref="erservicesupportclass" required="false" />  
+        <attribute ref="ergroupmappings" required="false" />
+        <attribute ref="erOpRequired" required="false" />
+        <attribute ref="erOpSend" required="false" />
+        <attribute ref="erOpMultiReplace" required="false" />
+        <attribute ref="erOpSingleAddDelete" required="false" />
+        <attribute ref="erattributehandler" required="false" />        
+        <attribute ref="ercomplexattributes" required="false" />  
+  </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erOrgUnitItem</name>
+        <description>ITIM auxiliary class for an organizational unit</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.10</object-identifier>
+        <attribute ref="ou" required="false" />
+        <attribute ref="erSupervisor" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erLocationItem</name>
+        <description>ITIM auxiliary class for a location</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.11</object-identifier>
+        <attribute ref="l" required="false" />
+        <attribute ref="erSupervisor" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erBPOrgItem</name>
+        <description>ITIM auxiliary class for a business partner organization</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.12</object-identifier>
+        <attribute ref="ou" required="false" />
+        <attribute ref="erBPOrgStatus" required="false" />
+        <attribute ref="erSponsor" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+
+  <class superior="top" type="auxiliary">
+        <name>erManagedItem</name>
+        <description>ITIM auxiliary class for access control</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.13</object-identifier>
+        <attribute ref="erGlobalId" required="false" />
+        <attribute ref="erLastModifiedTime" required="false" />
+        <attribute ref="erAcl" required="false" />
+        <attribute ref="erAuthorizationOwner" required="false" />
+        <attribute ref="erParent" required="false" />
+        <attribute ref="erIsDeleted" required="false" />
+        <attribute ref="erLifecycleEnable" required="false" />
+        <attribute ref="erProfileName" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erSystemUser</name>
+        <description>ITIM structural class for a system user</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.14</object-identifier>
+        <attribute ref="erUid" required="true" />
+        <attribute ref="erLostPasswordQuestion" required="false" />
+        <attribute ref="erLostPasswordAnswer" required="false" />
+        <attribute ref="erIsDelegated" required="false" />
+        <attribute ref="erDelegate" required="false" />
+        <attribute ref="erWorkflow" required="false" />
+        <attribute ref="erRoles" required="false" /> 
+        <attribute ref="erHomePage" required="false" />
+        <attribute ref="erNumLogonAttempt" required="false" />
+        <attribute ref="erChangePswdRequired" required="false" />
+        <attribute ref="erRespLastChange" required="false" />        
+        <attribute ref="erPswdLastChanged" required="false" />
+        <attribute ref="erPasswordLastChangedBy" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erPolicyItemBase</name>
+        <description>ITIM structural class for a policy item</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.15</object-identifier>
+        <attribute ref="erPolicyItemName" required="true" />
+        <attribute ref="erLabel" required="false" />
+        <attribute ref="erKeywords" required="false" />
+        <attribute ref="description" required="false" />
+        <attribute ref="erEnabled" required="false" />
+        <attribute ref="erScope" required="false" />
+        <attribute ref="erURI" required="false" />
+      </class>
+    
+  <class superior="erPolicyItemBase">
+        <name>erPolicyBase</name>
+        <description>ITIM structural class for a policy base</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.16</object-identifier>
+        <attribute ref="erPolicyTarget" required="false" />
+        <attribute ref="erReqPolicyTarget" required="false" />        
+      </class>
+    
+  <class superior="erPolicyBase">
+        <name>erProvisioningPolicy</name>
+        <description>ITIM structural class for a provisioning policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.17</object-identifier>
+        <attribute ref="erEntitlements" required="true" />
+        <attribute ref="erPriority" required="true" />
+        <attribute ref="erPolicyMembership" required="true" />
+        <attribute ref="erDraft" required="false" />
+        <attribute ref="erOriginalPolicyDN" required="false" />
+        <attribute ref="erEntitlementOwnershipTypes" required="false" />
+      </class>        
+
+  <class superior="erPolicyBase">
+        <name>erIdentityPolicy</name>
+        <description>ITIM structural class for an identity policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.18</object-identifier>
+        <attribute ref="erJavaScript" required="false" />
+        <attribute ref="erUserClass" required="false" />
+      </class>   
+
+  <class superior="erPolicyBase">
+        <name>erPasswordPolicy</name>
+        <description>ITIM structural class for a password policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.19</object-identifier>
+        <attribute ref="erXML" required="true" />
+      </class>   
+
+  <class superior="top" type="auxiliary">
+        <name>erBPPersonItem</name>
+        <description>ITIM auxiliary class for a business partner person</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.21</object-identifier>
+        <attribute ref="mail" required="false" />
+        <attribute ref="cn" required="false" />
+        <attribute ref="erPersonStatus" required="false" />
+        <attribute ref="erSponsor" required="false" />
+        <attribute ref="erRoles" required="false" />
+        <attribute ref="erAliases" required="false" />
+        <attribute ref="erSharedSecret" required="false" />
+        <attribute ref="erCustomDisplay" required="false" />
+    	<attribute ref="erLocale" required="false" />
+    	<attribute ref="erSynchPassword" required="false" />
+    	<attribute ref="erCreateDate" required="false" />
+    	<attribute ref="erLastStatusChangeDate" required="false" />
+    	<attribute ref="erLastOperation" required="false" />
+    	<attribute ref="erPswdLastChanged" required="false" />
+    	<attribute ref="erLastCertifiedDate" required="false" />
+        <attribute ref="erPersonPassword" required="false" />
+        <attribute ref="erRoleRecertificationLastAction" required="false" />
+    	<attribute ref="erRoleRecertificationLastActionDate" required="false" /> 
+    	<attribute ref="erRoleAssignments" required="false" />    	 
+    	<attribute ref="erURI" required="false" />      
+  </class>
+
+  <class superior="top">
+        <name>erWorkflowDefinition</name>
+        <description>ITIM structural class for a workflow definition</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.22</object-identifier>
+        <attribute ref="erProcessName" required="true" />
+        <attribute ref="erVersionID" required="false" />
+        <attribute ref="erCategory"    required="false" />
+        <attribute ref="erObjectProfileName" required="false" />
+        <attribute ref="erXML" required="false" />
+        <attribute ref="description" required="false" />
+      </class>   
+
+  <class superior="top" type="auxiliary">
+        <name>erSystemItem</name>
+        <description>ITIM auxiliary class for ITIM system</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.23</object-identifier>
+      </class>
+
+  <class superior="top">
+        <name>erITIMService</name>
+        <description>ITIM structural class for ITIM service</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.24</object-identifier>
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="owner" required="false" />
+        <attribute ref="erRepositoryService" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erDSMLInfoService</name>
+        <description>Structural class for a DSML Info provider, used for identity data feed.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.25</object-identifier>
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="erDSMLFileName" required="false" />
+        <attribute ref="erUseWorkflow" required="false" />
+        <attribute ref="erUid" required="false" />
+        <attribute ref="erPassword" required="false" />
+        <attribute ref="erPlacementRule" required="false" />
+        <attribute ref="erEvaluateSoD" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erDictionary</name>
+        <description>ITIM structural class for a dictionary of words</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.26</object-identifier>
+        <attribute ref="erDictionaryName" required="true" />
+        <attribute ref="description" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erDictionaryItem</name>
+        <description>ITIM structural class for an item stored within a dictionary</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.27</object-identifier>
+        <attribute ref="erWord" required="true" />
+        <attribute ref="description" required="false" />
+      </class>
+    
+  <class superior="erServiceItem" type="auxiliary">
+        <name>erRemoteServiceItem</name>
+        <description>ITIM auxiliary class for a remote service</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.28</object-identifier>
+        <attribute ref="erUid" required="false" />
+        <attribute ref="erPassword" required="false" />
+        <attribute ref="erCheckPolicy" required="false" /> 
+        <attribute ref="erDisallowedAction" required="false" /> 
+        <attribute ref="erConstraintViolationAction" required="false" /> 
+        <attribute ref="erIdentityLookupMethod" required="false" /> 
+      </class>
+
+  <class superior="top">
+        <name>erFormTemplate</name>
+        <description>ITIM structural class for a customizable form template</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.29</object-identifier>
+        <attribute ref="erFormName" required="true" />
+        <attribute ref="erXML" required="false" />
+        <attribute ref="erCustomClass" required="true" />
+        <attribute ref="erproperties" required="false" />
+      </class>
+
+  <class superior="top">
+        <name>erHostedService</name>
+        <description>ITIM structural class for a hosted service. A hosted service provides a link to a service entry owned by another organization.</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.30</object-identifier>
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="erService" required="true" />
+        <attribute ref="erObjectProfileName" required="true" />
+      </class>
+
+  <class superior="top">
+        <name>erTenant</name>
+        <description>ITIM structural class for a system tenant</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.31</object-identifier>
+        <attribute ref="ou" required="true" />
+        <attribute ref="erIsActive" required="true" />
+        <attribute ref="description" required="false" />
+        <attribute ref="erPswdEditAllowed" required="true" />
+        <attribute ref="erLostPswdByMail" required="true" />
+        <attribute ref="erBucketCount" required="true" />
+        <attribute ref="erLastModifiedTime" required="false" />
+        <attribute ref="erPswdExpirationPeriod" required="false" />
+        <attribute ref="erPswdTransactionExpPeriod" required="false" />
+        <attribute ref="erLogonCount" required="false" />
+        <attribute ref="erResponseEnable" required="false" />
+        <attribute ref="erResponseDescription" required="false" />
+        <attribute ref="erResponseEmail" required="false" />
+        <attribute ref="erChallengeMode" required="false" />
+        <attribute ref="erRequiredChallenges" required="false" />
+        <attribute ref="erRandomChallenges" required="false" />
+        <attribute ref="erHashedEnable" required="false" />
+        <attribute ref="erRespLastChange" required="false" />
+        <attribute ref="erPswdSyncAllowed" required="false" />  
+        <attribute ref="erChallengeDefMode" required="false" />
+        <attribute ref="erNonComplianceAction" required="false" />
+        <attribute ref="erAlertOption" required="false" />
+        <attribute ref="erShowGenPwd" required="false" />  
+        <attribute ref="erPwdEnabled" required="false" />       
+        <attribute ref="erAutoGroupMembershipEnabled" required="false" />
+      </class>
+
+    <class superior="erAccountItem" type="auxiliary">
+        <name>erHostedAccountItem</name>
+        <description>ITIM auxiliary class for an account of a hosted service</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.32</object-identifier>
+        <attribute ref="erHost" required="false" /> 
+      </class>
+      
+    <class superior="top" type="auxiliary">
+        <name>erTenantItem</name>
+        <description>ITIM auxiliary class for custom tenant attributes</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.33</object-identifier>
+        <attribute ref="erTenantStatus" required="false" />
+        <attribute ref="o"              required="false" />
+        <attribute ref="mail"           required="false" />
+        <attribute ref="erSharedSecret" required="false" />
+        <attribute ref="ercompname"     required="false" />
+        <attribute ref="erdeptname"     required="false" />
+        <attribute ref="ercompaddr"     required="false" />
+        <attribute ref="ercompcity"     required="false" />
+        <attribute ref="ercompstate"    required="false" />
+        <attribute ref="ercompzip"      required="false" />
+        <attribute ref="ercompcountry"  required="false" />
+        <attribute ref="erocfname"      required="false" />
+        <attribute ref="eroclname"      required="false" />
+        <attribute ref="eroctitle"      required="false" />
+        <attribute ref="erocemail"      required="false" />
+        <attribute ref="erocphone"      required="false" />
+        <attribute ref="erocfax"        required="false" />
+        <attribute ref="ertcfname"      required="false" />
+        <attribute ref="ertclname"      required="false" />
+        <attribute ref="ertctitle"      required="false" />
+        <attribute ref="ertcemail"      required="false" />
+        <attribute ref="ertcphone"      required="false" />
+        <attribute ref="erdunsnumber"   required="false" />
+        <attribute ref="erorgapproved"  required="false" />
+        <attribute ref="erorgcontacted" required="false" />
+        <attribute ref="erpmtrecvd"     required="false" />
+        <attribute ref="ercomment"      required="false" />
+        <attribute ref="erServiceActivationDate" required="false" />
+        <attribute ref="erServiceExpirationDate" required="false" />
+    </class>
+
+    <class superior="top" type="auxiliary">
+        <name>erSecurityDomainItem</name>
+        <description>ITIM auxiliary class for a security domain</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.34</object-identifier>
+        <attribute ref="ou" required="false" /> 
+        <attribute ref="erAdministrator" required="false" />
+        <attribute ref="erURI" required="false" />
+    </class>
+
+    <class superior="top">
+        <name>SecurityDomain</name>
+        <description>ITIM structure class for a security domain</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.35</object-identifier>
+        <attribute ref="ou" required="true" /> 
+        <attribute ref="description" required="false" />
+    </class>  
+  
+    <class superior="top">
+        <name>erBPOrg</name>
+        <description>ITIM structure class for a business partner organization</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.36</object-identifier>
+        <attribute ref="ou" required="true" />
+        <attribute ref="description" required="false" />
+    </class>
+    
+    <class superior="top">
+      <name>erJoinDirective</name>
+      <description>ITIM class for storing a join directive used in merging provisioning parameters</description>
+      <object-identifier>1.3.6.1.4.1.6054.1.2.37</object-identifier>
+      <attribute ref="erAttributeName" required="true" />
+      <attribute ref="description" required="false" />
+      <attribute ref="erDirectiveType" required="true" />
+      <attribute ref="erCustomData" required="false" />
+      <attribute ref="erBigCustomData" required="false" />
+      <attribute ref="erPrecedenceSequence" required="false" />
+    </class>
+  
+   <class superior="top">
+        <name>erChallenges</name>
+        <description>ITIM structural class for questions of password challenge and response</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.38</object-identifier>
+        <attribute ref="cn" required="true" />
+        <attribute ref="erLastModifiedTime" required="false" />
+        <attribute ref="erLostPasswordQuestion" required="false" />
+    </class>
+    
+  <class superior="erPolicyItemBase">
+        <name>erHostSelectionPolicy</name>
+        <description>ITIM structural class for a host selection policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.39</object-identifier>
+        <attribute ref="erJavaScript" required="false" />
+        <attribute ref="erObjectProfileName" required="false" />
+        <attribute ref="erUserClass" required="false" />
+      </class>   
+      
+  <class superior="erRole">
+        <name>erDynamicRole</name>
+        <description>ITIM structural class for a dynamic role</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.40</object-identifier>
+        <attribute ref="erJavaScript" required="false" />
+        <attribute ref="erScope" required="false" />
+  </class>  
+  
+  <class superior="top">
+        <name>erIdentityExclusion</name>
+        <description>ITIM structural class for account exclusions</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.41</object-identifier>
+        <attribute ref="cn" required="true" />
+        <attribute ref="erObjectProfileName" required="false" />
+        <attribute ref="erAccountID" required="false" />
+  </class>   
+
+  <class superior="top">
+        <name>erObjectCategory</name>
+        <description>ITIM structural class for entity type</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.42</object-identifier>
+        <attribute ref="erType" required="true" />
+        <attribute ref="erXML" required="false" />
+        <attribute ref="erLifecycleRule" required="false" />
+  </class>   
+
+  <class superior="top">
+        <name>erDSML2Service</name>
+        <description>ITIM structural class for DSML2 Service</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.43</object-identifier>
+        <attribute ref="erCategory" required="false" />
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="erURL" required="false" />
+        <attribute ref="erPassword" required="false" />
+        <attribute ref="erPlacementRule" required="false" />
+        <attribute ref="erUid" required="false" />
+        <attribute ref="erUseWorkflow" required="false" />
+        <attribute ref="ernamingattribute" required="false" />
+        <attribute ref="namingcontexts" required="false" />
+        <attribute ref="erNamingContexts" required="false" />
+        <attribute ref="erEvaluateSoD" required="false" />
+  </class>   
+
+  <class superior="top">
+        <name>erPOConfiguration</name>
+        <description>ITIM structural class for Post Office Configuration</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.44</object-identifier>
+        <attribute ref="erGlobalId" required="true" />
+        <attribute ref="erPOInterval" required="true" />
+        <attribute ref="erEnabled" required="true" />
+  </class>   
+
+  <class superior="top">
+        <name>erWFConfiguration</name>
+        <description>ITIM structural class for Workflow Configuration</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.45</object-identifier>
+        <attribute ref="erGlobalId" required="true" />
+        <attribute ref="erReminderInterval" required="false" />
+        <attribute ref="erEscalationPeriod" required="false" />
+        <attribute ref="erEnabled" required="true" />
+  </class> 
+  
+  <class superior="top">
+        <name>erLifecycleProfile</name>
+        <description>ITIM structural class for entity lifecycle profile</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.46</object-identifier>
+        <attribute ref="erGlobalId" required="true" />
+        <attribute ref="erEntityTarget" required="true" />
+        <attribute ref="cn" required="false" />
+        <attribute ref="erXML" required="false" />
+  </class> 
+
+  <class superior="top">
+        <name>erPrivilegeRule</name>
+        <description>ITIM structural class for privilege rule</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.47</object-identifier>
+        <attribute ref="erAttributeName" required="true" />
+        <attribute ref="erDirectiveType" required="true" />
+        <attribute ref="erPrecedenceSequence" required="false" />
+  </class> 
+
+  <class superior="erPolicyBase">
+        <name>erAdoptionPolicy</name>
+        <description>ITIM structural class for adoption policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.48</object-identifier>
+        <attribute ref="erJavaScript" required="false" />
+  </class> 
+
+  <class superior="top">
+        <name>erTemplate</name>
+        <description>ITIM structural class for Notification Template</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.49</object-identifier>
+        <attribute ref="cn" required="true" />        
+        <attribute ref="erEnabled" required="true" />
+        <attribute ref="erTemplateName" required="false" />
+        <attribute ref="erSubject" required="false" />
+        <attribute ref="erText" required="false" />
+        <attribute ref="erXHTML" required="false" />
+        <attribute ref="erType" required="false" />
+        <attribute ref="erIsReadOnly" required="false" />
+  </class> 
+
+  <class superior="top">
+        <name>erComplianceIssue</name>
+        <description>ITIM structural class for Compliance Issue</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.50</object-identifier>
+        <attribute ref="erGlobalId" required="true" />
+        <attribute ref="erAttributeName" required="false" />
+        <attribute ref="erOverride" required="true" />
+        <attribute ref="erCustomData" required="false" />
+        <attribute ref="erBigCustomData" required="false" />
+        <attribute ref="erAttributeAction" required="false" />
+        <attribute ref="erCreateDate" required="false" />
+  </class> 
+
+  <class superior="top">
+        <name>erALOperation</name>
+        <description>ITIM structural class for Assemblyline Operations</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.51</object-identifier>
+        <attribute ref="cn" required="true" />
+	<attribute ref="erOperationNames" required="false" />
+        <attribute ref="erAssemblyLine" required="false" />
+        <attribute ref="erALConfig" required="false" /> 
+  </class>
+
+  <class superior="top">
+        <name>erjndifeed</name>
+        <description>ITIM structural class for InetOrgPerson JNDI Identity Feeds</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.52</object-identifier>
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="erURL" required="false" />
+        <attribute ref="erPassword" required="false" />
+        <attribute ref="erUid" required="false" />
+        <attribute ref="ernamingattribute" required="false" />
+        <attribute ref="namingcontexts" required="false" />
+        <attribute ref="erNamingContexts" required="false" />
+        <attribute ref="erPersonProfileName" required="false" />
+        <attribute ref="erAttrMapFilename" required="false" />
+        <attribute ref="erPlacementRule" required="false" />
+        <attribute ref="erpersonsearchfilter" required="false" />
+        <attribute ref="erUseWorkflow" required="false" />
+        <attribute ref="erEvaluateSoD" required="false" />
+  </class>   
+
+  <class superior="top">
+        <name>ercsvfeed</name>
+        <description>ITIM structural class for CSV file used for Identity Feeds</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.53</object-identifier>
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="erCSVFileName" required="true" />
+        <attribute ref="ernamingattribute" required="false" />
+        <attribute ref="erPersonProfileName" required="false" />
+        <attribute ref="erPlacementRule" required="false" />
+        <attribute ref="erUseWorkflow" required="false" />
+        <attribute ref="erEvaluateSoD" required="false" />
+  </class>
+
+  <class superior="top">
+        <name>eradjndifeed</name>
+        <description>ITIM structural class for AD JNDI Identity Feeds</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.54</object-identifier>
+        <attribute ref="erServiceName" required="true" />
+        <attribute ref="erURL" required="false" />
+        <attribute ref="erPassword" required="false" />
+        <attribute ref="erUid" required="false" />
+        <attribute ref="ernamingattribute" required="false" />
+        <attribute ref="namingcontexts" required="false" />
+        <attribute ref="erNamingContexts" required="false" />
+        <attribute ref="erPersonProfileName" required="false" />
+        <attribute ref="erAttrMapFilename" required="false" />
+        <attribute ref="erPlacementRule" required="false" />
+        <attribute ref="erpersonsearchfilter" required="false" />
+        <attribute ref="erUseWorkflow" required="false" />
+        <attribute ref="erEvaluateSoD" required="false" />
+  </class>   
+
+  <class superior="erPolicyBase">
+        <name>erRecertPolicy</name>
+        <description>ITIM structural class for recert policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.55</object-identifier>
+  </class> 
+
+
+  <class superior="top">
+        <name>erMTConfiguration</name>
+        <description>ITIM structural class for Mail Activity Templates</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.57</object-identifier>
+        <attribute ref="erGlobalId" required="true" />
+  </class> 
+
+  <class superior="erPolicyBase">
+        <name>erRecertificationPolicy</name>
+        <description>ITIM 5.0 structural class for a recertification policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.58</object-identifier>
+        <attribute ref="erType" required="false" />
+        <attribute ref="erIsCustom" required="false" />
+        <attribute ref="erRecertifier" required="false" />
+        <attribute ref="erSchedulingMode" required="false" />
+        <attribute ref="erRollingInterval" required="false" />
+        <attribute ref="erTimeoutAction" required="false" />
+        <attribute ref="erTimeoutPeriod" required="false" />
+        <attribute ref="erRejectAction" required="false" />
+        <attribute ref="erRejectNotify" required="false" />
+        <attribute ref="erRecertTemplateDN" required="false" />
+        <attribute ref="erRecertRejectTemplateDN" required="false" />
+        <attribute ref="erUserClass" required="false" />
+        <attribute ref="erSchedule" required="false" />
+        <attribute ref="erLifecycleRule" required="false" />
+        <attribute ref="erXML" required="false" />
+        <attribute ref="erGlobalId" required="false" />
+        <attribute ref="erLifecycleEnable" required="false" />        
+  </class>
+
+  <class superior="top">
+        <name>erAccessType</name>
+        <description>ITIM structural class for access type</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.59</object-identifier>
+        <attribute ref="erObjectProfileName" required="true" />
+        <attribute ref="description" required="false" />
+  </class>
+  
+  <class superior="top" type="auxiliary">
+        <name>erAccessItem</name>
+        <description>ITIM auxiliary class for Access Entitlement</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.60</object-identifier>
+        <attribute ref="erAccessName" required="false" />
+        <attribute ref="erObjectProfileName" required="false" />
+        <attribute ref="erAccessOption" required="false" />
+        <attribute ref="erApprovalProcessID" required="false" />
+        <attribute ref="erNotifyAccessProvision" required="false" />
+        <attribute ref="erNotifyAccessDeprovision" required="false" />
+        <attribute ref="erAccessDescription" required="false" />
+        <attribute ref="owner" required="false" />
+  </class>
+  
+  <class superior="top" type="auxiliary">
+        <name>erGroupItem</name>
+        <description>ITIM auxiliary class for service group</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.61</object-identifier>
+        <attribute ref="erGroupId" required="false" />
+        <attribute ref="erGroupName" required="false" />
+        <attribute ref="erGroupDescription" required="false" />   
+        <attribute ref="erURI" required="false" />     
+  </class>
+  
+  <class superior="erPolicyBase">
+        <name>erAccountTemplate</name>
+        <description>ITIM structural class for account template</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.62</object-identifier>
+        <attribute ref="erStaticDefaultAttrMap" required="false" />
+        <attribute ref="erScriptedDefaultAttrMap" required="false" />
+  </class>
+  
+  <class superior="erPolicyItemBase">
+        <name>erSeparationOfDutyPolicy</name>
+        <description>ITIM structural class for separation of duty policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.63</object-identifier>
+        <attribute ref="erXML" required="false" />
+        <attribute ref="owner" required="false" />
+  </class> 
+  
+  <class superior="top">
+        <name>erSeparationOfDutyRule</name>
+        <description>ITIM structural class for separation of duty rule</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.64</object-identifier>
+        <attribute ref="cn" required="true" />
+        <attribute ref="erCardinality" required="false" />
+        <attribute ref="erRoles" required="false" />
+        <attribute ref="erAffectedRoles" required="false" />
+        <attribute ref="erURI" required="false" />
+  </class>
+
+<class superior="top">
+        <name>erOwnershipType</name>
+        <description>ITIM structural class for ownership type</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.65</object-identifier>
+        <attribute ref="erObjectProfileName" required="true" />
+        <attribute ref="description" required="false" />
+  </class>
+
+  <class superior="top">
+        <name>erCredentialComponent</name>
+        <description>ITIM structural class for credential component</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.66</object-identifier>
+        <attribute ref="erCredentialName" required="true" />
+        <attribute ref="description" required="false" />
+        <attribute ref="erObjectProfileName" required="false" />
+        <attribute ref="erUseGlobalSettings" required="false" />
+  </class>
+  
+  <class superior="erCredentialComponent">
+        <name>erCredential</name>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.67</object-identifier>
+        <description>ITIM structural class for credential</description>
+        <attribute ref="erAccount" required="false" />
+        <attribute ref="erSearchOption" required="false" />
+        <attribute ref="erMaxCheckoutTime" required="false" />
+        <attribute ref="erResetPassword" required="false" />
+        <attribute ref="erExclusive" required="false" />
+        <attribute ref="erPasswordViewable" required="false" />
+  </class>
+
+  <class superior="erCredentialComponent">
+        <name>erCredentialPool</name>
+        <description>ITIM structural class for credential pool</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.68</object-identifier>
+        <attribute ref="owner" required="false" />
+        <attribute ref="erService" required="false" />
+        <attribute ref="erServiceGroup" required="false" />
+  </class>
+  
+  <class superior="top">
+        <name>erSharedAccessPolicy</name>
+        <description>ITIM structural class for shared access policy</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.69</object-identifier>
+        <attribute ref="erPolicyItemName" required="true" />
+        <attribute ref="description" required="false" />
+        <attribute ref="erPolicyEnabled" required="false" />
+        <attribute ref="erScope" required="false" />
+        <attribute ref="erURI" required="false" />
+        <attribute ref="erSharedAccessRole" required="false" />
+        <attribute ref="erSharedAccessTarget" required="false" />
+  </class>
+  
+  <class superior="top">
+        <name>erCredentialLease</name>
+        <description>ITIM structural class for credential lease</description>
+        <object-identifier>1.3.6.1.4.1.6054.1.2.70</object-identifier>
+        <attribute ref="erCVCatalog" required="true" />
+        <attribute ref="erLessee" required="true" />
+        <attribute ref="erLesseeName" required="false" />
+        <attribute ref="erLeaseExpirationTime" required="false" />
+        <attribute ref="erJustification" required="false" />
+        <attribute ref="erCustomAttribute1" required="false" />
+        <attribute ref="erCustomAttribute2" required="false" />
+        <attribute ref="erCustomAttribute3" required="false" />
+        <attribute ref="erCustomAttribute4" required="false" />
+        <attribute ref="erCustomAttribute5" required="false" />
+        <attribute ref="erCredentialPoolDN" required="false" />
+        <attribute ref="erLeaseStatus" required="false" />
+        <attribute ref="erLastNotification" required="false" />
+        <attribute ref="erLeaseCreateTime" required="false" />
+  </class>
+  
+  
+  </directory-schema>
+
+</dsml>

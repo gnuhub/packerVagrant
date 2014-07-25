@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/********************************************************************
+*  Licensed Materials - Property of IBM
+*  
+*  (c) Copyright IBM Corp.  2005 All Rights Reserved
+*  
+*  US Government Users Restricted Rights - Use, duplication or
+*  disclosure restricted by GSA ADP Schedule Contract with
+*  IBM Corp.
+********************************************************************/
+-->
+<!--Last updated on: Thu Feb 27 16:38:44 PST 2003, If your domain is active, please do not edit the config.xml file. Any changes made to that file while the domain is active will not have any effect on the domain's configuration and are likely to be lost. If your domain is inactive, you may edit this file with an XML editor. If you do so, please refer to the BEA Weblogic Server Configuration Reference  documentation available from http://edocs.bea.com/wls/docs70/config_xml.  In general, we recommend that changes to your configuration file be made through the Administration Console.-->
+<Domain ConfigurationVersion="7.0.1.0" Name="%ITIM_DOMAIN_NAME%">
+    <Application Deployed="true" Name="enrole" Path="./applications"
+        StagedTargets="" TwoPhase="false">
+        <WebAppComponent Name="enrole" Targets="%CLUSTER_NAME%" URI="enrole"/>
+    </Application>
+    <Application Deployed="true" Name="enroleejb"
+        Path="./applications" StagedTargets="" TwoPhase="false">
+        <EJBComponent Name="enroleejb" Targets="%CLUSTER_NAME%" URI="enroleejb.jar" JavaCompiler="%JAVAC_PATH%"/>
+    </Application>
+    <ApplicationManager Name="%ITIM_DOMAIN_NAME%"/>
+    <Cluster ClusterAddress="%CLUSTER_ADDRESS%"
+        MulticastAddress="%MULTI_CAST_ADDRESS%" MulticastPort="%MULTI_CAST_PORT%" Name="%CLUSTER_NAME%"/>
+    <FileRealm Name="myFileRealm"/>
+    <JDBCConnectionPool CapacityIncrement="1"
+        DriverName="oracle.jdbc.driver.OracleDriver" InitialCapacity="5"
+        LoginDelaySeconds="1" MaxCapacity="50" Name="enrolePool"
+        Password="enrole"
+        Properties="user=enrole;dll=ocijdbc8;protocol=thin" RefreshMinutes="5"
+        ShrinkPeriodMinutes="15" ShrinkingEnabled="false"
+        Targets="%CLUSTER_NAME%" TestTableName="dual" TestConnectionsOnReserve="true" URL="jdbc:oracle:thin:@9.38.215.193:1521:enroledb"/>
+    <JDBCTxDataSource EnableTwoPhaseCommit="true"
+        JNDIName="enroleDataSource" Name="enroleDataSource"
+        PoolName="enrolePool" Targets="%CLUSTER_NAME%"/>
+    <JMSConnectionFactory AllowCloseInOnMessage="false"
+        DefaultDeliveryMode="Persistent" DefaultPriority="4"
+        DefaultTimeToLive="0"
+        JNDIName="enrole.jms.QueueConnectionFactory"
+        MessagesMaximum="-1" Name="enrole.jms.QueueConnectionFactory"
+        OverrunPolicy="KeepOld" Targets="%CLUSTER_NAME%" UserTransactionsEnabled="true"/>
+    <JMSConnectionFactory AllowCloseInOnMessage="false"
+        DefaultDeliveryMode="Persistent" DefaultPriority="4"
+        DefaultTimeToLive="0"
+        JNDIName="enrole.jms.SharedQueueConnectionFactory"
+        MessagesMaximum="-1" Name="enrole.jms.SharedQueueConnectionFactory"
+        OverrunPolicy="KeepOld" Targets="%CLUSTER_NAME%" UserTransactionsEnabled="true" ServerAffinityEnabled="false"/>
+    <JMSDestinationKey Direction="Descending" KeyType="Int"
+          Name="JMSPriorityKey" Property="JMSPriority"/>
+    <JTA Name="%ITIM_DOMAIN_NAME%" TimeoutSeconds="500"/>
+    <Log FileName="./wl-domain.log" Name="%ITIM_DOMAIN_NAME%"/>
+    <PasswordPolicy MinimumPasswordLength="8" Name="mypasswordpolicy"/>
+    <Realm FileRealm="myFileRealm" Name="myRealm"/>
+    <Security CompatibilityMode="true" Name="%ITIM_DOMAIN_NAME%"
+        PasswordPolicy="mypasswordpolicy" Realm="myRealm" RealmSetup="true"/>
+    <Server ListenAddress="" ListenPort="%ADMIN_PORT%" Name="%ADMIN_NAME%"
+        NativeIOEnabled="true" ServerVersion="7.0.1.0">
+        <COM Name="%ADMIN_NAME%"/>
+        <ExecuteQueue Name="default" ThreadCount="15"/>
+        <IIOP Name="%ADMIN_NAME%"/>
+        <JTAMigratableTarget Cluster="" Name="%ADMIN_NAME%" UserPreferredServer="%ADMIN_NAME%"/>
+        <JTARecoveryService Name="%ADMIN_NAME%"/>
+        <KernelDebug Name="%ADMIN_NAME%"/>
+        <Log FileName="./logs/%ADMIN_NAME%.log" Name="%ADMIN_NAME%"/>
+        <SSL Enabled="true" HostnameVerificationIgnored="true"
+            ListenPort="%ADMIN_SSL_PORT%" Name="%ADMIN_NAME%"
+            ServerCertificateFileName="./democert.pem" 
+            ServerKeyFileName="./demokey.pem"/>
+        <ServerDebug Name="%ADMIN_NAME%"/>
+        <ServerStart Name="%ADMIN_NAME%"/>
+    </Server>
+</Domain>

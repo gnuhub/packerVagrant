@@ -1,0 +1,42 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# verifies if provided cluster name(s) is valid. Multiple cluster names
+# (upto 2 currently) can be verified in one shot to improve performance
+# since each invocation of wsadmin takes time.
+
+if {$argc < 1} { 
+  puts "  "
+  puts "Usage: "
+  puts "   verifyClusterName clusterName1 [clusterName2]"
+  puts " "
+} else {
+
+  set cluster1 [lindex $argv 0]
+  set cluster2 [lindex $argv 1]
+  puts " "
+  puts "cluster1 name is $cluster1"
+  puts "cluster2 name is $cluster2"
+ 
+  set rc [verify_cluster_name $cluster1]
+  if { $rc == "FAILURE" } {
+      exit -1
+  }
+
+  if { $cluster2 != "" } {
+    set rc [verify_cluster_name $cluster2]
+    if { $rc == "FAILURE" } {
+        exit -2
+    }
+  }
+
+  exit 0
+}

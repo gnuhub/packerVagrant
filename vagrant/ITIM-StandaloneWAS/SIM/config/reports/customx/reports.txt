@@ -1,0 +1,10 @@
+1=individualAccounts,userAndAccount,1.xml
+3=accountsOnServiceXp,userAndAccount,3.xml
+6=accountRequests,requests,6.xml
+7=accountRequestsbyIndividual,requests,7.xml
+8=approvalAndRejections,requests,8.xml
+9=pendingApprovals,requests,9.xml
+11=suspendedIndividuals,userAndAccount,11.xml
+12=services,service,12.xml
+19=dormantAccounts,auditAndSecurity,19.xml
+23=orphanAccounts,auditAndSecurity,23.xml

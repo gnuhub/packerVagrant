@@ -1,0 +1,53 @@
+{
+	"variables": {
+		"vboxVersion": "4.3.10"
+	 },
+
+    "builders": [{
+        "type": "virtualbox-iso",
+        "virtualbox_version_file": ".vbox_version",
+        "headless": false,
+		"vm_name": "rhel-server-6.0-x86_64_{{user `vboxVersion`}}",
+        "guest_os_type": "RedHat_64",
+        "disk_size": 40960,
+
+        "iso_url": "../iso/rhel-server-6.0-x86_64-dvd.iso",
+        "iso_checksum": "f7141396c6a19399d63e8c195354317d",
+        "iso_checksum_type": "md5",
+
+        "boot_command": [
+            "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centOS-Minimal-Kickstart.cfg<enter><wait>"
+        ],
+        "boot_wait": "12s",
+
+        "http_directory": "../http",
+        "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+		"guest_additions_url":	"../iso/VBoxGuestAdditions_{{.Version}}.iso",
+		
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "10000s",
+
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "512"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"]
+        ],
+
+        "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
+    }],
+    "post-processors": [{
+        "output": "../build/redhat-6.0-x86_64_{{user `vboxVersion`}}.box",
+        "type": "vagrant"
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+        "scripts": [
+            "../scripts/vagrant.sh",
+            "../scripts/vboxguest.sh",
+            "../scripts/compact.sh",
+            "../scripts/installChef.sh"
+        ]
+    }]
+}

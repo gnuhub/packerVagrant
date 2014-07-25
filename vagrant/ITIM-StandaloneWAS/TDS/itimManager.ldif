@@ -1,0 +1,16 @@
+eruid=ITIM Manager,ou=systemUser,ou=itim,ou=999,dc=com
+eraccountstatus=0
+erchangepswdrequired=true
+erlostpasswordanswer=
+erlostpasswordquestion=
+erObjectType=1
+erpassword=SHA-256:YWN0Z2g4ZXY5aTVh:scxC8IYB+7NpE6mavcNynGnXtT501szEJnQI8tb4UXc=
+erpswdlastchanged=201407161309Z
+erroles=erglobalid=00000000000000000003,ou=sysRoles,erglobalid=00000000000000000000,ou=999,dc=com
+erservice=erglobalid=00000000000000000002,ou=services,erglobalid=00000000000000000000,ou=999,dc=com
+eruid=ITIM Manager
+objectclass=top
+objectclass=erSystemUser
+objectclass=erAccountItem
+objectclass=erManagedItem
+owner=erglobalid=00000000000000000007,ou=0,ou=people,erglobalid=00000000000000000000,ou=999,dc=com

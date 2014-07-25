@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/********************************************************************
+*  Licensed Materials - Property of IBM
+*  
+*  (c) Copyright IBM Corp.  2005 All Rights Reserved
+*  
+*  US Government Users Restricted Rights - Use, duplication or
+*  disclosure restricted by GSA ADP Schedule Contract with
+*  IBM Corp.
+********************************************************************/
+-->
+<!--If your domain is active, please do not edit the config.xml file. Any changes made to that file while the domain is active will not have any effect on the domain's configuration and are likely to be lost. If your domain is inactive, you may edit this file with an XML editor. If you do so, please refer to the configuration documentation at http://edocs.bea.com/wls/docs60/adminguide/config_xml.html.  In general, we recommend that changes to your configuration file be made through the Administration Console.-->
+<Domain Name="%ITIM_DOMAIN_NAME%">
+  <XMLRegistry DocumentBuilderFactory="org.apache.xerces.jaxp.DocumentBuilderFactoryImpl" Name="MyXML Registry" SAXParserFactory="org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
+  <Realm FileRealm="myFileRealm" Name="myRealm"/>
+  <Application Deployed="true" Name="enroleejb-1" Path="./applications">
+    <EJBComponent Name="enroleejb" Targets="%SERVER_NAME%" URI="enroleejb.jar" JavaCompiler="%JAVAC_PATH%"/>
+  </Application>
+  <PasswordPolicy MinimumPasswordLength="8" Name="mypasswordpolicy"/>
+  <Server HelpPageURL="/weblogic/myserver/public_html/docs51/adminhelp/" JDBCLogFileName="jdbc.log" JDBCLoggingEnabled="false" ListenPort="80" Name="%SERVER_NAME%" NativeIOEnabled="true" StdoutDebugEnabled="true" StdoutEnabled="true" StdoutSeverityLevel="16" ThreadPoolSize="15" XMLRegistry="MyXML Registry" ZACEnabled="true">
+    <ExecuteQueue Name="ITIM MDB Execute Queue" ThreadsIncrease="5" ThreadsMaximum="50" ThreadsMinimum="10"/>
+    <ServerDebug Name="%SERVER_NAME%"/>
+    <Log FileCount="30" FileMinSize="1024" FileName="./logs/%SERVER_NAME%.log" Name="%SERVER_NAME%" NumberOfFilesLimited="true" RotationType="bySize"/>
+    <KernelDebug Name="%SERVER_NAME%"/>
+    <SSL CertificateCacheSize="3" Enabled="true" ListenPort="443" Name="%SERVER_NAME%" ServerCertificateChainFileName="./ca.pem" ServerCertificateFileName="./democert.pem" ServerKeyFileName="demokey.pem"/>
+  </Server>
+  <JTA Name="%ITIM_DOMAIN_NAME%" TimeoutSeconds="500"/>
+  <Application Deployed="true" Name="enrole" Path="./applications">
+    <WebAppComponent Name="enrole" Targets="%SERVER_NAME%" URI="enrole"/>
+  </Application>
+  <Application Deployed="true" Name="passwordsynch" Path="./applications">
+    <WebAppComponent Name="passwordsynch" Targets="%SERVER_NAME%" URI="passwordsynch"/>
+  </Application>
+  <Security Name="%ITIM_DOMAIN_NAME%" PasswordPolicy="mypasswordpolicy" Realm="myRealm"/>
+  <FileRealm Name="myFileRealm"/>
+      <JDBCConnectionPool CapacityIncrement="1"
+        DriverName="oracle.jdbc.driver.OracleDriver" InitialCapacity="5"
+        LoginDelaySeconds="1" MaxCapacity="50" Name="enrolePool"
+    Password="enrole" 
+        Properties="user=enrole;dll=ocijdbc8;protocol=thin" RefreshMinutes="5"
+        ShrinkPeriodMinutes="15" ShrinkingEnabled="false" Targets="%SERVER_NAME%"
+        TestTableName="dual" TestConnectionsOnReserve="true" 
+        URL="jdbc:oracle:thin:@9.38.215.193:1521:enroledb"/>
+      <JDBCTxDataSource
+        EnableTwoPhaseCommit="true" JNDIName="enroleDataSource"
+        Name="enroleDataSource" PoolName="enrolePool"
+        Targets="%SERVER_NAME%"/>
+      <JMSJDBCStore ConnectionPool="enrolePool"
+        Name="JMSStore-%SERVER_NAME%"/>
+      <JMSServer Name="JMSServer"
+        Store="JMSStore-%SERVER_NAME%" Targets="%SERVER_NAME%">
+        <JMSQueue
+            DeliveryModeOverride="Persistent" 
+            JNDIName="adhocSyncQueue"
+            JNDINameReplicated="false" 
+            Name="adhocSyncQueue.%SERVER_NAME%"
+            StoreEnabled="true"/>
+        <JMSQueue
+            DeliveryModeOverride="Persistent" 
+            DestinationKeys="JMSPriorityKey"
+            JNDIName="workflowQueue"
+            JNDINameReplicated="false" 
+            Name="workflowQueue.%SERVER_NAME%"
+            StoreEnabled="true"
+            TimeToDeliverOverride="300"/>
+        <JMSQueue 
+            DeliveryModeOverride="Persistent"
+            DestinationKeys="JMSPriorityKey"
+            JNDIName="sharedWorkflowQueue" 
+            JNDINameReplicated="true" 
+            Name="sharedWorkflowQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+        <JMSQueue
+            DeliveryModeOverride="Persistent"
+            JNDIName="remoteServicesQueue"
+            JNDINameReplicated="false" 
+            Name="remoteServicesQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+        <JMSQueue 
+            DeliveryModeOverride="Persistent"
+            DestinationKeys="JMSPriorityKey"
+            JNDIName="mailServicesQueue"
+            JNDINameReplicated="false" 
+            Name="mailServicesQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+        <JMSQueue 
+            DeliveryModeOverride="Persistent"
+            JNDIName="partitioningServiceQueue" 
+            JNDINameReplicated="false" 
+            Name="partitioningServiceQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+        <JMSQueue 
+            DeliveryModeOverride="Persistent"
+            DestinationKeys="JMSPriorityKey"
+            JNDIName="policyAnalysisQueue" 
+            JNDINameReplicated="true" 
+            Name="policyAnalysisQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+        <JMSQueue
+            DeliveryModeOverride="Persistent" 
+            DestinationKeys="JMSPriorityKey"
+            JNDIName="remotePendingQueue"
+            JNDINameReplicated="false" 
+            Name="remotePendingQueue.%SERVER_NAME%"
+            StoreEnabled="true"/>
+        <JMSQueue DeliveryModeOverride="Non-Persistent"
+            DestinationKeys="JMSPriorityKey"
+            JNDIName="policySimulationQueue" 
+            JNDINameReplicated="true"
+            Name="policySimulationQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+        <JMSQueue
+            DeliveryModeOverride="Persistent"
+            JNDIName="importExportQueue"
+            JNDINameReplicated="false" 
+            Name="importExportQueue.%SERVER_NAME%" 
+            StoreEnabled="true"/>
+      </JMSServer>
+  <JMSConnectionFactory AllowCloseInOnMessage="false" DefaultDeliveryMode="Persistent" DefaultPriority="4" DefaultTimeToLive="0" JNDIName="enrole.jms.QueueConnectionFactory" MessagesMaximum="-1" Name="enrole.jms.QueueConnectionFactory" OverrunPolicy="KeepOld" Targets="%SERVER_NAME%" UserTransactionsEnabled="true"/>
+  <JMSConnectionFactory AllowCloseInOnMessage="false" DefaultDeliveryMode="Persistent" DefaultPriority="4" DefaultTimeToLive="0" JNDIName="enrole.jms.SharedQueueConnectionFactory" MessagesMaximum="-1" Name="enrole.jms.SharedQueueConnectionFactory" OverrunPolicy="KeepOld" Targets="%SERVER_NAME%" UserTransactionsEnabled="true" ServerAffinityEnabled="false"/>
+  <JMSDestinationKey Direction="Descending" KeyType="Int"
+          Name="JMSPriorityKey" Property="JMSPriority"/>
+
+  <ApplicationManager Name="%ITIM_DOMAIN_NAME%"/>
+  <Application Deployed="true" Name="tenant" Path="./applications">
+    <WebAppComponent Name="tenant" Targets="%SERVER_NAME%" URI="tenant.war"/>
+  </Application>
+  <Log FileCount="30" FileMinSize="1024" FileName="./logs/wl-domain.log" Name="%ITIM_DOMAIN_NAME%" NumberOfFilesLimited="true" RotationType="bySize"/>
+</Domain>

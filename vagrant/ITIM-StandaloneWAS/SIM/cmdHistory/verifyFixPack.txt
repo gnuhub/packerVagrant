@@ -1,0 +1,51 @@
+    1  cd /opt/IBM/isim/install_logs/
+    2  ls -ltr
+    3  vi itim_install_activity.log 
+    4  ls -ltr
+    5  /etc/init.d/wasServer stop
+    6  /etc/init.d/wasNode stop
+    7  /etc/init.d/wasDM stop
+    8  grep -i version /app/IBM/WebSphere/AppServer/properties/version/WAS.product | grep -v = | awk '-F>' '{print $2}' | awk '-F<' '{print $1}
+    9  grep -i version /app/IBM/WebSphere/AppServer/properties/version/WAS.product | grep -v = | awk '-F>' '{print $2}' | awk '-F<' '{print $1}'
+   10  grep -i version /opt/IBM/WebSphere/AppServer/properties/version/WAS.product | grep -v = | awk '-F>' '{print $2}' | awk '-F<' '{print $1}'
+   11  pwd
+   12  cd ../..
+   13  pwd
+   14  rm -rf isim/
+   15  ls -ltr isim/install_logs/
+   16  ls -ltr isim/
+   17  ls -ltr isim/install_logs/
+   18  vi isim/install_logs/itim_install_activity.log 
+   19  /etc/init.d/wasDM start
+   20  /etc/init.d/wasNode start
+   21  /etc/init.d/wasServer start
+   22  pwd
+   23  cd /opt/IBM/isim/install_logs/
+   24  ls -ltr
+   25  vi itim_install_activity.log
+   26  ls -ltr
+   27  vi itim_install_activity.log
+   28  ls -ltr
+   29  more runConfigFirstTime.stdout | wc -l
+   30  tail -100f runConfigFirstTime.stdout 
+   31  ls -ltre
+   32  vi itim_install_activity.log
+   33  tail -100f runConfigFirstTime.stdout 
+   34  vi runConfigFirstTime.stdout 
+   35  grep -i error runConfigFirstTime.stdout 
+   36  grep -i exception runConfigFirstTime.stdout 
+   37  grep -ni exception runConfigFirstTime.stdout 
+   38  vi runConfigFirstTime.stdout 
+   39  vi itim_install_activity.log
+   40  more "/opt/IBM/isim/config/was/configureSecurityDomain.py"
+   41  cd /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/
+   42  ls -ltr
+   43  vi SystemOut.log 
+   44  cd /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
+   45  /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
+   46  /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1
+   47  vi SystemOut.log 
+   48  date
+   49  ls -ltr
+   50  history 
+   51  history > /vagrant/SIM/verifyFixPack.txt

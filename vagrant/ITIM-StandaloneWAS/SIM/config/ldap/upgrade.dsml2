@@ -1,0 +1,1270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file contains the modified default data entries which are either at 
+     the tenant-scope (tenant.tmpl) or specific to the root organization (rootOrganization.tmpl)
+     between ITIM 4.6 Enterprise and ITIM 5.1. 
+
+     The upgrade program will load this file only once.
+          
+     Note: DO NOT add new entries in this file, new entries should be added into
+     	     tenant.tmpl, rootOrganization.tmpl, OR organization.tmpl.
+        
+     Note: Sun Directory Server handles duplicate entries differently than ITDS
+           If an entry contains a duplicate attr value for Sun, it will cancel the
+           entire modificationRequest (TDS just eats the duplicate without complaining).  
+           This could be a problem if a modificationRequest contained multiple values
+           for an attribute, some of which already exist on the target system.
+           This issue was hit in TIM 5.1 where the erxml attr of ertype=Global,ou=category,ou=itim,<%tenant.dn%>
+           had values that were new from TIM 5.0 and 5.1.  The problem was when an upgrade was attempted
+           from 5.0, the new to 5.0 values were already on the system, yet Sun failed the entire modificationRequest.
+           In this case the new to 5.1 values were not added.  The fix is to keep separate modificationRequests for
+           each version of TIM.  This way if the values are already on the system, it will fail to update without consequence
+           but the new values can still be added.
+     -->
+ 
+<batchRequest>
+    <!-- ========================================================  -->
+    <!-- Add "erUid", "owner" and "erService" to ITIMAccount       -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="erobjectprofilename=ITIMAccount,ou=serviceProfile,ou=itim,<%tenant.dn%>">    
+	<modification name="erattrmap" operation="add">
+        <value>erUid=erUid</value>
+        <value>owner=owner</value>
+        <value>erService=erService</value>
+    </modification>
+    </modifyRequest>
+
+    <!-- ========================================================  -->
+    <!-- Add "requestAccess","removeAccess","approveRoleByOwner"   -->
+    <!-- and "approveRole" to erxml attribute of global            -->
+    <!-- these are new in 5.0									   -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="ertype=Global,ou=category,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="add">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="requestAccess"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.requestAccess=000000000000000000063%>,ou=operations,ou=itim,<%tenant.dn%>"
+>
+  <OperationParameter
+    name="owner"
+    type="Person"
+  />
+  <OperationParameter
+    name="service"
+    type="Service"
+  />
+  <OperationParameter
+    name="account"
+    type="Account"
+  />
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="removeAccess"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.removeAccess=000000000000000000064%>,ou=operations,ou=itim,<%tenant.dn%>"
+>
+  <OperationParameter
+    name="owner"
+    type="Person"
+  />
+  <OperationParameter
+    name="service"
+    type="Service"
+  />
+  <OperationParameter
+    name="account"
+    type="Account"
+  />
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="approveRolesByOwner"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.approveRolesByOwner=00000000000000000076%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+  <OperationParameter name="person" type="Person" description="A person with new roles that need approval by the role owner."/>
+  <OperationParameter name="container" type="OrganizationalContainer" description="Organizational Container for the person with roles to approve."/>
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="approveRole"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.approveRole=00000000000000000077%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+    <OperationParameter name="personIn" type="Person" description="Person the approval is for."/>
+    <OperationParameter name="roleIn" type="OrgRole" description="Role the approval is for."/>
+</ObjectProfileOperation>
+]]>
+      </value>
+</modification>
+</modifyRequest>
+
+    <!-- ========================================================  -->
+    <!-- Add "changeRoleHierarchy", "processSoDViolations",        -->
+    <!-- and "approveSoDViolation" to erxml attribute of global    -->
+    <!-- these are new in 5.1									   -->
+    <!-- ========================================================  -->
+<modifyRequest dn="ertype=Global,ou=category,ou=itim,<%tenant.dn%>">    
+<modification name="erxml" operation="add">
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="changeRoleHierarchy"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.changeRoleHierarchy=00000000000000000084%>,ou=operations,ou=itim,<%tenant.dn%>">
+    <OperationParameter name="role" type="OrgRole" description="Role the approval is for."/>
+    <OperationParameter name="rolesAdded" type="List" description="The roles being added as children"/>
+    <OperationParameter name="rolesDeleted" type="List" description="The roles being deleted as children"/>
+</ObjectProfileOperation>
+]]></value>
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation name="processSoDViolations" isStatic="true" isSystem="true" definitionDN="erglobalid=<%operation.global.processSoDViolations=00000000000000000085%>,ou=operations,ou=itim,<%tenant.dn%>">
+    <OperationParameter name="person" type="Person" description="The person being changed"/>
+    <OperationParameter name="container" type="OrganizationalContainer" description="Organization in which the person should be created"/>
+    <OperationParameter name="violations" type="List" description="list of SeparationOfDutyRuleViolation describing the SoD violations"/>
+    <OperationParameter name="suspendAccounts" type="String" description="flag for modify person extension for if to suspend accounts or not"/>
+    <OperationParameter name="extensionToCall" type="String" description="which extension should be called on approval of all violations personCreate or personModify"/>
+</ObjectProfileOperation>
+]]></value>
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation name="approveSoDViolation" isStatic="true" isSystem="false" definitionDN="erglobalid=<%operation.global.approveSoDViolation=00000000000000000086%>,ou=operations,ou=itim,<%tenant.dn%>">
+    <OperationParameter name="person" type="Person" description="person that has a violation"/>
+    <OperationParameter name="container" type="OrganizationalContainer" description="organizational container of the person"/>
+    <OperationParameter name="violation" type="SeparationOfDutyRuleViolation" description="sod violation for this person and the current sod rule"/>
+</ObjectProfileOperation>
+]]></value>
+	</modification>
+    </modifyRequest>
+  
+ <!-- =======================================================================  -->
+ <!-- modify workflow definition for change role hierarchy (APAR IV20189)      -->
+ <!-- =======================================================================  -->
+<modifyRequest dn="erglobalid=<%operation.global.changeRoleHierarchy%>,ou=operations,ou=itim,<%tenant.dn%>">    
+<modification name="erxml" operation="replace">
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?> 
+<PROCESSDEFINITION CLASSIFICATION="SO" COUNTRY_KEY="US" LIMIT="0"     NAME="changeRoleHierarchy" SCHEMA_VERSION="1.0" STATUS="UNDER_TEST"     VERSION="1.0" WORKFLOWID="CR">
+    <PARAMETERS>
+        <IN_PARAMETERS    ATTRIBUTE_DESCRIPTION="The senior role whose children are to be added or removed."    EXTENDED_ATTRIBUTE="parentRole"     PARAM_ID="parentRole"             RELEVANT_DATA_ID="parentRole" TYPE="OrgRole"/>
+        <IN_PARAMETERS    ATTRIBUTE_DESCRIPTION="The role members to add to the parent role"    COLLECTION_TYPE="OrgRole"    EXTENDED_ATTRIBUTE="rolesToAdd"    PARAM_ID="rolesToAdd" RELEVANT_DATA_ID="rolesToAdd" TYPE="List"/>
+        <IN_PARAMETERS    ATTRIBUTE_DESCRIPTION="The role memebers to delete from the parent role."    COLLECTION_TYPE="OrgRole"    EXTENDED_ATTRIBUTE="rolesToDelete"             PARAM_ID="rolesToDelete" RELEVANT_DATA_ID="rolesToDelete" TYPE="List"/>
+    </PARAMETERS> 
+    <ACTIVITY ACTIVITYID="START" COMPLETE_ON_TIMEOUT="false" LIMIT="0"         NAME="Start Activity" PRIORITY="NORMAL" SKIP_ESCALATION="false">          			
+        <IMPLEMENTATION_TYPE>             <ROUTE/>         </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION SPLIT="AND"/> 
+    </ACTIVITY> 
+    <ACTIVITY ACTIVITYID="changeRoleHierarchy"         COMPLETE_ON_TIMEOUT="false"         DESCRIPTION="Update the role hiearchy and then enforce policy for each person affected"         LIMIT="0" NAME="changeRoleHierarchy" PRIORITY="NORMAL" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>
+            <APPLICATION    CLASS_NAME="com.ibm.itim.workflowextensions.RoleExtensions"    METHOD_NAME="analyzeRole" TOOLNAME="SYSTEM"/>          
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>
+        <PARAMETERS>
+            <IN_PARAMETERS    EXTENDED_ATTRIBUTE="seniorRole"    PARAM_ID="seniorRole"    RELEVANT_DATA_ID="parentRole"    TYPE="OrgRole"/>
+            <IN_PARAMETERS    EXTENDED_ATTRIBUTE="rolesAdded"    PARAM_ID="rolesAdded"    RELEVANT_DATA_ID="rolesToAdd"    TYPE="List"/> 
+            <IN_PARAMETERS    EXTENDED_ATTRIBUTE="rolesRemoved"    PARAM_ID="rolesRemoved"    RELEVANT_DATA_ID="rolesToDelete"    TYPE="List"/>
+            <OUT_PARAMETERS    ATTRIBUTE_DESCRIPTION="Roles to be finally added is stored in database list."    PARAM_ID="addRolesOut"    RELEVANT_DATA_ID="addRoles"    TYPE="List"/>
+            <OUT_PARAMETERS    ATTRIBUTE_DESCRIPTION="Roles to be finally removed is stored in database list."    PARAM_ID="deleteRolesOut"    RELEVANT_DATA_ID="deleteRoles"    TYPE="List"/>
+        </PARAMETERS>
+        <SCRIPT EVENT="onComplete"><![CDATA[ WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); ]]>]]&gt;<![CDATA[</SCRIPT>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="ADDROLE" COMPLETE_ON_TIMEOUT="false"         DESCRIPTION="Add roles and update the role hiearchy and then enforce policy for each person affected"          LIMIT="0" NAME="addRoleHierarchy" PRIORITY="NORMAL" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>
+            <APPLICATION                 CLASS_NAME="com.ibm.itim.workflowextensions.RoleExtensions"                 METHOD_NAME="addRole" TOOLNAME="SYSTEM"/>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>
+        <PARAMETERS>              
+            <IN_PARAMETERS    PARAM_ID="seniorRole"    RELEVANT_DATA_ID="parentRole"    TYPE="OrgRole"/>
+            <IN_PARAMETERS    PARAM_ID="addRolesIn"    RELEVANT_DATA_ID="addRoles"     TYPE="List"     INDEXED="true" />
+            <IN_PARAMETERS    ATTRIBUTE_DESCRIPTION="RoleHierarchyChanges which will be used for policy enforcement."    PARAM_ID="roleChangesInfoIn"    RELEVANT_DATA_ID="roleChangesInfo"    TYPE="com.ibm.itim.workflowextensions.role.RoleHierarchyChanges"/>
+            <OUT_PARAMETERS    ATTRIBUTE_DESCRIPTION="RoleHierarchyChanges which will be used for policy enforcement."    PARAM_ID="roleChangesInfoOut"    RELEVANT_DATA_ID="roleChangesInfo" TYPE="com.ibm.itim.workflowextensions.role.RoleHierarchyChanges"/>
+        </PARAMETERS>
+        <SCRIPT EVENT="onComplete"><![CDATA[ 
+        var procRes = WorkflowRuntimeContext.getProcessResult();
+        var actRes = WorkflowRuntimeContext.getActivityResult();
+        if (procRes == "SW") {
+            WorkflowRuntimeContext.setProcessResult("SW");
+        } else if (procRes == "SS") {
+            if (actRes == "SF" || actRes == "SW") {
+                WorkflowRuntimeContext.setProcessResult("SW");
+            } else {
+                WorkflowRuntimeContext.setProcessResult("SS");
+            }
+        } else {
+            if (actRes == "SS" || actRes == "SW") {
+                WorkflowRuntimeContext.setProcessResult("SW");
+            } else {
+                WorkflowRuntimeContext.setProcessResult("SF");
+            }
+        } 
+        var check=policyEnforcement.get();  
+        if (check == "false") {
+            var activityResult = WorkflowRuntimeContext.getActivityResult();
+            if (activityResult == "SS") {
+                check="true";
+                policyEnforcement.set(check);
+            }
+        }
+        ]]>]]&gt;<![CDATA[</SCRIPT>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="DELETEROLE" COMPLETE_ON_TIMEOUT="false"         DESCRIPTION="Delete roles and update the role hiearchy and then enforce policy for each person affected"         LIMIT="0" NAME="deleteRoleHierarchy" PRIORITY="NORMAL" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>              
+            <APPLICATION                 CLASS_NAME="com.ibm.itim.workflowextensions.RoleExtensions"                 METHOD_NAME="deleteRole" TOOLNAME="SYSTEM"/>
+        </IMPLEMENTATION_TYPE>          
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>          
+        <PARAMETERS>              
+            <IN_PARAMETERS    PARAM_ID="seniorRole"    RELEVANT_DATA_ID="parentRole"    TYPE="OrgRole"/>
+            <IN_PARAMETERS    PARAM_ID="deleteRolesIn"    RELEVANT_DATA_ID="deleteRoles"    TYPE="List"    INDEXED="true"/>
+            <IN_PARAMETERS    ATTRIBUTE_DESCRIPTION="RoleHierarchyChanges which will be used for policy enforcement."    PARAM_ID="roleChangesInfoIn"    RELEVANT_DATA_ID="roleChangesInfo"    TYPE="com.ibm.itim.workflowextensions.role.RoleHierarchyChanges"/>
+            <OUT_PARAMETERS    ATTRIBUTE_DESCRIPTION="RoleHierarchyChanges which will be used for policy enforcement."    PARAM_ID="roleChangesInfoOut"    RELEVANT_DATA_ID="roleChangesInfo"    TYPE="com.ibm.itim.workflowextensions.role.RoleHierarchyChanges"/>
+        </PARAMETERS>
+        <SCRIPT EVENT="onComplete"><![CDATA[	
+        var procRes = WorkflowRuntimeContext.getProcessResult();
+        var actRes = WorkflowRuntimeContext.getActivityResult();
+        if (procRes == "SW") {
+            WorkflowRuntimeContext.setProcessResult("SW");
+        } else if (procRes == "SS") {
+            if (actRes == "SF" || actRes == "SW") {
+                WorkflowRuntimeContext.setProcessResult("SW");
+            } else {
+                WorkflowRuntimeContext.setProcessResult("SS");
+            }
+        } else {
+            if (actRes == "SS" || actRes == "SW") {
+                WorkflowRuntimeContext.setProcessResult("SW");
+            } else {
+                WorkflowRuntimeContext.setProcessResult("SF");
+            }
+        } 
+        var check=policyEnforcement.get();  
+        if (check == "false") {
+            var activityResult = WorkflowRuntimeContext.getActivityResult();
+            if (activityResult == "SS") {
+                check="true";
+                policyEnforcement.set(check);
+            }
+        }
+        ]]>]]&gt;<![CDATA[</SCRIPT>
+    </ACTIVITY>
+    <ACTIVITY    ACTIVITYID="ENFORCEPOLICY"    COMPLETE_ON_TIMEOUT="false"    DESCRIPTION="enforce policy for each person affected"         LIMIT="0" NAME="enforcePolicy" PRIORITY="NORMAL" SKIP_ESCALATION="false"> 
+        <IMPLEMENTATION_TYPE>              
+            <APPLICATION                 CLASS_NAME="com.ibm.itim.workflowextensions.RoleExtensions"                 METHOD_NAME="enforcePolicy" TOOLNAME="SYSTEM"/>          
+        </IMPLEMENTATION_TYPE>          
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>          
+        <PARAMETERS>             
+            <IN_PARAMETERS    PARAM_ID="seniorRole"    RELEVANT_DATA_ID="parentRole"    TYPE="OrgRole"/>             
+            <IN_PARAMETERS    PARAM_ID="roleChangesInfoIn"    RELEVANT_DATA_ID="roleChangesInfo"    TYPE="com.ibm.itim.workflowextensions.role.RoleHierarchyChanges"/>          
+        </PARAMETERS>          
+        <SCRIPT EVENT="onComplete"><![CDATA[     
+        var procRes = WorkflowRuntimeContext.getProcessResult();
+        var actRes = WorkflowRuntimeContext.getActivityResult();
+        if (procRes == "SW") {
+            WorkflowRuntimeContext.setProcessResult("SW");
+        } else if (procRes == "SS") {
+            if (actRes == "SF" || actRes == "SW") {
+                WorkflowRuntimeContext.setProcessResult("SW");
+            } else {
+                WorkflowRuntimeContext.setProcessResult("SS");
+            }
+        } else {
+            if (actRes == "SS" || actRes == "SW") {
+                WorkflowRuntimeContext.setProcessResult("SW");
+            } else {
+                WorkflowRuntimeContext.setProcessResult("SF");
+            }
+        } 
+        ]]>]]&gt;<![CDATA[</SCRIPT>
+    </ACTIVITY> 
+    <ACTIVITY ACTIVITYID="ADDLOOP" COMPLETE_ON_TIMEOUT="false" LIMIT="0"         PRIORITY="NORMAL" PROCESS="SYNC" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>
+            <LOOP TYPE="WHILE"> 
+                <SCRIPT><![CDATA[loopcount<=WorkflowRuntimeContext.getCollectionDataValue("addRoles").size()]]>]]&gt;<![CDATA[</SCRIPT>             
+            </LOOP>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="XOR" SPLIT="XOR"/>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="DELETELOOP" COMPLETE_ON_TIMEOUT="false" LIMIT="0"         PRIORITY="NORMAL" PROCESS="SYNC" SKIP_ESCALATION="false"> 
+        <IMPLEMENTATION_TYPE> 
+            <LOOP TYPE="WHILE">   
+                <SCRIPT><![CDATA[loopcount<=WorkflowRuntimeContext.getCollectionDataValue("deleteRoles").size()]]>]]&gt;<![CDATA[</SCRIPT>   
+            </LOOP>  
+        </IMPLEMENTATION_TYPE>   
+        <TRANSITION_RESTRICTION JOIN="XOR" SPLIT="XOR"/>
+    </ACTIVITY> 
+    <ACTIVITY ACTIVITYID="END" COMPLETE_ON_TIMEOUT="false" LIMIT="0"         NAME="End Activity" PRIORITY="NORMAL" SKIP_ESCALATION="false">          
+        <IMPLEMENTATION_TYPE>  		<ROUTE/>    	</IMPLEMENTATION_TYPE>  
+        <TRANSITION_RESTRICTION JOIN="XOR" SPLIT="AND"/> 
+    </ACTIVITY>
+    <TRANSITION TRANSITIONID="START_TO_CHANGEROLEHIERARCHY"> 
+        <TRANSITION_KIND>    
+            <REGULAR FROM="START" TO="changeRoleHierarchy">  
+                <SCRIPT><![CDATA[true]]>]]&gt;<![CDATA[</SCRIPT>             
+            </REGULAR>   
+        </TRANSITION_KIND>
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="CHANGEROLEHIERARCHY_TO_DELETELOOP">   
+        <TRANSITION_KIND>         
+            <REGULAR FROM="changeRoleHierarchy" TO="DELETELOOP">           
+                <SCRIPT><![CDATA[(WorkflowRuntimeContext.getActivityResult()!="SF") && (WorkflowRuntimeContext.getCollectionDataValue("deleteRoles").size()>0)]]>]]&gt;<![CDATA[</SCRIPT>  
+            </REGULAR>       
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="CHANGEROLEHIERARCHY_TO_ADDLOOP">  
+        <TRANSITION_KIND>       
+            <REGULAR FROM="changeRoleHierarchy" TO="ADDLOOP">         
+                <SCRIPT><![CDATA[(WorkflowRuntimeContext.getActivityResult()!="SF") && (WorkflowRuntimeContext.getCollectionDataValue("deleteRoles").size()== 0) && (WorkflowRuntimeContext.getCollectionDataValue("addRoles").size() > 0)]]>]]&gt;<![CDATA[</SCRIPT> 
+            </REGULAR>       
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="CHANGEROLEHIERARCHY_TO_END">     
+        <TRANSITION_KIND>        
+            <REGULAR FROM="changeRoleHierarchy" TO="END">        
+                <SCRIPT><![CDATA[(WorkflowRuntimeContext.getActivityResult()=="SF") || ((WorkflowRuntimeContext.getCollectionDataValue("addRoles").size()== 0) && (WorkflowRuntimeContext.getCollectionDataValue("deleteRoles").size() == 0))]]>]]&gt;<![CDATA[</SCRIPT>   
+            </REGULAR>   
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="ADDLOOPBEGIN"> 
+        <TRANSITION_KIND>       
+            <LOOP_BEGIN FROM_LOOP="ADDLOOP" TO_LOOP="ADDROLE"/>   
+        </TRANSITION_KIND>  
+    </TRANSITION>
+    <TRANSITION TRANSITIONID="ADDLOOPEND">  
+        <TRANSITION_KIND>        
+            <LOOP_END FROM_LOOP="ADDROLE" TO_LOOP="ADDLOOP"/>  
+        </TRANSITION_KIND>  
+    </TRANSITION>  
+    <TRANSITION TRANSITIONID="DELETELOOP_TO_ADDLOOP">     
+        <TRANSITION_KIND>           
+            <REGULAR FROM="DELETELOOP" TO="ADDLOOP">    
+                <SCRIPT><![CDATA[WorkflowRuntimeContext.getCollectionDataValue("addRoles").size() > 0]]>]]&gt;<![CDATA[</SCRIPT>
+            </REGULAR>  
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION NAME="ADDLOOP_TO_ENFORCEPOLICY">    
+        <TRANSITION_KIND>   
+            <REGULAR FROM="ADDLOOP" TO="ENFORCEPOLICY">     
+                <SCRIPT><![CDATA[(policyEnforcement.get() == "true")]]>]]&gt;<![CDATA[</SCRIPT>  
+            </REGULAR>    
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="DELETELOOPBEGIN">      
+        <TRANSITION_KIND>          
+            <LOOP_BEGIN FROM_LOOP="DELETELOOP" TO_LOOP="DELETEROLE"/>     
+        </TRANSITION_KIND>   
+    </TRANSITION>
+    <TRANSITION TRANSITIONID="DELETELOOPEND">   
+        <TRANSITION_KIND>    
+            <LOOP_END FROM_LOOP="DELETEROLE" TO_LOOP="DELETELOOP"/>    
+        </TRANSITION_KIND>   
+    </TRANSITION>  
+    <TRANSITION TRANSITIONID="DELETELOOP_TO_ENFORCEPOLICY">      
+        <TRANSITION_KIND>         
+            <REGULAR FROM="DELETELOOP" TO="ENFORCEPOLICY">        
+                <SCRIPT><![CDATA[(WorkflowRuntimeContext.getCollectionDataValue("addRoles").size() == 0) &&  (policyEnforcement.get() == "true")]]>]]&gt;<![CDATA[</SCRIPT>
+            </REGULAR>      
+        </TRANSITION_KIND> 
+    </TRANSITION>
+    <TRANSITION TRANSITIONID="DELETELOOP_TO_END">     
+        <TRANSITION_KIND>            	
+            <REGULAR FROM="DELETELOOP" TO="END">        
+                <SCRIPT><![CDATA[WorkflowRuntimeContext.getCollectionDataValue("addRoles").size() == 0) &&  (policyEnforcement.get() == "false")]]>]]&gt;<![CDATA[</SCRIPT>   
+            </REGULAR>    
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="ADDLOOP_TO_END">     
+        <TRANSITION_KIND>            	
+            <REGULAR FROM="ADDLOOP" TO="END">        
+                <SCRIPT><![CDATA[(policyEnforcement.get() == "false")]]>]]&gt;<![CDATA[</SCRIPT>   
+            </REGULAR>    
+        </TRANSITION_KIND> 
+    </TRANSITION> 
+    <TRANSITION TRANSITIONID="ENFORCEPOLICY_TO_END">     
+        <TRANSITION_KIND>            	
+            <REGULAR FROM="ENFORCEPOLICY" TO="END">        
+                <SCRIPT><![CDATA[true]]>]]&gt;<![CDATA[</SCRIPT>   
+            </REGULAR>    
+        </TRANSITION_KIND> 
+    </TRANSITION>  
+    <RELEVANT_DATA         DESCRIPTION="The senior role whose children are to be added or removed."         RELEVANT_DATA_ID="parentRole" TYPE="OrgRole"/> 
+    <RELEVANT_DATA COLLECTION_TYPE="OrgRole"         DESCRIPTION="The role members to add to the parent role"         RELEVANT_DATA_ID="rolesToAdd" TYPE="List"/> 
+    <RELEVANT_DATA COLLECTION_TYPE="OrgRole"         DESCRIPTION="The role memebers to delete from the parent role."         RELEVANT_DATA_ID="rolesToDelete" TYPE="List"/> 
+    <RELEVANT_DATA COLLECTION_TYPE="OrgRole"         DESCRIPTION="The role members to add to the parent role"         RELEVANT_DATA_ID="addRoles" TYPE="java.util.List"/> 
+    <RELEVANT_DATA COLLECTION_TYPE="OrgRole"         DESCRIPTION="The role memebers to delete from the parent role."         RELEVANT_DATA_ID="deleteRoles" TYPE="java.util.List"/> 
+    <RELEVANT_DATA DESCRIPTION="rolehierarchy changes"         RELEVANT_DATA_ID="roleChangesInfo" TYPE="com.ibm.itim.workflowextensions.role.RoleHierarchyChanges"/>
+    <RELEVANT_DATA         DESCRIPTION="To the value is true then policy enforcement is done."         RELEVANT_DATA_ID="policyEnforcement" TYPE="String" VALUE="false"/>
+</PROCESSDEFINITION>]]></value>
+</modification>
+</modifyRequest>
+
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account suspend      -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountsuspend%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace">
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="globalLSProcessName"
+    WORKFLOWID="LS"
+    AUTHOR="Corey Williams"
+    COUNTRY_KEY="US"
+    DESCRIPTION="multipleAccountSuspendProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="43200000"
+    CREATED="04-March-2005"
+    VALID_FROM="04-March-2005"
+    VALID_TO=""
+    CLASSIFICATION="LS"
+    VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+	<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Suspend Account Loop -->
+	<ACTIVITY ACTIVITYID="SUSPENDACCOUNTS" LIMIT="0" NAME="Split Account collection" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="SuspendAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="suspendAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+	</ACTIVITY>
+	
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="SUSPENDACCOUNTS"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="SUSPENDACCOUNTS" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="com.ibm.itim.dataservices.model.DistinguishedName" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+    </modification>
+ </modifyRequest>
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account restore      -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountrestore%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace">    
+    <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="globalLRProcessName"
+    WORKFLOWID="LR"
+    AUTHOR="Corey Williams"
+    COUNTRY_KEY="US"
+    DESCRIPTION="multipleAccountRestoreProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="43200000"
+    CREATED="04-March-2005"
+    VALID_FROM="04-March-2005"
+    VALID_TO=""
+    CLASSIFICATION="LR"
+    VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+		<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Restore Account Loop -->
+	<ACTIVITY ACTIVITYID="RESTOREACCOUNTS" LIMIT="0" NAME="Split Account collection" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="RestoreAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="restoreAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+	</ACTIVITY>
+	
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="RESTOREACCOUNTS"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="RESTOREACCOUNTS" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="Account" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+    </modification>
+  </modifyRequest>
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account delete       -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountdelete%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace"> 
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION 
+        NAME="globalLDProcessName"
+        WORKFLOWID="LD"
+        AUTHOR="Corey Williams"
+        COUNTRY_KEY="US"
+        DESCRIPTION="multipleAccountDeleteProcessDesc"
+        DURATION_UNIT="m"
+        LIMIT="43200000"
+        CREATED="04-March-2005"
+        VALID_FROM="04-March-2005"
+        VALID_TO=""
+        CLASSIFICATION="LD"
+        VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+	<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Delete Person Loop -->
+	<ACTIVITY ACTIVITYID="deleteAccounts"
+		DESCRIPTION="Multiple Account Deletion." LIMIT="86400000"
+		NAME="Split Account collection"
+		PRIORITY="NORMAL" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="DeleteAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="deleteAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+   	</ACTIVITY>
+
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="deleteAccounts"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="deleteAccounts" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="com.ibm.itim.dataservices.model.DistinguishedName" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+	
+    </modification>
+  </modifyRequest>
+  
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinesuspends.id=00000000000000000058%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">    
+	<modification name="erText" operation="replace">    
+<value><![CDATA[<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="recertDeclineSuspendsBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+
+	<RE key="itimRequestUrl"/>: <ITIMURL/>
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+</value>
+    </modification>
+	<modification name="erXHTML" operation="replace">    
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineSuspendsBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimRequestUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007, 2009</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+</value>
+    </modification>
+  </modifyRequest>
+
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinemarksaccess.id=00000000000000000073%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">    
+	<modification name="erText" operation="replace">    
+<value><![CDATA[<RE key="recertTemplateAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+    
+    <RE key="recertDeclineMarksAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE>
+
+	<RE key="itimRequestUrl"/>: <ITIMURL/>
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <RE key="recertOn"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+</value>
+    </modification>
+	<modification name="erXHTML" operation="replace">    
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineMarksAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimRequestUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertOn"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007, 2009</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+</value>
+    </modification>
+  </modifyRequest>
+
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinemarks.id=00000000000000000066%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">    
+	<modification name="erText" operation="replace">    
+<value><![CDATA[<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+    
+    <RE key="recertDeclineMarksBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+
+	<RE key="itimRequestUrl"/>: <ITIMURL/>
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+</value>
+    </modification>
+	<modification name="erXHTML" operation="replace">    
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineMarksBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimRequestUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007, 2009</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+</value>
+    </modification>
+  </modifyRequest>
+  
+    <modifyRequest dn="cn=<%config.workflow.recertdeclinedeletesaccess.id=00000000000000000072%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">    
+	<modification name="erText" operation="replace">    
+<value><![CDATA[<RE key="recertTemplateAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="recertDeclineDeletesAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE>
+
+	<RE key="itimRequestUrl"/>: <ITIMURL/>
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <RE key="recertOn"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+</value>
+    </modification>
+	<modification name="erXHTML" operation="replace">    
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineDeletesAccessBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimRequestUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertOn"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectAccess</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007, 2009</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+</value>
+    </modification>
+  </modifyRequest>
+  
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinedeletes.id=00000000000000000059%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">    
+	<modification name="erText" operation="replace">    
+<value><![CDATA[<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="recertDeclineDeletesBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+
+	<RE key="itimRequestUrl"/>: <ITIMURL/>
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+</value>
+    </modification>
+	<modification name="erXHTML" operation="replace">    
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineDeletesBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimRequestUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007, 2009</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+</value>
+    </modification>
+  </modifyRequest>
+  
+    <modifyRequest dn="erformname=erHostedService,ou=formTemplates,ou=itim,<%tenant.dn%>">    
+	<modification name="erXML" operation="replace">    
+    <value><![CDATA[<page>
+<body>
+<form action="formvalidator0">
+  <formElement name="data.erservicename" label="$erservicename" required="true">
+    <input name="data.erservicename" maxlength="128" size="50" type="text"/>
+    <constraint>
+      <type>REQUIRED</type>
+      <parameter>true</parameter>
+    </constraint>
+    <constraint>
+    	<type>MAX_LENGTH</type>
+        <parameter>128</parameter>
+    </constraint>
+  </formElement>
+  <formElement name="data.description" label="$description">
+    <input name="data.description" size="50" type="text"/>
+  </formElement>
+  <formElement name="data.erservice" label="$erservice" required="true">
+    <searchFilter type="input">
+      <filter>(&amp;(objectclass&#61;erserviceitem)(!(objectclass&#61;ercsvfeed))(!(objectclass&#61;erDSMLInfoService))(!(objectclass&#61;erDSML2Service))(!(objectclass&#61;erHostedService))(!(objectclass&#61;erjndifeed))(!(objectclass&#61;eradjndifeed))(!(erisdeleted&#61;Y)))</filter>
+      <base>global</base>
+      <attribute>erservicename</attribute>
+      <sourceAttribute>dn</sourceAttribute>
+      <size/>
+      <prepopulate>false</prepopulate>
+    </searchFilter>
+    <constraint>
+      <type>REQUIRED</type>
+      <parameter>true</parameter>
+    </constraint>
+  </formElement>
+  <formElement name="data.erprerequisite" label="$erprerequisite">
+    <searchControl type="input" category="Service">
+      <comboItem/>
+    </searchControl>
+  </formElement>
+  <formElement name="data.owner" label="$owner">
+    <searchControl type="input" category="Person">
+      <comboItem/>
+    </searchControl>
+  </formElement>
+  <formElement name="data.erobjectprofilename" label="$erobjectprofilename" required="true">
+    <input name="data.erobjectprofilename" size="50" type="text"/>
+    <constraint>
+      <type>REQUIRED</type>
+      <parameter>true</parameter>
+    </constraint>
+  </formElement>
+</form>
+</body>
+</page>]]></value></modification>
+	</modifyRequest> 
+	
+	<!-- ======================================================================  -->
+    <!-- since 6.0 Add ITIM Service to errepositoryservice of ITIM Service       -->
+    <!-- ======================================================================  -->
+    <modifyRequest dn="erglobalid=<%service.enrole.id=00000000000000000002%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%>">    
+		<modification name="errepositoryservice" operation="add">
+			<value>erglobalid=<%service.enrole.id=00000000000000000002%>,ou=services,erglobalid=<%org.id%>,<%tenant.dn%></value>
+		</modification>
+    </modifyRequest> 
+</batchRequest>

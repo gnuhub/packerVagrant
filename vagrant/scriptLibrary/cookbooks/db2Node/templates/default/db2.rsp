@@ -1,0 +1,31 @@
+PROD                      = ENTERPRISE_SERVER_EDITION
+FILE                      = /opt/ibm/db2/V10.1
+LIC_AGREEMENT             = ACCEPT         ** ACCEPT or DECLINE
+INSTALL_TYPE              = TYPICAL         ** TYPICAL, COMPACT, CUSTOM
+DB2COMM                   = TCPIP           ** BLANK or TCPIP
+INSTANCE                  = ITIMDB        ** char(8)  no spaces
+ITIMDB.NAME             = db2inst1        ** char(8)  no spaces, no upper case letters
+ITIMDB.GROUP_NAME       = db2inst1        ** char(30) no spaces
+ITIMDB.HOME_DIRECTORY   = /home/db2inst1  ** char(64) no spaces. Valid for root installation only
+ITIMDB.PASSWORD         = vagrant         ** Valid for root installation only
+ITIMDB.AUTOSTART        = YES             ** YES or NO
+ITIMDB.START_DURING_INSTALL = YES         ** YES or NO. Default is YES.
+ITIMDB.FENCED_USERNAME  = db2sdfe1        ** char(8)  no spaces, no upper case letters
+ITIMDB.FENCED_GROUP_NAME = db2sdfe1       ** char(30)  no spaces
+ITIMDB.SVCENAME        = MAIN_DB2SVC   ** BLANK or char(14). Reserved for root installation only
+ITIMDB.PORT_NUMBER     = 50000           ** 1024 - 65535, Reserved for root installation only##
+
+DATABASE             =  myDB               ** myDB: char(8) no spaces - this is the prefix for this DB set
+myDB.DATABASE_NAME   = ITIMDB              ** favorateDB: char(8) no spaces - this is the real database
+myDB.INSTANCE        = ITIMDB              ** db2inst1: char(8)  no spaces - one value of INSTANCE keyword
+myDB.ALIAS           = dbAlias             ** alias of myDB: char(8) no spaces and can not start with SYS, DBM or IBM
+
+* Example command to create a table: db2 "create table employee ( Empno smallint, Name varchar(30))"
+
+*myDB.LOCATION        =                 ** local, remote, LOCAL or REMOTE; For client only product use remote or REMOTE
+*myDB.SYSTEM_NAME     =                 ** some remote host char(64) no spaces: for LOCATION=remote only
+*myDB.AUTHENTICATION  =                 ** CLIENT, SERVER, SERVER_ENCRYPT: optional
+*myDB.PATH            =                 ** the directory for the database: optional
+*myDB.SVCENAME        =                 ** service1: for remote LOCATION only
+*myDB.USERNAME        =                 ** db2user: char(8)  no spaces
+*myDB.PASSWORD        =                 ** db2pwd: char(8)  no spaces

@@ -1,0 +1,102 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2007, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This script deletes ITIM primary and secondary LDAP cache instances. It also deletes WSSession Cache instance. 
+#  For the ITIM cluster case, it also deletes the object of 
+#  ItimReplicationDomain data replication domain.
+#
+
+
+  if {$argc == 1} { 
+
+     set cluster_name  [lindex $argv 0]
+     set is_cluster    "true"
+     set scope_id [$AdminConfig getid /ServerCluster:$cluster_name]
+     puts "--> One argument, cluser name is $cluster_name"
+
+  } elseif {$argc == 2} { 
+
+     set node_name     [lindex $argv 0]
+     set server_name   [lindex $argv 1]
+     set is_cluster    "false"
+     set scope_id      [$AdminConfig getid /Node:$node_name/Server:$server_name]
+     puts "--> Two arguments, node name is $node_name, server name is $server_name"
+
+  } else {
+     puts "  "
+     puts "Incorrect number of args.  One or two arguments are required." 
+     puts "--> Cluster name for the ITIM cluster setup, or"
+     puts "--> Node name and server name for the ITIM singler server setup."
+     return
+  }
+
+  set cell_name [$AdminControl getCell]
+  set cell_id   [$AdminConfig getid /Cell:$cell_name]
+  puts "--> Cell id is $cell_id"
+  puts "--> The scope of configuration is $scope_id"
+
+  # ** Delete ITIM primary and secondary LDAP Cache instances. Also deletes the WSSession Cache instance.
+
+  set jndi_name_list     [list services/cache/ldap_lt_cache services/cache/ldap_st_cache services/cache/ws_session]
+
+  for {set i 0} {$i < 3} {incr i} {
+     set jndi_name     [lindex $jndi_name_list $i]
+     set ob_id [find_object_id $scope_id ObjectCacheInstance jndiName $jndi_name]  
+     if { $ob_id != "" } {
+        puts "--> Found the ITIM cache instance with JNDI name $jndi_name."
+        puts "--> Will remove the object cache instance."
+        $AdminConfig remove $ob_id
+     }
+  }
+
+  if { $is_cluster == "true" } {
+     puts "--> Remove data replication domain ItimReplicationDomain"
+
+     # Find the data replication domain ItimReplicationDomain.
+     set ob_id [find_object_id $cell_id DataReplicationDomain name "ItimReplicationDomain"]
+     if { $ob_id != "" } {
+        puts "--> Found the ITIM data replication domain instance ItimReplicationDomain."
+        puts "--> Will remove the data replication domain instance."
+        $AdminConfig remove $ob_id
+     }
+  }
+
+  
+  # ** Delete ITIM Shared library instance
+
+  set lib_name    "ITIM_LIB"
+  if { $is_cluster == "false" } {
+     set ob_id    [find_shared_lib $scope_id $lib_name]
+  } else {
+     set ob_id    [find_shared_lib $cell_id $lib_name]
+  }
+  if { $ob_id != "" } {
+     puts "--> Found the ITIM shared library instance ITIM_LIB."
+     puts "--> Will remove the shared library instance."
+     $AdminConfig remove $ob_id
+  }
+
+
+  # ** Delete ITIM JAAS Application login objects
+
+  set alias_name_list     [list "ITIM" "serviceLoginContext"]
+
+  for {set i 0} {$i < 2} {incr i} {
+     set alias_name   [lindex $alias_name_list $i]
+     set ob_id        [find_object_id $cell_id JAASConfigurationEntry alias $alias_name]  
+     if { $ob_id != "" } {
+        puts "--> Found the ITIM JAAS Application login object with alias name $alias_name."
+        puts "--> Will remove the object cache instance."
+        $AdminConfig remove $ob_id
+     }
+  }
+
+  $AdminConfig save
+
+

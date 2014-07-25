@@ -1,0 +1,2477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file contains the modified default data entries between ITIM 4.6 Express and ITIM 5.0 (Both Express and Standard).
+ 
+     The upgrade program will load this file only once.
+          
+     Note: DO NOT add new entries in this file, new entries should be added into
+     	     tenant.tmpl, rootOrganization.tmpl, OR organization.tmpl.
+                 
+     -->
+ 
+<batchRequest>
+
+    <!-- ========================================================  -->
+    <!-- Enable erAutoGroupMembershipEnabled property              -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="<%tenant.dn%>">
+	<modification name="erAutoGroupMembershipEnabled" operation="replace">
+	    <value>true</value>
+	</modification>
+    </modifyRequest>
+    
+    <!-- ========================================================  -->
+    <!-- Enable "set user password..." property                    -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="<%tenant.dn%>">
+	<modification name="erPwdEnabled" operation="replace">
+	    <value>true</value>
+	</modification>
+    </modifyRequest>
+
+
+    <!-- ========================================================  -->
+    <!-- Add "requestAccess","removeAccess","approveRoleByOwner","approveRole" to erxml attribute -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="ertype=Global,ou=category,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="add">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="requestAccess"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.requestAccess=000000000000000000063%>,ou=operations,ou=itim,<%tenant.dn%>"
+>
+  <OperationParameter
+    name="owner"
+    type="Person"
+  />
+  <OperationParameter
+    name="service"
+    type="Service"
+  />
+  <OperationParameter
+    name="account"
+    type="Account"
+  />
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="removeAccess"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.removeAccess=000000000000000000064%>,ou=operations,ou=itim,<%tenant.dn%>"
+>
+  <OperationParameter
+    name="owner"
+    type="Person"
+  />
+  <OperationParameter
+    name="service"
+    type="Service"
+  />
+  <OperationParameter
+    name="account"
+    type="Account"
+  />
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="approveRolesByOwner"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.approveRolesByOwner=00000000000000000076%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+  <OperationParameter name="person" type="Person" description="A person with new roles that need approval by the role owner."/>
+  <OperationParameter name="container" type="OrganizationalContainer" description="Organizational Container for the person with roles to approve."/>
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="approveRole"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.approveRole=00000000000000000077%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+    <OperationParameter name="personIn" type="Person" description="Person the approval is for."/>
+    <OperationParameter name="roleIn" type="OrgRole" description="Role the approval is for."/>
+</ObjectProfileOperation>
+]]>
+      </value>
+	</modification>
+    </modifyRequest>
+        
+   
+   
+  <!-- ============================================================================ -->
+  <!-- Modify the reject suspends recertification policy notification template      -->
+  <!-- ============================================================================ -->
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinesuspends.id=00000000000000000058%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+  	<modification name="erTemplateName" operation="replace">
+		<value>Suspend Account</value>
+	</modification>
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="recertTemplateSubject"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="recertDeclineSuspendsBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineSuspendsBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+   
+
+  <!-- ============================================================================ -->
+  <!-- Modify the reject deletes recertification policy notification template       -->
+  <!-- ============================================================================ -->
+
+   
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinedeletes.id=00000000000000000059%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+  	<modification name="erTemplateName" operation="replace">
+		<value>Delete Account</value>
+	</modification>
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="recertTemplateSubject"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="recertDeclineDeletesBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertTemplateBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+							<br/><br/>
+							<RE key="recertDeclineDeletesBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+  
+
+  <!-- ============================================================================ -->
+  <!-- Modify the rejected suspended recertification policy notification template   -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinedaccountsuspended.id=00000000000000000060%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+  	<modification name="erTemplateName" operation="replace">
+		<value>Account Suspended</value>
+	</modification>
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="recertDeclinedAcctSuspendedSubj"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="recertDeclinedAcctSuspendedBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertDeclinedAcctSuspendedBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+  
+
+  <!-- ============================================================================ -->
+  <!-- Modify the rejected deleted recertification policy notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=<%config.workflow.recertdeclinedaccountsuspended.id=00000000000000000061%>,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+  	<modification name="erTemplateName" operation="replace">
+		<value>Account Deleted</value>
+	</modification>
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="recertDeclinedAcctDeletedSubj"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="recertDeclinedAcctDeletedBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+
+	<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+	<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime();}else{ return '';}</JS></PARM></RE>
+	<RE key="recertRequestType"/>: <RE key="recertRequestTypeName"/>
+	<RE key="recertRequestedFor"/>: <JS>process.requesteeName;</JS>
+	<RE key="recertRequestedBy"/>: <JS>process.requestorName;</JS>
+	<RE key="recertAccountAccess"/>: <JS>process.subject;</JS>
+	<RE key="description"/>: <RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description');}else{ return '';}</JS></KEY></RE>
+	<RE key="recertDueDate"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate;} else{ return '';}</JS></PARM></RE>]]>
+		</value>
+	</modification>
+		<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>		
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+							<RE key="recertDeclinedAcctDeletedBody"><PARM><JS>process.subject</JS></PARM><PARM><JS>process.subjectService</JS></PARM><PARM><JS>process.requesteeName</JS></PARM></RE>
+						</p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null){ return process.scheduled.getTime(); }else{ return '';}</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="recertRequestTypeName"/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertRequestedBy"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertAccountAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (theService != null){ return theService.get().getPropertyAsString('description'); } else { return '';}</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="recertDueDate"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.duedate > 0){ return activity.duedate; }else { return '';}</JS></PARM></RE></td></tr>
+						</table>
+			        <!-- End of notification body -->
+                 </td>
+                </tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+  
+  <!-- ============================================================================ -->
+  <!-- Modify the Todo Item Reminder notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=Reminder,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td background="$BASE_URL/console/html/images/ibm_banner.gif" width="96"></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		
+		<tr>
+			<td background="$BASE_URL/console/html/images/titlebar_middle.gif" height="23" width="8"><img
+				border="0" src="$BASE_URL/console/html/images/titlebar_left.gif" width="10" height="23" /></td>
+			<!-- ITIM Notification Lable -->
+			<td background="$BASE_URL/console/html/images/titlebar_middle.gif" height="23" classpath="portfolio-header" width="979">$TITLE</td>
+			<td background="$BASE_URL/console/html/images/titlebar_middle.gif" height="23" width="5"><img
+				border="0" src="$BASE_URL/console/html/images/titlebar_right.gif" width="5" height="23" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td align="left" class="text-description" height="65">
+               	    <!-- Start of notification body -->
+						<textBody/>
+ 
+ 						<RE key="escalation_note"/> <escalationTime/>
+					</td>	
+				</tr>
+				    <!-- End of notification body -->
+           </table>
+		   </td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#9d9d9d" align="center" valign="middle">
+			<td class="text-description"><span class="cont1" id="W57ea57ea"><span
+				class="txt" id="text">IBM Copyright 2007</span></span></td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>  
+    
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Compliance Alert Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=Compliance,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><CAMessage /></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="left" class="text-description" valign="middle">	
+						<RE key="itimUrl"/>:<ITIMURL url="self"/>
+					 </td>
+		              <!-- End Of Notification body -->
+                </tr>
+                <tr>
+                	<td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+           </table>
+		   </td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>    
+ 
+  <!-- ============================================================================ -->
+  <!-- Modify the Default New Account Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=NewAccount,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="account_created"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE>
+<ITIMURL/>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="TRANSACTION_ID_LABEL"/>: ' + EmailContext.getTransactionId(); } </JS>
+<RE key="password"/>: <JS>EmailContext.getAccountPassword();</JS>
+<RE key="accountID"/>: <JS>EmailContext.getAccountUserId();</JS>
+<RE key="accountOwnerName"/>: <JS>EmailContext.getAccountOwnerName();</JS>
+<RE key="timeofprovision"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+<JS>if (EmailContext.hasNewAccess()) { '<RE key="accountNewAccess"/>: <JS>EmailContext.getAccountNewAccessAsString();</JS>\n'; }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="RETRIEVE_PASSWORD_TITLE"/>: ' + EmailContext.getPasswordRetrievalUrl(); }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="passwordExpireLabel"/>: <JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS>'; }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS>
+]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p><RE key="account_created"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="TRANSACTION_ID_LABEL"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getTransactionId();</JS></td></tr>'; } </JS>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="password"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountPassword()</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountUserId();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountOwnerName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountOwnerName();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeofprovision"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="RETRIEVE_PASSWORD_TITLE"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>'<a href="' + EmailContext.getPasswordRetrievalUrl() + '">' + EmailContext.getPasswordRetrievalUrl() + '</a>';</JS></td></tr>'; } </JS>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="passwordExpireLabel"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS></td></tr>'; }</JS>
+							<JS>if (EmailContext.hasNewAccess()) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountNewAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountNewAccessAsString();</JS></td></tr>'; }</JS>
+							<JS>if (EmailContext.hasRemovedAccess()) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountRemovedAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountRemovedAccessAsString();</JS></td></tr>'; }</JS>
+						</table>
+				    <!-- End of notification body -->
+                    </td>
+                </tr>
+                 <!-- Additional Message for New Password-->
+                <tr>
+                	
+                	<td width="5"><!-- Added for proper spacing --></td>
+              	    <td align="left" class="text-description" valign="middle" height="30">
+						<p><JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS></p>
+					</td>	
+				</tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest> 
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default New Password Account Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=NewPassword,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE><KEY><JS>if (EmailContext.getTransactionId() == '0') { 'newAccountPassword' } else { 'newAccountPasswordPickUp'; }</JS></KEY><PARM><JS>process.subject;</JS></PARM></RE>
+<ITIMURL/>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="TRANSACTION_ID_LABEL"/>: ' + EmailContext.getTransactionId(); } </JS>
+<RE key="newPassword"/>: <JS>EmailContext.getAccountPassword();</JS>
+<RE key="accountID"/>: <JS>EmailContext.getAccountUserId();</JS>
+<RE key="accountService"/>: <JS>EmailContext.getAccountServiceName();</JS>
+<RE key="accountServiceProfile"/>: <RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE>
+<RE key="accountOwnerName"/>: <JS>EmailContext.getAccountOwnerName();</JS>
+<RE key="timeofprovision"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="RETRIEVE_PASSWORD_TITLE"/>: ' + EmailContext.getPasswordRetrievalUrl(); }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="passwordExpireLabel"/>: <JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS>'; }</JS>
+
+<JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title> 
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /> 
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" /> 
+</head> 
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff"> 
+<!-- Block for the Template Header part  --> 
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+<tbody> 		
+<tr> 			
+<!-- Tivoli logo --> 			
+<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td> 			
+<!-- Middle part --> 			
+<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td> 			
+<!-- IBM logo --> 			
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+</tr> 	
+</tbody> 
+</table>  
+<!-- Title Bar --> 
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+<tbody> 		 		
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+<!-- ITIM Notification Lable --> 			
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+</tr> 	
+</tbody> 
+</table>  
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+<tbody> 		
+<tr> 			
+<!-- Backgroud for the template body --> 			
+<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148"> 			
+<table border="0" cellspacing="0" cellpadding="0" width="100%">                 
+<tr>                     
+                	
+                	<td width="5"><!-- Added for proper spacing --></td>
+              	    <!-- Start of notification body -->
+                    <td align="left" class="text-description" valign="middle" height="65">
+						<!-- Message to update -->
+						<p><RE><KEY><JS>if (EmailContext.getTransactionId() == '0') { 'newAccountPassword' } else { 'newAccountPasswordPickUp'; }</JS></KEY><PARM><JS>process.subject;</JS></PARM></RE></p>
+</td>	 				
+</tr> 				
+<!-- XTTL Tag templates --> 				
+<tr> 				
+				<td width="5"></td>
+				<td align="center"  valign="middle">	
+						<!-- Table To Update -->
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray"> 	
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr> 							
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="TRANSACTION_ID_LABEL"/>:</td><td class="text-description" bgcolor="white"><JS>EmailContext.getTransactionId();</JS></td></tr>'; } </JS> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="newPassword"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountPassword()</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountUserId();</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountService"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountServiceName();</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountServiceProfile"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountOwnerName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountOwnerName()</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeofprovision"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr> 							
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="RETRIEVE_PASSWORD_TITLE"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>'<a href="' + EmailContext.getPasswordRetrievalUrl() + '">' + EmailContext.getPasswordRetrievalUrl() + '</a>';</JS></td></tr>'; } </JS> 							
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="passwordExpireLabel"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS></td></tr>'; }</JS> 						 						
+</table> 					                                         
+<!-- End of notification body -->                    
+</td>                 
+</tr>             
+                <!-- Additional Message for New Password-->
+                <tr>
+       	        	<td width="5"><!-- Added for proper spacing --></td>
+              	    <td align="left" class="text-description" valign="middle" height="30">
+						<p><JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS></p>
+					</td>	
+				</tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+</table> 			
+</td> 		
+</tr> 	
+</tbody>
+</table> 
+<!-- Copy Right Table --> 
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+<tbody> 		
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+</tr> 	
+</tbody>
+</table> 
+</body> 
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Change Account Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ChangeAccount,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="account_changed"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE>
+<ITIMURL/>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="TRANSACTION_ID_LABEL"/>: ' + EmailContext.getTransactionId(); } </JS>
+<RE key="accountID"/>: <JS>EmailContext.getAccountUserId();</JS>
+<RE key="accountOwnerName"/>: <JS>EmailContext.getAccountOwnerName();</JS>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+<JS>if (EmailContext.hasNewAccess()) { '<RE key="accountNewAccess"/>: <JS>EmailContext.getAccountNewAccessAsString();</JS>\n'; }</JS><JS>if (EmailContext.hasRemovedAccess()) { '<RE key="accountRemovedAccess"/>: <JS>EmailContext.getAccountRemovedAccessAsString();</JS>\n'; }</JS><JS>if (EmailContext.getTransactionId() != '0') { '<RE key="RETRIEVE_PASSWORD_TITLE"/>: ' + EmailContext.getPasswordRetrievalUrl(); }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="passwordExpireLabel"/>: <JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS>'; }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS>
+]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p><RE key="account_changed"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3" ><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="TRANSACTION_ID_LABEL"/>:</td><td class="text-description" bgcolor="white"><JS>EmailContext.getTransactionId();</JS></td></tr>'; } </JS>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountUserId();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountOwnerName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountOwnerName();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="RETRIEVE_PASSWORD_TITLE"/>:</td><td class="text-description" bgcolor="white"><JS>'<a href="' + EmailContext.getPasswordRetrievalUrl() + '">' + EmailContext.getPasswordRetrievalUrl() + '</a>';</JS></td></tr>'; } </JS>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="passwordExpireLabel"/>:</td><td class="text-description" bgcolor="white"><JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS></td></tr>'; }</JS>
+							<JS>if (EmailContext.hasNewAccess()) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountNewAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountNewAccessAsString();</JS></td></tr>'; }</JS>
+							<JS>if (EmailContext.hasRemovedAccess()) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountRemovedAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountRemovedAccessAsString();</JS></td></tr>'; }</JS>
+						</table>
+					
+                    
+                    <!-- End of notification body -->
+                    </td>
+                </tr>
+                <tr>
+       	        	<td width="5"><!-- Added for proper spacing --></td>
+              	    <td align="left" class="text-description" valign="middle" height="30">
+						<p><JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS></p>
+					</td>	
+				</tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Restore Account Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=RestoreAccount,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="restore_account"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE>
+<ITIMURL/>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="TRANSACTION_ID_LABEL"/>: ' + EmailContext.getTransactionId(); } </JS>
+<RE key="newPassword"/>: <JS>EmailContext.getAccountPassword();</JS>
+<RE key="accountID"/>: <JS>EmailContext.getAccountUserId();</JS>
+<RE key="accountOwnerName"/>: <JS>EmailContext.getAccountOwnerName();</JS>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="RETRIEVE_PASSWORD_TITLE"/>: ' + EmailContext.getPasswordRetrievalUrl(); }</JS>
+<JS>if (EmailContext.getTransactionId() != '0') { '<RE key="passwordExpireLabel"/>: <JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS>'; }</JS>
+
+<JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p><RE key="restore_account"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+					
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="TRANSACTION_ID_LABEL"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getTransactionId();</JS></td></tr>'; } </JS>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="newPassword"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountPassword()</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountUserId();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountOwnerName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountOwnerName();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="RETRIEVE_PASSWORD_TITLE"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>'<a href="' + EmailContext.getPasswordRetrievalUrl() + '">' + EmailContext.getPasswordRetrievalUrl() + '</a>';</JS></td></tr>'; } </JS>
+							<JS>if (EmailContext.getTransactionId() != '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="passwordExpireLabel"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="passwordneverexpire"/>'; } else { EmailContext.getPasswordExpirePeriod(); }</JS></td></tr>'; }</JS>
+						</table>
+                    </td>
+                </tr>
+                <tr>
+       	        	<td width="5"><!-- Added for proper spacing --></td>
+              	    <td align="left" class="text-description" valign="middle" height="30">
+						<p><JS>if (EmailContext.getTransactionId() != '0') { '<JS>if (EmailContext.getPasswordExpirePeriod() == 0) { '<RE key="additionalMsgForPwdRetrieval"/>'; }</JS>'; }</JS></p>
+					</td>	
+					        <!-- End of notification body -->
+				</tr>
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Suspended Account Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=SuspendedAccount,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="suspend_account_subject" />]]>
+		</value>
+	</modification>
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="account_suspended"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE>
+<ITIMURL/>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<RE key="accountID"/>: <JS>EmailContext.getAccountUserId();</JS>
+<RE key="accountOwnerName"/>: <JS>EmailContext.getAccountOwnerName();</JS>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p><RE key="account_suspended"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountUserId();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountOwnerName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountOwnerName();</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+						</table>
+                    </td>
+		              <!-- End Of Notification body -->
+                </tr>
+                
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Deprovision Account Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=Deprovision,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="remove_account_subject" />]]></value>
+	</modification>
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="account_deprovisioned"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE>
+ <ITIMURL/>
+ <RE key="processRef"/>: <JS>process.id;</JS>
+ <RE key="accountID"/>: <JS>EmailContext.getAccountUserId();</JS>
+ <RE key="accountOwnerName"/>: <JS>EmailContext.getAccountOwnerName();</JS>
+ <RE key="reason"/>: <JS>EmailContext.getReason();</JS>
+ <RE key="deprovisionCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+ <JS>if (EmailContext.hasRemovedAccess()) { '<RE key="accountRemovedAccess"/>: <JS>EmailContext.getAccountRemovedAccessAsString();</JS>\n';}</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head> 
+<title>$TITLE</title> 
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /> 
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" /> 
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->  
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+	<tbody> 		
+	<tr> 			
+		<!-- Tivoli logo --> 			
+		<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td> 			
+		<!-- Middle part --> 			
+		<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td> 			
+		<!-- IBM logo --> 			
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+	</tr> 	
+	</tbody> 
+</table>  
+<!-- Title Bar --> 
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+	<tbody> 		 		
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable --> 			
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr> 	
+	</tbody> 
+</table>  
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+<tbody> 		
+<tr> 			
+<!-- Backgroud for the template body --> 			
+<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148"> 			
+	<table border="0" cellspacing="0" cellpadding="0" width="100%">               
+	  <tr>           
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+	      <!-- Start of notification body --> 						
+	      <p><RE key="account_deprovisioned"><PARM><RE key="service_name_with_profile_name"><PARM><JS>EmailContext.getAccountServiceName();</JS></PARM><PARM><RE><KEY><JS>EmailContext.getAccountServiceProfileName();</JS></KEY></RE></PARM></RE></PARM></RE></p> 					
+	      </td>	 			
+	   </tr> 				
+	   <!-- XTTL Tag templates --> 				
+	   <tr> 				
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr> 							
+  							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountUserId();</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountOwnerName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountOwnerName();</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="reason"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getReason();</JS></td></tr> 							
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="deprovisionCompleted"/>:</td><td class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr> 						
+       						<JS>if (EmailContext.hasRemovedAccess()) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountRemovedAccess"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>EmailContext.getAccountRemovedAccessAsString();</JS></td></tr>'; }</JS>
+    		 			</table> 				    
+	   		 		</td>                 
+		              <!-- End Of Notification body -->
+	   	 </tr>             
+                <tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+	 </table> 			
+</td> 		
+</tr> 	
+</tbody> 
+</table> 
+<!-- Copy Right Table --> 
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 	
+<tbody> 		
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+</tbody> 
+</table> 
+</body> 
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Activity Timeout Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ActivityTimeout,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="activity_timeout_message" />
+
+<RE key="activity_timeout_detail" />
+
+<RE key="activityInformation" />
+<ITIMURL/>
+<RE key="activityID"/>: <JS>activity.id;</JS>
+<RE key="name"/>: <JS>activity.name;</JS>
+<RE key="timeStarted"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.started != null) return activity.started.getTime(); else return '';</JS></PARM></RE>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (activity.completed != null) return activity.completed.getTime(); else return '';</JS></PARM></RE>
+<RE key="resultSummary"/>: <RE><KEY><JS>process.STATE_PREFIX + activity.resultSummary;</JS></KEY></RE>
+<RE key="state"/>: <RE><KEY><JS>process.STATE_PREFIX+activity.state;</JS></KEY></RE>
+<RE key="activityType"/>: <RE><KEY><JS>activity.TYPE_PREFIX + activity.type;</JS></KEY></RE> <RE><KEY><JS>activity.TYPE_PREFIX + activity.subtype;</JS></KEY></RE>
+
+<RE key="processInformation" />
+
+<RE key="processID"/>: <JS>process.id;</JS>
+<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+<RE key="description"/>: <RE><KEY><JS>process.description;</JS></KEY></RE>
+<RE key="state"/>: <RE><KEY><JS>process.STATE_PREFIX + process.state;</JS></KEY></RE>
+<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null) return process.scheduled.getTime(); else return '';</JS></PARM></RE>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.completed != null) return process.completed.getTime(); else return '';</JS></PARM></RE>
+<RE key="resultSummary"/>: <RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE>
+<RE key="requester"/>: <JS>process.requestorName;</JS>
+<RE key="requestedFor"/>: <JS>process.requesteeName;</JS>
+<RE key="subject"/>: <JS>process.subject;</JS>
+<RE key="comment"/>: <JS>process.comment;</JS>
+<RE key="detail"/>: <JS>Enrole.localize(process.resultDetail, "$LOCALE");</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><RE key="activity_timeout_message" /><RE key="activity_timeout_detail" /></p>
+						<p><RE key="activityInformation" /></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="activityID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>activity.id;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>activity.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeStarted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.started != null) return activity.started.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (activity.completed != null) return activity.completed.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="resultSummary"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + activity.resultSummary;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="state"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX+activity.state;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="activityType"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>activity.TYPE_PREFIX + activity.type;</JS></KEY></RE> <RE><KEY><JS>activity.TYPE_PREFIX + activity.subtype;</JS></KEY></RE></td></tr>
+					</table>
+				    </td>
+		              <!-- End Of Notification body -->
+				</tr>  
+				<tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="40">
+               	    <!-- Start of notification body -->
+						<p><RE key="processInformation" /></p>
+					</td>	
+				</tr>
+                <tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.description;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="state"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + process.state;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null) return process.scheduled.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.completed != null) return process.completed.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="resultSummary"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requester"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="comment"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.comment;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="detail"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>Enrole.localize(process.resultDetail, "$LOCALE");</JS></td></tr>
+					</table>
+					</td>
+		              <!-- End Of Notification body -->
+				</tr>              
+                <tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Process Timeout Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ProcessTimeout,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="process_timeout_message" />
+
+<RE key="processInformation" />
+<ITIMURL/>
+<RE key="processID"/>: <JS>process.id;</JS>
+<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+<RE key="description"/>: <RE><KEY><JS>process.description;</JS></KEY></RE>
+<RE key="state"/>: <RE><KEY><JS>process.STATE_PREFIX + process.TIMEOUT;</JS></KEY></RE>
+<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null) return process.scheduled.getTime(); else return '';</JS></PARM></RE>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.completed != null) return process.completed.getTime(); else return '';</JS></PARM></RE>
+<RE key="resultSummary"/>: <RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE>
+<RE key="requester"/>: <JS>process.requestorName;</JS>
+<RE key="requestedFor"/>: <JS>process.requesteeName;</JS>
+<RE key="subject"/>: <JS>process.subject;</JS>
+<RE key="comment"/>: <JS>process.comment;</JS>
+
+<RE key="detail"/>: <JS>Enrole.localize(process.resultDetail, "$LOCALE");</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><RE key="process_timeout_message" /></p>
+						<p><RE key="processInformation" /></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+    						<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.description;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="state"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + process.TIMEOUT;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null) return process.scheduled.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.completed != null) return process.completed.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="resultSummary"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requester"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="comment"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.comment;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="detail"/>:</td><td width="773" class="text-description" bgcolor="white"><pre><JS>Enrole.localize(process.resultDetail, "$LOCALE");</JS></pre></td></tr>
+					</table>
+				    </td>
+		              <!-- End Of Notification body -->
+				</tr>  
+                <tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default Process Completion Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ProcessCompletion,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="processCompletedSubject"><PARM><JS>process.id;</JS></PARM><PARM><RE key="resultSummaryValue"><PARM><RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE></PARM></RE></PARM></RE>]]>
+		</value>
+	</modification>
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="process_completed_message" />
+
+<RE key="processInformation" />
+<ITIMURL/>
+<RE key="processID"/>: <JS>process.id;</JS>
+<RE key="name"/>: <RE><KEY><JS>process.name;</JS></KEY></RE>
+<RE key="description"/>: <RE><KEY><JS>process.description;</JS></KEY></RE>
+<RE key="state"/>: <RE><KEY><JS>process.STATE_PREFIX + process.state;</JS></KEY></RE>
+<RE key="timeScheduled"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null) return process.scheduled.getTime(); else return '';</JS></PARM></RE>
+<RE key="timeCompleted"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.completed != null) return process.completed.getTime(); else return '';</JS></PARM></RE>
+<RE key="resultSummary"/>: <RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE>
+<RE key="requester"/>: <JS>process.requestorName;</JS>
+<RE key="requestedFor"/>: <JS>process.requesteeName;</JS>
+<RE key="subject"/>: <JS>process.subject;</JS>
+<RE key="comment"/>: <JS>process.comment;</JS>
+
+<RE key="detail"/>: <JS>Enrole.localize(process.resultDetail, "$LOCALE");</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><RE key="process_completed_message" /></p>
+						<p><RE key="processInformation" /></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+    						<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="name"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.name;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.description;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="state"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + process.state;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeScheduled"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.scheduled != null) return process.scheduled.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="timeCompleted"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.completed != null) return process.completed.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="resultSummary"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.STATE_PREFIX + process.resultSummary;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requester"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requestorName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="comment"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.comment;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="detail"/>:</td><td width="773" class="text-description" bgcolor="white"><pre><JS>Enrole.localize(process.resultDetail, "$LOCALE");</JS></pre></td></tr>
+					</table>
+				    </td>
+		              <!-- End Of Notification body -->
+				</tr>  
+                <tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default ManualActivityApproval Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ManualActivityApproval,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="pending_workitem_subject"><PARM><ID /></PARM></RE>]]>
+		</value>
+	</modification>
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="wiApproval_message" />
+<ITIMURL/>
+<RE key="description"/>: <RE><KEY><JS>process.description;</JS></KEY></RE>
+<RE key="requestedFor"/>: <JS>process.requesteeName;</JS>
+<RE key="subject"/>: <JS>process.subject;</JS>
+<JS>if (process.subjectAccess!=null) if (process.subjectAccess.length>0) { '<RE key="accessName"/>: <JS>process.subjectAccess;</JS>\n'; }</JS><RE key="requestInit"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.started != null) return process.started.getTime(); else return '';</JS></PARM></RE>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<JS>if (process.parentId == '0') { '<RE key="requestedBy"/>: <JS>process.requestorName;</JS>'; }</JS>
+
+<JS>if (process.parentId != '0') { '<RE key="parent_process"/>'; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="processID"/>: ' + process.parentId; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="processName"/>: <RE><KEY><JS>if (process.parentId != '0') { process.getParent().name; }</JS></KEY></RE>'; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="description"/>: <RE><KEY><JS>if (process.parentId != '0') { process.getParent().description; }</JS></KEY></RE>'; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="requester"/>: ' + process.getParent().requestorName; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="requestedFor"/>: ' + process.getParent().requesteeName; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="subject"/>: ' + process.getParent().subject; }</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><RE key="wiApproval_message" /></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.description;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<JS>if (process.subjectAccess!=null) if (process.subjectAccess.length>0) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accessName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subjectAccess;</JS></td></tr>'; }</JS>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestInit"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.started != null) return process.started.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<JS>if (process.parentId == '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedBy"/>:</td><td width="773" class="text-description"><JS>process.requestorName;</JS></td></tr>'; }</JS>
+					</table>
+				</td>	
+		              <!-- End Of Notification body -->
+				</tr>
+				
+				         	<JS>if (process.parentId != '0') { 
+							  '<tr>'+
+					  		  '<td width="5"></td>'+	
+			                  '<td align="left" class="text-description" height="30">'+
+               				  '<p><RE key="parent_process"/></p>' + 
+							  '</td>'+	
+							  '</tr>'+
+							  '<tr>'+								 
+					  	  '<td width="5"></td>'+								 
+						  '<td align="center"  valign="middle">'+		
+   			  				  '<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">' + 
+  								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processID"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.parentId + '</td></tr>' +
+   								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processName"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (process.parentId != '0') { process.getParent().name; }</JS></KEY></RE></td></tr>' +
+   								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (process.parentId != '0') { process.getParent().description; }</JS></KEY></RE></td></tr>' +
+    							  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requester"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.getParent().requestorName + '</td></tr>' +
+   								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.getParent().requesteeName + '</td></tr>' +
+  								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.getParent().subject + '</td></tr>' +
+   							  '</table>'+
+   							  '</td>'+
+   							  '</tr>'; }</JS>
+                <tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default ManualActivityRFI Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ManualActivityRFI,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="pending_workitem_subject"><PARM><ID /></PARM></RE>]]>
+		</value>
+	</modification>
+	<modification name="erText" operation="replace">
+		<value><![CDATA[<RE key="wiRFI_message" />
+<ITIMURL/>
+<RE key="description"/>: <RE><KEY><JS>process.description;</JS></KEY></RE>
+<RE key="requestedFor"/>: <JS>process.requesteeName;</JS>
+<RE key="subject"/>: <JS>process.subject;</JS>
+<JS>if (process.subjectAccess!=null) if (process.subjectAccess.length>0) { '<RE key="accessName"/>: <JS>process.subjectAccess;</JS>\n'; }</JS><RE key="requestInit"/>: <RE key="readOnlyDateFormat"><PARM><JS>if (process.started != null) return process.started.getTime(); else return '';</JS></PARM></RE>
+<RE key="processRef"/>: <JS>process.id;</JS>
+<JS>if (process.parentId == '0') { '<RE key="requestedBy"/>: <JS>process.requestorName;</JS>'; }</JS>
+
+<JS>if (process.parentId != '0') { '<RE key="parent_process"/>'; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="processID"/>: ' + process.parentId; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="processName"/>: <RE><KEY><JS>if (process.parentId != '0') { process.getParent().name; }</JS></KEY></RE>'; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="description"/>: <RE><KEY><JS>if (process.parentId != '0') { process.getParent().description; }</JS></KEY></RE>'; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="requester"/>: ' + process.getParent().requestorName; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="requestedFor"/>: ' + process.getParent().requesteeName; }</JS>
+     <JS>if (process.parentId != '0') { '<RE key="subject"/>: ' + process.getParent().subject; }</JS>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><RE key="wiRFI_message" /></p>
+					</td>	
+				</tr>
+				<!-- XTTL Tag templates -->
+				<tr>
+					<td width="5"></td>
+					<td align="center"  valign="middle">	
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="itimUrl"/>:</td><td width="773" class="text-description" bgcolor="white"><ITIMURL/></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>process.description;</JS></KEY></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.requesteeName;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subject;</JS></td></tr>
+							<JS>if (process.subjectAccess!=null) if  (process.subjectAccess.length>0) { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accessName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.subjectAccess;</JS></td></tr>'; }</JS>							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestInit"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>if (process.started != null) return process.started.getTime(); else return '';</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processRef"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>process.id;</JS></td></tr>
+							<JS>if (process.parentId == '0') { '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedBy"/>:</td><td width="773" class="text-description"><JS>process.requestorName;</JS></td></tr>'; }</JS>
+					</table>
+				</td>	
+		              <!-- End Of Notification body -->
+				</tr>
+				
+				         	<JS>if (process.parentId != '0') { 
+							  '<tr>'+
+					  		  '<td width="5"></td>'+	
+			                  '<td align="left" class="text-description" height="30">'+
+               				  '<p><RE key="parent_process"/></p>' + 
+							  '</td>'+	
+							  '</tr>'+
+							  '<tr>'+								 
+					  	  '<td width="5"></td>'+								 
+						  '<td align="center"  valign="middle">'+		
+   			  				  '<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">' + 
+  								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processID"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.parentId + '</td></tr>' +
+   								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="processName"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (process.parentId != '0') { process.getParent().name; }</JS></KEY></RE></td></tr>' +
+   								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="description"/>:</td><td width="773" class="text-description" bgcolor="white"><RE><KEY><JS>if (process.parentId != '0') { process.getParent().description; }</JS></KEY></RE></td></tr>' +
+    								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requester"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.getParent().requestorName + '</td></tr>' +
+   								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="requestedFor"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.getParent().requesteeName + '</td></tr>' +
+  								  '<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="subject"/>:</td><td width="773" class="text-description" bgcolor="white">' + process.getParent().subject + '</td></tr>' +
+   							  '</table>'+
+   							  '</td>'+
+   							  '</tr>'; }</JS>
+                <tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+
+  <!-- ============================================================================ -->
+  <!-- Modify the Default ManualActivityWorkOrder Notification template     -->
+  <!-- ============================================================================ -->
+
+  <modifyRequest dn="cn=ManualActivityWorkOrder,erglobalid=<%config.workflow%>,ou=config,ou=itim,<%tenant.dn%>">
+	<modification name="erSubject" operation="replace">
+		<value><![CDATA[<RE key="pending_workitem_subject"><PARM><ID /></PARM></RE>]]>
+		</value>
+	</modification>
+	<modification name="erXHTML" operation="replace">
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Lable -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Backgroud for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+               	    	<br/>
+						<p><RE key="wiWorkOrder_message" /></p>
+					</td>
+				</tr>
+				<tr>
+                <td align="center"  valign="middle" height="30"><!-- Added for proper spacing --></td>	
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copy Right Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2007</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>
+		</value>
+	</modification>
+  </modifyRequest>
+  
+    
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account suspend      -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountsuspend%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace">
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="globalLSProcessName"
+    WORKFLOWID="LS"
+    AUTHOR="Corey Williams"
+    COUNTRY_KEY="US"
+    DESCRIPTION="multipleAccountSuspendProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="43200000"
+    CREATED="04-March-2005"
+    VALID_FROM="04-March-2005"
+    VALID_TO=""
+    CLASSIFICATION="LS"
+    VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+	<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Suspend Account Loop -->
+	<ACTIVITY ACTIVITYID="SUSPENDACCOUNTS" LIMIT="0" NAME="Split Account collection" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="SuspendAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="suspendAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+	</ACTIVITY>
+	
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="SUSPENDACCOUNTS"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="SUSPENDACCOUNTS" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="com.ibm.itim.dataservices.model.DistinguishedName" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+    </modification>
+ </modifyRequest>
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account restore      -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountrestore%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace">    
+    <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="globalLRProcessName"
+    WORKFLOWID="LR"
+    AUTHOR="Corey Williams"
+    COUNTRY_KEY="US"
+    DESCRIPTION="multipleAccountRestoreProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="43200000"
+    CREATED="04-March-2005"
+    VALID_FROM="04-March-2005"
+    VALID_TO=""
+    CLASSIFICATION="LR"
+    VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+		<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Restore Account Loop -->
+	<ACTIVITY ACTIVITYID="RESTOREACCOUNTS" LIMIT="0" NAME="Split Account collection" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="RestoreAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="restoreAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+	</ACTIVITY>
+	
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="RESTOREACCOUNTS"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="RESTOREACCOUNTS" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="Account" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+    </modification>
+  </modifyRequest>
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account delete       -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountdelete%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace"> 
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION 
+        NAME="globalLDProcessName"
+        WORKFLOWID="LD"
+        AUTHOR="Corey Williams"
+        COUNTRY_KEY="US"
+        DESCRIPTION="multipleAccountDeleteProcessDesc"
+        DURATION_UNIT="m"
+        LIMIT="43200000"
+        CREATED="04-March-2005"
+        VALID_FROM="04-March-2005"
+        VALID_TO=""
+        CLASSIFICATION="LD"
+        VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+	<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Delete Person Loop -->
+	<ACTIVITY ACTIVITYID="deleteAccounts"
+		DESCRIPTION="Multiple Account Deletion." LIMIT="86400000"
+		NAME="Split Account collection"
+		PRIORITY="NORMAL" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="DeleteAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="deleteAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+   	</ACTIVITY>
+
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="deleteAccounts"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="deleteAccounts" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="com.ibm.itim.dataservices.model.DistinguishedName" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+	
+    </modification>
+  </modifyRequest>
+  
+   
+</batchRequest>

@@ -1,0 +1,47 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This script performs the following tasks - 
+#
+#    - Remove the ITIM XA JDBC driver provider at the cluster scope
+#    - Remove the ITIM non-XA JDBD driver provider at the cluster scope
+#
+
+if {$argc < 2} { 
+  puts "  "
+  puts "Incorrect number of args.  two arguments are required."  
+  puts "   arg1 - ITIM application cluster name" 
+  puts "   arg2 - database type (IBM_DB, IBM_ZDB, ORACLE_DB, or MS_DB)" 
+  puts "  "
+} else {
+
+  set cluster [lindex $argv 0]
+  set dbtype  [lindex $argv 1]
+
+  puts "--> ITIM application cluster name is $cluster"
+  puts "--> database type is $dbtype"
+
+  set cid [$AdminConfig getid /ServerCluster:$cluster]
+  if {$cid != ""} {
+     set is_xa "true"
+     set is_was6 "true"
+     set jdbcid [find_jdbc_driver $cid $dbtype $is_xa $is_was6]
+     if { $jdbcid != "" } {
+        puts "--> remove ITIM cluster $cluster XA jdbc provider: $jdbcid" 
+        $AdminConfig remove $jdbcid
+     }
+     set is_xa "false"
+     set jdbcid [find_jdbc_driver $cid $dbtype $is_xa $is_was6]
+     if { $jdbcid != "" } {
+        puts "--> remove ITIM cluster $cluster non-XA jdbc provider: $jdbcid" 
+        $AdminConfig remove $jdbcid
+     }
+  }
+  $AdminConfig save
+}

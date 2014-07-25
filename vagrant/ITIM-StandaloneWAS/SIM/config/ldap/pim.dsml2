@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file contains the default data entries specific to Shared Access Module which are either at 
+     the tenant-scope (tenant.tmpl) or specific to the root organization (rootOrganization.tmpl)
+      
+     The Shared Access Module enablement program will load this file.
+          
+      -->
+    <!-- ************************************************************** -->
+    <!-- operation.pim.addCredentialToVault=00000000000000000094 PIM add credential to vault operation -->
+    <!-- operation.pim.checkin=00000000000000000095 PIM acheckin operation -->
+    <!-- operation.pim.processExpiredLeases=00000000000000000096 PIM process expired leases, 1st level operation -->
+    <!-- operation.pim.handleExpiredLease=00000000000000000097 PIM expired lease handling for each lease, 2nd level operation -->
+    <!-- operation.pim.sharedAccessBulkLoad=00000000000000000098 PIM shared access object bulk load operation -->
+    <!-- config.workflow.mail.LeaseExpiredNotify.id=00000000000000000099 lease expired notification mail template -->
+    <!-- config.workflow.mail.leaseExpiredNotifyCheckin.id=00000000000000000100 lease expired notification and checkin mail template -->
+    <!-- ************************************************************** -->
+      
+ 
+<batchRequest>
+
+
+    <!-- ========================================================  -->
+    <!-- Add PIM-related workflows to erxml attribute of global    -->
+    <!-- these are new in 6.0									   -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="ertype=Global,ou=category,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="add">
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="addCredentialToVault"
+  isStatic="true"
+  isSystem="false"
+  definitionDN="erglobalid=<%operation.pim.addCredentialToVault=00000000000000000094%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+    <OperationParameter name="credential" type="Credential" description="Credential to be added to vault"/>
+    <OperationParameter name="account" type="Account" description="Account related to the credential"/>
+    <OperationParameter name="password" type="String" description="Account password"/>
+    <OperationParameter name="isChangePwd" type="String" description="Flag indicating whether account password needs to be changed"/>
+</ObjectProfileOperation>
+]]>
+</value>
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="checkin"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.pim.checkin=00000000000000000095%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+    <OperationParameter name="credentialLease" type="CredentialLease" description="Credential lease to be removed"/>
+</ObjectProfileOperation>
+]]>
+</value>
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="processExpiredLeases"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.pim.processExpiredLeases=00000000000000000096%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+ </ObjectProfileOperation>
+]]>
+</value>
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="handleExpiredLease"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.pim.handleExpiredLease=00000000000000000097%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+  <OperationParameter name="lease" type="CredentialLease" description="credential lease"/>
+  <OperationParameter name="credential" type="Credential" description="credential associated with the lease"/>
+ </ObjectProfileOperation>
+]]>
+</value>
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="sharedAccessBulkLoad"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.pim.sharedAccessBulkLoad=00000000000000000098%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+    <OperationParameter name="loadID" type="String" description="Load Identifier"/>
+    <OperationParameter name="loadName" type="String" description="Load Name"/>
+</ObjectProfileOperation>
+]]>
+</value>
+</modification>
+</modifyRequest>
+
+
+    <!-- ======================================================== -->
+    <!--               Operation pim.addCredentialToVault         -->
+    <!-- ======================================================== -->
+    <addRequest dn="erglobalid=<%operation.pim.addCredentialToVault%>,ou=operations,ou=itim,<%tenant.dn%>">
+      <attr name="objectclass">
+        <value>top</value>
+        <value>erManagedItem</value>
+        <value>erWorkflowDefinition</value>
+      </attr>
+      <attr name="erglobalid"><value><%operation.pim.addCredentialToVault%></value></attr>
+      <attr name="erversionid"><value><%operation.pim.addCredentialToVault%></value></attr>
+      <attr name="erCategory"><value>Global</value></attr>
+      <attr name="erProcessName"><value>addCredentialToVault</value></attr>
+      <attr name="erXML">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="addCredentialToVaultProcessName"
+    WORKFLOWID="VA"
+    COUNTRY_KEY="US"
+    DESCRIPTION="addCredentialToVaultProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="0"
+    CLASSIFICATION="SO"
+    VERSION="1.0"
+>
+  <ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+  <PARAMETERS>
+    <IN_PARAMETERS
+      PARAM_ID="credential"
+      TYPE="Credential"
+      RELEVANT_DATA_ID="credential"
+    />
+    <IN_PARAMETERS
+      PARAM_ID="account"
+      TYPE="Account"
+      RELEVANT_DATA_ID="account"
+    />
+    <IN_PARAMETERS
+      PARAM_ID="password"
+      TYPE="String"
+      RELEVANT_DATA_ID="password"
+    />
+    <IN_PARAMETERS
+      PARAM_ID="isChangePwd"
+      TYPE="String"
+      RELEVANT_DATA_ID="isChangePwd"
+    />
+  </PARAMETERS>
+
+  <!-- START -->
+
+  <ACTIVITY ACTIVITYID="START" LIMIT="0">
+    <IMPLEMENTATION_TYPE>
+      <ROUTE/>
+    </IMPLEMENTATION_TYPE>
+  </ACTIVITY>
+
+
+  <!-- Add credential to vault -->
+
+  <ACTIVITY ACTIVITYID="AddToVault" LIMIT="600000">
+    <IMPLEMENTATION_TYPE>
+      <APPLICATION APPLICATIONID="AddToVault" CLASS_NAME="com.ibm.itim.workflowextensions.CredentialExtensions" METHOD_NAME="addToVault"/>
+    </IMPLEMENTATION_TYPE>
+    <PARAMETERS>
+      <IN_PARAMETERS PARAM_ID="credential" TYPE="Credential" RELEVANT_DATA_ID="credential"/>
+      <IN_PARAMETERS PARAM_ID="account" TYPE="Account" RELEVANT_DATA_ID="account"/>
+      <IN_PARAMETERS PARAM_ID="password" TYPE="String" RELEVANT_DATA_ID="password"/>
+      <IN_PARAMETERS PARAM_ID="isChangePwd" TYPE="String" RELEVANT_DATA_ID="isChangePwd"/>
+    </PARAMETERS>
+    <TRANSITION_RESTRICTION JOIN="XOR"/>
+    <SCRIPT EVENT="onComplete">
+          WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+        WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());
+    </SCRIPT>
+  </ACTIVITY>
+
+  <!-- END -->
+
+  <ACTIVITY ACTIVITYID="END" LIMIT="0">
+    <IMPLEMENTATION_TYPE>
+      <ROUTE/>
+    </IMPLEMENTATION_TYPE>
+  </ACTIVITY>
+
+  <TRANSITION TRANSITIONID="TRANSTART">
+    <TRANSITION_KIND>
+      <REGULAR FROM="START" TO="AddToVault"/>
+    </TRANSITION_KIND>
+  </TRANSITION>
+
+  <TRANSITION TRANSITIONID="TRANEND">
+    <TRANSITION_KIND>
+      <REGULAR FROM="AddToVault" TO="END"/>
+    </TRANSITION_KIND>
+  </TRANSITION>
+
+  <!-- Relevant Data Items -->
+
+  <RELEVANT_DATA
+      RELEVANT_DATA_ID="credential"
+      TYPE="Credential"
+      CONTEXT="Subject"
+  />
+  <RELEVANT_DATA
+      RELEVANT_DATA_ID="account"
+      TYPE="Account"
+      CONTEXT="BOTH"
+  />
+  <RELEVANT_DATA
+      RELEVANT_DATA_ID="password"
+      TYPE="String"
+  />
+  <RELEVANT_DATA
+      RELEVANT_DATA_ID="isChangePwd"
+      TYPE="String"
+  />
+</PROCESSDEFINITION>]]>
+      </value>
+      </attr>
+    </addRequest>
+
+    <!-- ======================================================== -->
+    <!--               Operation pim.checkin                      -->
+    <!-- ======================================================== -->
+    <addRequest dn="erglobalid=<%operation.pim.checkin%>,ou=operations,ou=itim,<%tenant.dn%>">
+      <attr name="objectclass">
+        <value>top</value>
+        <value>erManagedItem</value>
+        <value>erWorkflowDefinition</value>
+      </attr>      
+      <attr name="erglobalid"><value><%operation.pim.checkin%></value></attr>
+      <attr name="erversionid"><value><%operation.pim.checkin%></value></attr>
+      <attr name="erCategory"><value>Global</value></attr>
+      <attr name="erProcessName"><value>checkin</value></attr>
+      <attr name="erXML">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+ <PROCESSDEFINITION
+     NAME="checkinProcessName"
+     WORKFLOWID="CI"
+     COUNTRY_KEY="US"
+     DESCRIPTION="checkinProcessDesc"
+     DURATION_UNIT="m"
+     LIMIT="0"
+     CLASSIFICATION="SO"
+     VERSION="1.0"
+ >
+   <ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+   <PARAMETERS>
+     <IN_PARAMETERS
+       PARAM_ID="credentialLease"
+       TYPE="CredentialLease"
+       RELEVANT_DATA_ID="credentialLease"
+     />
+     </PARAMETERS>
+ 
+   <!-- START -->
+ 
+   <ACTIVITY ACTIVITYID="START" LIMIT="0">
+     <IMPLEMENTATION_TYPE>
+       <ROUTE/>
+     </IMPLEMENTATION_TYPE>
+   </ACTIVITY>
+ 
+ 
+   <!-- Check in credential -->
+ 
+   <ACTIVITY ACTIVITYID="Checkin" LIMIT="600000">
+     <IMPLEMENTATION_TYPE>
+       <APPLICATION APPLICATIONID="Checkin" CLASS_NAME="com.ibm.itim.workflowextensions.CredentialExtensions" METHOD_NAME="checkin"/>
+     </IMPLEMENTATION_TYPE>
+     <PARAMETERS>
+       <IN_PARAMETERS PARAM_ID="credentialLease" TYPE="CredentialLease" RELEVANT_DATA_ID="credentialLease"/>
+     </PARAMETERS>
+     <TRANSITION_RESTRICTION JOIN="XOR"/>
+     <SCRIPT EVENT="onComplete">
+           WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+         WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());
+     </SCRIPT>
+   </ACTIVITY>
+ 
+   <!-- END -->
+ 
+   <ACTIVITY ACTIVITYID="END" LIMIT="0">
+     <IMPLEMENTATION_TYPE>
+       <ROUTE/>
+     </IMPLEMENTATION_TYPE>
+   </ACTIVITY>
+ 
+   <TRANSITION TRANSITIONID="TRANSTART">
+     <TRANSITION_KIND>
+       <REGULAR FROM="START" TO="Checkin"/>
+     </TRANSITION_KIND>
+   </TRANSITION>
+ 
+   <TRANSITION TRANSITIONID="TRANEND">
+     <TRANSITION_KIND>
+       <REGULAR FROM="Checkin" TO="END"/>
+     </TRANSITION_KIND>
+   </TRANSITION>
+ 
+   <!-- Relevant Data Items -->
+ 
+   <RELEVANT_DATA
+       RELEVANT_DATA_ID="credentialLease"
+       TYPE="CredentialLease"
+       CONTEXT="Subject"
+   />
+</PROCESSDEFINITION>]]>
+        </value>
+      </attr>
+    </addRequest>
+	<!-- ======================================================== -->
+    <!--               Operation pim.processExpiredLeases     -->
+    <!-- ======================================================== -->
+    <addRequest dn="erglobalid=<%operation.pim.processExpiredLeases%>,ou=operations,ou=itim,<%tenant.dn%>">
+      <attr name="objectclass">
+        <value>top</value>
+        <value>erManagedItem</value>
+        <value>erWorkflowDefinition</value>
+      </attr>
+      <attr name="erglobalid"><value><%operation.pim.processExpiredLeases%></value></attr>
+      <attr name="erversionid"><value><%operation.pim.processExpiredLeases%></value></attr>
+      <attr name="erCategory"><value>Global</value></attr>
+      <attr name="erProcessName"><value>processExpiredLeases</value></attr>
+      <attr name="erXML">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+ <PROCESSDEFINITION
+     NAME="processExpiredLeasesProcessName"
+     WORKFLOWID="PL"
+     COUNTRY_KEY="US"
+     DESCRIPTION="processExpiredLeasesProcessDesc"
+     DURATION_UNIT="m"
+     LIMIT="0"
+     CLASSIFICATION="SO"
+     VERSION="1.0"
+ >
+   <ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+  
+   <!-- START -->
+ 
+   <ACTIVITY ACTIVITYID="START" LIMIT="0">
+     <IMPLEMENTATION_TYPE>
+       <ROUTE/>
+     </IMPLEMENTATION_TYPE>
+   </ACTIVITY>
+ 
+ 
+   <!-- Process Expired Leases -->
+ 
+ 	<!-- Process Rule -->
+		<ACTIVITY ACTIVITYID="processExpiredLeases" LIMIT="0" POST_SCRIPT="">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="processExpiredLeases" 
+								   CLASS_NAME="com.ibm.itim.workflowextensions.CredentialLeaseExpirationWorkflow" 
+								   METHOD_NAME="processExpiredLeases"
+			/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION SPLIT="XOR"/>
+		<SCRIPT EVENT="onComplete">
+			WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+			WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());
+		</SCRIPT>
+	</ACTIVITY>
+ 
+  	<!-- END -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- Transitions -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="processExpiredLeases"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="processExpiredLeases" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+</PROCESSDEFINITION>]]>    
+      </value>
+      </attr>
+    </addRequest> 
+
+	<!-- ======================================================== -->
+    <!--               Operation pim.handleExpiredLease     -->
+    <!-- ======================================================== -->
+    <addRequest dn="erglobalid=<%operation.pim.handleExpiredLease%>,ou=operations,ou=itim,<%tenant.dn%>">
+      <attr name="objectclass">
+        <value>top</value>
+        <value>erManagedItem</value>
+        <value>erWorkflowDefinition</value>
+      </attr>
+      <attr name="erglobalid"><value><%operation.pim.handleExpiredLease%></value></attr>
+      <attr name="erversionid"><value><%operation.pim.handleExpiredLease%></value></attr>
+      <attr name="erCategory"><value>Global</value></attr>
+      <attr name="erProcessName"><value>handleExpiredLease</value></attr>
+      <attr name="erXML">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION CLASSIFICATION="SO" COUNTRY_KEY="US" LIMIT="0"
+    NAME="HandleExpiredLease" SCHEMA_VERSION="1.0" STATUS="UNDER_TEST"
+    VERSION="1.0" WORKFLOWID="EL">
+    <PARAMETERS>
+        <IN_PARAMETERS EXTENDED_ATTRIBUTE="lease" PARAM_ID="lease"
+            RELEVANT_DATA_ID="lease" TYPE="CredentialLease"/>
+    </PARAMETERS>
+    <ACTIVITY ACTIVITYID="END" COMPLETE_ON_TIMEOUT="false" LIMIT="0"
+        NAME="End Activity" PRIORITY="NORMAL" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>
+            <ROUTE/>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="XOR"/>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="checkin" COMPLETE_ON_TIMEOUT="false" LIMIT="0"
+        PRIORITY="NORMAL" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>
+            <APPLICATION
+                CLASS_NAME="com.ibm.itim.workflowextensions.CredentialExtensions"
+                METHOD_NAME="checkin" TOOLNAME="SYSTEM"/>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>
+        <PARAMETERS>
+            <IN_PARAMETERS EXTENDED_ATTRIBUTE="lease" PARAM_ID="lease"
+                RELEVANT_DATA_ID="lease" TYPE="CredentialLease"/>
+            <IN_PARAMETERS EXTENDED_ATTRIBUTE="credential"
+                PARAM_ID="credential" RELEVANT_DATA_ID="credential" TYPE="Credential"/>
+            <IN_PARAMETERS EXTENDED_ATTRIBUTE="account"
+                PARAM_ID="account" RELEVANT_DATA_ID="account" TYPE="Account"/>
+            <IN_PARAMETERS EXTENDED_ATTRIBUTE="person" PARAM_ID="person"
+                RELEVANT_DATA_ID="lessee" TYPE="Person"/>
+        </PARAMETERS>
+        <SCRIPT EVENT="onComplete">WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());</SCRIPT>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="START" COMPLETE_ON_TIMEOUT="false" LIMIT="0"
+        NAME="Start Activity" PRIORITY="NORMAL" SKIP_ESCALATION="false">
+        <IMPLEMENTATION_TYPE>
+            <ROUTE/>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>
+        <SCRIPT EVENT="onComplete">var vLease = lease.get();
+var credentialDN = vLease.getPropertyAsString("ercvcatalog");
+var vCredential = new Credential(credentialDN);
+
+var lesseeDN = vLease.getPropertyAsString("erlessee");
+var vLessee = new Person(lesseeDN);
+
+var accountDN = vCredential.getPropertyAsString("eraccount");
+var vAccount = new Account(accountDN);
+
+var serviceDN = vAccount.getPropertyAsString("erservice");
+var vService = new Service(serviceDN);
+
+credential.set(vCredential);
+account.set(vAccount);
+lessee.set(vLessee);
+service.set(vService);</SCRIPT>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="notifyOnly" COMPLETE_ON_TIMEOUT="false" CONTINUE_ON_PARTICIPANT_FAILURE="true"
+        DESCRIPTION="work order" LIMIT="0" PRIORITY="NORMAL"
+        PROCESS="SYNC" SKIP_ESCALATION="false" TYPE="WORKORDER">
+        <IMPLEMENTATION_TYPE>
+            <MANUAL CUE_TEXT="" DEFERRAL_LIMIT="90">
+                <NOTIFICATION GRP_EMAIL="false"
+                    GRP_EMAIL_TOPIC="notifyOnly" USE_DEFAULT_TEMPLATE="false">
+                    <SUBJECT><![CDATA[<RE key="leaseExpiredSubject"><PARM><RE key="account_on_service"><PARM><JS>
+var myAccount = account.get();
+return myAccount.name;
+</JS></PARM><PARM><RE><KEY><JS>
+var myService = service.get();
+return myService.name;
+</JS></KEY></RE></PARM></RE></PARM></RE>]]>]]&gt;<![CDATA[</SUBJECT>
+                    <MESSAGE MIME_TYPE="text/plain"><![CDATA[<RE key="leaseExpired"><PARM><JS>var myPerson = lessee.get();return myPerson.name;</JS></PARM></RE>
+<RE key="accountID"/>: <JS>var myAccount = account.get();return myAccount.name;</JS>
+<RE key="serviceName"/>: <JS>var myService = service.get();return myService.name;</JS>
+<RE key="lesseeName"/>: <JS>var myPerson = lessee.get();return myPerson.name;</JS>
+<RE key="leaseExpirationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE>
+<RE key="notificationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>]]>]]&gt;<![CDATA[</MESSAGE>
+                    <MESSAGE MIME_TYPE="text/html"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p><RE key="leaseExpired"><PARM><JS>var myPerson = lessee.get();return myPerson.name;</JS></PARM></RE></p>
+					</td>
+				</tr>
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myAccount = account.get();return myAccount.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="serviceName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myService = service.get();return myService.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="lesseeName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myPerson = lessee.get();return myPerson.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="leaseExpirationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="notificationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+						</table>
+			    </td>
+                </tr>
+
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2012</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>]]&gt;<![CDATA[</MESSAGE>
+                </NOTIFICATION>
+                <WORKORDER SUBTYPE="1" WAIT_FOR_COMPLETION="false"/>
+            </MANUAL>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>
+        <PARTICIPANT PARTICIPANTID="ID3357788320957009333" TYPE="CM">
+            <SCRIPT>var vCredential = credential.get();
+var participant1 = vCredential.getNotificationRecipient();
+var participant2 = new Participant(ParticipantType.USER, lessee.get().dn);
+var participants = new Array(participant1, participant2);
+return participants;</SCRIPT>
+        </PARTICIPANT>
+        <SCRIPT EVENT="onComplete">WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());</SCRIPT>
+    </ACTIVITY>
+    <ACTIVITY ACTIVITYID="notify" COMPLETE_ON_TIMEOUT="false" CONTINUE_ON_PARTICIPANT_FAILURE="true"
+        DESCRIPTION="work order" LIMIT="0" PRIORITY="NORMAL"
+        PROCESS="SYNC" SKIP_ESCALATION="false" TYPE="WORKORDER">
+        <IMPLEMENTATION_TYPE>
+            <MANUAL CUE_TEXT="" DEFERRAL_LIMIT="90">
+                <NOTIFICATION GRP_EMAIL="false" GRP_EMAIL_TOPIC="notify" USE_DEFAULT_TEMPLATE="false">
+                    <SUBJECT><![CDATA[<JS>if (process.getActivity("checkin").resultSummary == 'SF') { '<RE key="leaseExpiredAndFailedToCheckinSubject"><PARM><RE key="account_on_service"><PARM><JS>
+return account.get().name;
+</JS></PARM><PARM><RE><KEY><JS>
+return service.get().name;
+</JS></KEY></RE></PARM></RE></PARM></RE>'; }</JS>
+<JS>if (process.getActivity("checkin").resultSummary != 'SF') { '<RE key="leaseExpiredAndCheckedinSubject"><PARM><RE key="account_on_service"><PARM><JS>
+return account.get().name;
+</JS></PARM><PARM><RE><KEY><JS>
+return service.get().name;
+</JS></KEY></RE></PARM></RE></PARM></RE>'; }</JS>]]>]]&gt;<![CDATA[</SUBJECT>
+                    <MESSAGE MIME_TYPE="text/plain"><![CDATA[<JS>if (process.getActivity("checkin").resultSummary == 'SF') { '<RE key="leaseExpiredAndFailedToCheckin"/>'; }</JS>
+<JS>if (process.getActivity("checkin").resultSummary != 'SF') { '<RE key="leaseExpiredAndCheckedin"/>'; }</JS>
+<RE key="accountID"/>: <JS>var myAccount = account.get();return myAccount.name;</JS>
+<RE key="serviceName"/>: <JS>var myService = service.get();return myService.name;</JS>
+<RE key="lesseeName"/>: <JS>var myPerson = lessee.get();return myPerson.name;</JS>
+<RE key="leaseExpirationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE>
+<RE key="notificationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>]]>]]&gt;<![CDATA[</MESSAGE>
+                    <MESSAGE MIME_TYPE="text/html"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+                            <JS>if (process.getActivity("checkin").resultSummary == 'SF') { '<RE key="leaseExpiredAndFailedToCheckin"/>'; }</JS>
+                            <JS>if (process.getActivity("checkin").resultSummary != 'SF') { '<RE key="leaseExpiredAndCheckedin"/>'; }</JS>
+						</p>
+					</td>
+				</tr>
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myAccount = account.get();return myAccount.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="serviceName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myService = service.get();return myService.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="lesseeName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myPerson = lessee.get();return myPerson.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="leaseExpirationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="notificationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+						</table>
+			    </td>
+                </tr>
+
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2012</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]>]]&gt;<![CDATA[</MESSAGE>
+                </NOTIFICATION>
+                <WORKORDER SUBTYPE="1" WAIT_FOR_COMPLETION="false"/>
+            </MANUAL>
+        </IMPLEMENTATION_TYPE>
+        <TRANSITION_RESTRICTION JOIN="AND" SPLIT="AND"/>
+        <PARTICIPANT PARTICIPANTID="ID5294576911438530976" TYPE="CM">
+            <SCRIPT>var vCredential = credential.get();
+var participant1 = vCredential.getNotificationRecipient();
+var participant2 = new Participant(ParticipantType.USER, lessee.get().dn);
+var participants = new Array(participant1, participant2);
+return participants;</SCRIPT>
+        </PARTICIPANT>
+        <SCRIPT EVENT="onComplete">WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());</SCRIPT>
+    </ACTIVITY>
+    <TRANSITION TRANSITIONID="id3349699755740783389">
+        <TRANSITION_KIND>
+            <REGULAR FROM="notifyOnly" TO="END">
+                <SCRIPT>true</SCRIPT>
+            </REGULAR>
+        </TRANSITION_KIND>
+    </TRANSITION>
+    <TRANSITION NAME="notifyOnly" TRANSITIONID="id3349686600830238829">
+        <TRANSITION_KIND>
+            <REGULAR FROM="START" TO="notifyOnly">
+                <SCRIPT>credential.get().isNotifyOnly()</SCRIPT>
+            </REGULAR>
+        </TRANSITION_KIND>
+    </TRANSITION>
+    <TRANSITION TRANSITIONID="id728768504798571667">
+        <TRANSITION_KIND>
+            <REGULAR FROM="checkin" TO="notify">
+                <SCRIPT>true</SCRIPT>
+            </REGULAR>
+        </TRANSITION_KIND>
+    </TRANSITION>
+    <TRANSITION TRANSITIONID="id728774278697987318">
+        <TRANSITION_KIND>
+            <REGULAR FROM="notify" TO="END">
+                <SCRIPT>true</SCRIPT>
+            </REGULAR>
+        </TRANSITION_KIND>
+    </TRANSITION>
+    <TRANSITION TRANSITIONID="id728758979667224268">
+        <TRANSITION_KIND>
+            <REGULAR FROM="START" TO="checkin">
+                <SCRIPT>!credential.get().isNotifyOnly()</SCRIPT>
+            </REGULAR>
+        </TRANSITION_KIND>
+    </TRANSITION>
+    <RELEVANT_DATA RELEVANT_DATA_ID="lease" TYPE="CredentialLease"/>
+    <RELEVANT_DATA CONTEXT="Subject" ENTITY=""
+        RELEVANT_DATA_ID="account" TYPE="Account"/>
+    <RELEVANT_DATA CONTEXT="Requestee" ENTITY=""
+        RELEVANT_DATA_ID="lessee" TYPE="Person"/>
+    <RELEVANT_DATA RELEVANT_DATA_ID="service" TYPE="Service"/>
+    <RELEVANT_DATA RELEVANT_DATA_ID="credential" TYPE="Credential"/>
+</PROCESSDEFINITION>]]>    
+      </value>
+      </attr>
+    </addRequest> 
+    
+            <!-- ======================================================== -->
+            <!--               Operation pim.sharedAccessBulkLoad         -->
+            <!-- ======================================================== -->
+            <addRequest dn="erglobalid=<%operation.pim.sharedAccessBulkLoad%>,ou=operations,ou=itim,<%tenant.dn%>">
+              <attr name="objectclass">
+                <value>top</value>
+                <value>erManagedItem</value>
+                <value>erWorkflowDefinition</value>
+              </attr>
+              <attr name="erglobalid"><value><%operation.pim.sharedAccessBulkLoad%></value></attr>
+              <attr name="erversionid"><value><%operation.pim.sharedAccessBulkLoad%></value></attr>
+              <attr name="erCategory"><value>Global</value></attr>
+              <attr name="erProcessName"><value>sharedAccessBulkLoad</value></attr>
+              <attr name="erXML">
+                <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+         <PROCESSDEFINITION
+             NAME="sharedAccessBulkLoadProcessName"
+             WORKFLOWID="BL"
+             COUNTRY_KEY="US"
+             DESCRIPTION="sharedAccessBulkLoadProcessDesc"
+             DURATION_UNIT="m"
+             LIMIT="0"
+             CLASSIFICATION="SO"
+             VERSION="1.0"
+         >
+           <ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+           <PARAMETERS>
+             <IN_PARAMETERS
+               PARAM_ID="loadID"
+               TYPE="String"
+               RELEVANT_DATA_ID="loadID"
+             />
+             <IN_PARAMETERS
+	       PARAM_ID="loadName"
+	       TYPE="String"
+	       RELEVANT_DATA_ID="loadName"
+             />
+            <IN_PARAMETERS
+              PARAM_ID="user"
+              TYPE="DistinguishedName"
+              RELEVANT_DATA_ID="user"
+            />
+           </PARAMETERS>
+         
+           <!-- START -->
+         
+           <ACTIVITY ACTIVITYID="START" LIMIT="0">
+             <IMPLEMENTATION_TYPE>
+               <ROUTE/>
+             </IMPLEMENTATION_TYPE>
+           </ACTIVITY>
+         
+         
+           <!-- Bulk Load Shared Access Objects -->
+         
+           <ACTIVITY ACTIVITYID="SharedAccessBulkLoad" LIMIT="0">
+             <IMPLEMENTATION_TYPE>
+               <APPLICATION APPLICATIONID="SharedAccessBulkLoad" CLASS_NAME="com.ibm.itim.workflowextensions.SharedAccessExtensions" METHOD_NAME="sharedAccessBulkLoad"/>
+             </IMPLEMENTATION_TYPE>
+             <PARAMETERS>
+               <IN_PARAMETERS PARAM_ID="loadID" TYPE="String" RELEVANT_DATA_ID="loadID"/>
+               <IN_PARAMETERS PARAM_ID="loadName" TYPE="String" RELEVANT_DATA_ID="loadName"/>
+               <IN_PARAMETERS EXTENDED_ATTRIBUTE="user" PARAM_ID="user" RELEVANT_DATA_ID="user" TYPE="DistinguishedName"/>
+             </PARAMETERS>
+             <TRANSITION_RESTRICTION JOIN="XOR"/>
+             <SCRIPT EVENT="onComplete">
+                 WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult());
+                 WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());
+             </SCRIPT>
+           </ACTIVITY>
+         
+           <!-- END -->
+         
+           <ACTIVITY ACTIVITYID="END" LIMIT="0">
+             <IMPLEMENTATION_TYPE>
+               <ROUTE/>
+             </IMPLEMENTATION_TYPE>
+           </ACTIVITY>
+         
+           <TRANSITION TRANSITIONID="TRANSTART">
+             <TRANSITION_KIND>
+               <REGULAR FROM="START" TO="SharedAccessBulkLoad"/>
+             </TRANSITION_KIND>
+           </TRANSITION>
+         
+           <TRANSITION TRANSITIONID="TRANEND">
+             <TRANSITION_KIND>
+               <REGULAR FROM="SharedAccessBulkLoad" TO="END"/>
+             </TRANSITION_KIND>
+           </TRANSITION>
+         
+           <!-- Relevant Data Items -->
+         
+           <RELEVANT_DATA
+               RELEVANT_DATA_ID="loadID"
+               TYPE="String"
+           />
+           <RELEVANT_DATA
+	       RELEVANT_DATA_ID="loadName"
+	       TYPE="String"
+	       CONTEXT="Subject"
+           />
+           <RELEVANT_DATA
+               RELEVANT_DATA_ID="user"
+               TYPE="DistinguishedName"
+           />
+        </PROCESSDEFINITION>]]>
+                </value>
+              </attr>
+    </addRequest>    
+
+    <!-- ================================================================ -->
+    <!--  Mail Activity Template - Lease expired notification              -->
+    <!-- ================================================================ -->
+    <addRequest dn="cn=<%config.workflow.mail.leaseExpiredNotify.id=00000000000000000099%>,erglobalid=<%config.workflow=00000000000000000033%>,ou=config,ou=itim,<%tenant.dn%>">
+      <attr name="objectclass">
+        <value>top</value>
+        <value>erTemplate</value>
+      </attr>            
+      <attr name="cn"><value><%config.workflow.mail.leaseExpiredNotify.id%></value></attr>
+      <attr name="erIsReadOnly"><value>true</value></attr>
+      <attr name="erType"><value>3</value></attr>
+      <attr name="erTemplateName"><value>LeaseExpiredNotify</value></attr>
+      <attr name="erEnabled"><value>true</value></attr>
+      <attr name="erSubject"><value><![CDATA[<RE key="leaseExpiredSubject"><PARM><RE key="account_on_service"><PARM><JS>
+var myAccount = account.get();
+return myAccount.name;
+</JS></PARM><PARM><RE><KEY><JS>
+var myService = service.get();
+return myService.name;
+</JS></KEY></RE></PARM></RE></PARM></RE>]]></value></attr>
+      <attr name="erText"><value><![CDATA[<RE key="leaseExpired"><PARM><JS>var myPerson = lessee.get();return myPerson.name;</JS></PARM></RE>
+<RE key="accountID"/>: <JS>var myAccount = account.get();return myAccount.name;</JS>
+<RE key="serviceName"/>: <JS>var myService = service.get();return myService.name;</JS>
+<RE key="lesseeName"/>: <JS>var myPerson = lessee.get();return myPerson.name;</JS>
+<RE key="leaseExpirationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE>
+<RE key="notificationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+]]></value></attr>
+      <attr name="erXHTML"><value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p><RE key="leaseExpired"><PARM><JS>var myPerson = lessee.get();return myPerson.name;</JS></PARM></RE></p>
+					</td>
+				</tr>
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myAccount = account.get();return myAccount.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="serviceName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myService = service.get();return myService.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="lesseeName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myPerson = lessee.get();return myPerson.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="leaseExpirationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="notificationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+						</table>
+			    </td>
+                </tr>
+
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2012</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]></value></attr>
+    </addRequest>
+
+    <!-- ================================================================ -->
+    <!--  Mail Activity Template - Lease expired notification and checkin             -->
+    <!-- ================================================================ -->
+    <addRequest dn="cn=<%config.workflow.mail.leaseExpiredNotifyCheckin.id=00000000000000000100%>,erglobalid=<%config.workflow=00000000000000000033%>,ou=config,ou=itim,<%tenant.dn%>">
+      <attr name="objectclass">
+        <value>top</value>
+        <value>erTemplate</value>
+      </attr>            
+      <attr name="cn"><value><%config.workflow.mail.leaseExpiredNotifyCheckin.id%></value></attr>
+      <attr name="erIsReadOnly"><value>true</value></attr>
+      <attr name="erType"><value>3</value></attr>
+      <attr name="erTemplateName"><value>LeaseExpiredNotifyCheckin</value></attr>
+      <attr name="erEnabled"><value>true</value></attr>
+      <attr name="erSubject"><value><![CDATA[<JS>if (process.getActivity("checkin").resultSummary == 'SF') { '<RE key="leaseExpiredAndFailedToCheckinSubject"><PARM><RE key="account_on_service"><PARM><JS>
+return account.get().name;
+</JS></PARM><PARM><RE><KEY><JS>
+return service.get().name;
+</JS></KEY></RE></PARM></RE></PARM></RE>'; }</JS>
+<JS>if (process.getActivity("checkin").resultSummary != 'SF') { '<RE key="leaseExpiredAndCheckedinSubject"><PARM><RE key="account_on_service"><PARM><JS>
+return account.get().name;
+</JS></PARM><PARM><RE><KEY><JS>
+return service.get().name;
+</JS></KEY></RE></PARM></RE></PARM></RE>'; }</JS>]]></value></attr>
+      <attr name="erText"><value><![CDATA[<JS>if (process.getActivity("checkin").resultSummary == 'SF') { '<RE key="leaseExpiredAndFailedToCheckin"/>'; }</JS>
+<JS>if (process.getActivity("checkin").resultSummary != 'SF') { '<RE key="leaseExpiredAndCheckedin"/>'; }</JS>
+<RE key="accountID"/>: <JS>var myAccount = account.get();return myAccount.name;</JS>
+<RE key="serviceName"/>: <JS>var myService = service.get();return myService.name;</JS>
+<RE key="lesseeName"/>: <JS>var myPerson = lessee.get();return myPerson.name;</JS>
+<RE key="leaseExpirationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE>
+<RE key="notificationTime"/>: <RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE>
+]]></value></attr>
+      <attr name="erXHTML"><value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$TITLE</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link type="text/css" title="Styles" rel="stylesheet" href="$BASE_URL/console/css/imperative.css" />
+</head>
+<body topmargin="0" marginheight="0" leftmargin="0" marginwidth="0" bgcolor="ffffff">
+<!-- Block for the Template Header part  -->
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Tivoli logo -->
+			<td width="186" background="$BASE_URL/console/html/images/mid-part-1.gif"><img src="$BASE_URL/console/html/images/left-tiv-1.gif" alt="$LOGO_ALT" /></td>
+			<!-- Middle part -->
+			<td background="$BASE_URL/console/html/images/mid-part-1.gif" width="692"></td>
+			<!-- IBM logo -->
+			<td align="right" background="$BASE_URL/console/html/images/mid-part-1.gif"><img border="0" src="$BASE_URL/console/html/images/ibm_banner.gif" width="105"
+				height="50" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- Title Bar -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8">
+			<td height="20" width="8"></td>
+			<!-- ITIM Notification Label -->
+			<td height="20" class="text-description" width="979" valign="middle">$TITLE</td>
+			<td height="20" width="5"></td>
+		</tr>
+	</tbody>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr>
+			<!-- Background for the template body -->
+			<td background="$BASE_URL/console/html/images/portfolio_background.gif" height="148">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                	<td width="5"></td>
+                    <td align="left" class="text-description" valign="middle" height="65">
+               	    <!-- Start of notification body -->
+						<p>
+                            <JS>if (process.getActivity("checkin").resultSummary == 'SF') { '<RE key="leaseExpiredAndFailedToCheckin"/>'; }</JS>
+                            <JS>if (process.getActivity("checkin").resultSummary != 'SF') { '<RE key="leaseExpiredAndCheckedin"/>'; }</JS>
+						</p>
+					</td>
+				</tr>
+				<tr>
+				<td width="5"></td>
+				<td align="center"  valign="middle">
+						<table width="98%" border="0" cellspacing="1" cellpadding="1" bgcolor="gray">
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="accountID"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myAccount = account.get();return myAccount.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="serviceName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myService = service.get();return myService.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="lesseeName"/>:</td><td width="773" class="text-description" bgcolor="white"><JS>var myPerson = lessee.get();return myPerson.name;</JS></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="leaseExpirationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>lease.get().getPropertyAsDate("erleaseexpirationtime").getTime();</JS></PARM></RE></td></tr>
+							<tr align="left" valign="middle"><td class="text-description" bgcolor="EBEDF3"><RE key="notificationTime"/>:</td><td width="773" class="text-description" bgcolor="white"><RE key="readOnlyDateFormat"><PARM><JS>(new Date()).getTime();</JS></PARM></RE></td></tr>
+						</table>
+			    </td>
+                </tr>
+
+                <tr>
+                <td align="center"  valign="middle" height="30"></td>
+                </tr>
+            </table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- Copyright Table -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr bgcolor="#a8a8a8" align="center" valign="middle">
+			<td class="text-description">IBM Copyright 2012</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>]]></value></attr>
+    </addRequest>
+    
+         <!-- ======================================================== -->
+         <!--   Privileged Administrator group                                        -->
+         <!-- ======================================================== -->
+    	<addRequest dn="erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+    	  <attr name="objectclass">
+            <value>top</value>
+            <value>erManagedItem</value>
+            <value>erSystemRole</value>
+          </attr>
+          <attr name="erglobalid"><value><%sysrole.pimadmin.id%></value></attr>
+          <attr name="errolename"><value>Privileged Administrator</value></attr>
+          <attr name="description"><value>Default Privileged Administrator Group for <%org.name%></value></attr>
+          <attr name="ersystemrolecategory"><value>7</value></attr>
+    	  <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+    	</addRequest>
+    	
+    	<!-- ======================================================== -->
+        <!--   Privileged User group                                        -->
+        <!-- ======================================================== -->
+    	<addRequest dn="erglobalid=<%sysrole.pimuser.id=00000000000000000103%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%>">
+    	  <attr name="objectclass">
+            <value>top</value>
+            <value>erManagedItem</value>
+            <value>erSystemRole</value>
+          </attr>
+          <attr name="erglobalid"><value><%sysrole.pimuser.id%></value></attr>
+          <attr name="errolename"><value>Privileged User</value></attr>
+          <attr name="description"><value>Default Privileged User Group for <%org.name%></value></attr>
+          <attr name="ersystemrolecategory"><value>8</value></attr>
+    	  <attr name="erparent"><value>erglobalid=<%org.id%>,<%tenant.dn%></value></attr>
+	</addRequest>
+	
+	<!-- ========================================================  -->
+	<!-- Add PIM-related ACI for privileged administrator    		-->
+	<!-- these are new in 6.0									   -->
+	<!-- ========================================================  -->
+	<modifyRequest dn="erglobalid=<%org.id%>,<%tenant.dn%>">    
+	<modification name="eracl" operation="add">	
+		<value><![CDATA[<AccessRight name="Default ACI for ITIM User: Grant Delegate to Privileged Administrator Group" scope="subtree"><target><objectclass>erSystemUser</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights><attributeRight ops="rw"><attribute>erisdelegated</attribute></attributeRight></attributeRights><classRights><classRight>modify</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for ITIM User: Grant Add to Privileged Administrator Group" scope="subtree"><target><objectclass>erSystemUser</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights><attributeRight ops="rw"><all/></attributeRight></attributeRights><classRights><classRight>add</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Recertification Policy: Grant All to Privileged Administrator Group" scope="subtree"><target><objectclass>erRecertificationPolicy</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights><attributeRight ops="rw"><all/></attributeRight></attributeRights><classRights><classRight>search</classRight><classRight>modify</classRight><classRight>add</classRight><classRight>remove</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Accounts on a Service Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>3</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Services Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>12</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Dormant Accounts Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>19</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Reconciliation Statistics Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>20</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Orphan Accounts Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>23</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Recertification History Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>46</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Pending Recertification Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>47</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Recertification Policies Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>48</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Individual Access Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>49</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Access Report: Grant Run to Privileged Administrator Group" scope="subtree"><target><objectclass>50</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole><systemRole>erglobalid=<%sysrole.serviceowner.id=00000000000000000035%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights></attributeRights><classRights><classRight>run</classRight></classRights></permission></AccessRight>]]></value>
+		<value><![CDATA[<AccessRight name="Default ACI for Role: Grant All to Privileged Administrator Group" scope="subtree"><target><objectclass>erRole</objectclass></target><principals><systemRole>erglobalid=<%sysrole.pimadmin.id=00000000000000000102%>,ou=sysRoles,erglobalid=<%org.id%>,<%tenant.dn%></systemRole></principals><permission action="grant"><attributeRights><attributeRight ops="rw"><all/></attributeRight></attributeRights><classRights><classRight>search</classRight><classRight>modify</classRight><classRight>add</classRight><classRight>remove</classRight></classRights></permission></AccessRight>]]></value>
+	</modification>
+	</modifyRequest>
+
+</batchRequest>

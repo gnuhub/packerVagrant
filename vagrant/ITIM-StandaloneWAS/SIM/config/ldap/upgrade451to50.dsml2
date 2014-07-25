@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batchRequest>
+
+<modifyRequest dn="ertype=Global,ou=category,ou=itim,<%tenant.dn%>">
+	<modification name="erxml" operation="add">
+  		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiAccountSuspend" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiaccountsuspend=00000000000000000038%>,ou=operations,ou=itim,<%tenant.dn%>">
+<OperationParameter 
+	name="accounts"
+	type="List"
+  />
+</ObjectProfileOperation>  		
+  		]]></value>
+
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiAccountRestore" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiaccountrestore=00000000000000000039%>,ou=operations,ou=itim,<%tenant.dn%>">
+<OperationParameter 
+	name="accounts"
+	type="List"
+  />
+</ObjectProfileOperation>
+		]]></value>
+		
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiAccountDelete" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiaccountdelete=00000000000000000040%>,ou=operations,ou=itim,<%tenant.dn%>">
+<OperationParameter 
+	name="accounts"
+	type="List"
+  />
+</ObjectProfileOperation>
+		]]></value>
+		
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiAccountPassword" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiaccountpassword=00000000000000000041%>,ou=operations,ou=itim,<%tenant.dn%>">
+	<OperationParameter name="accounts" type="List"/>
+	<OperationParameter name="notifyFlag" type="String"/>
+</ObjectProfileOperation>
+		]]></value>
+		
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiUserSuspend" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiusersuspend=00000000000000000042%>,ou=operations,ou=itim,<%tenant.dn%>">
+	<OperationParameter name="people" type="List"/>
+	<OperationParameter name="suspendAccounts" type="String"/>
+</ObjectProfileOperation>
+		]]></value>	    
+
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiUserRestore" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiuserrestore=00000000000000000043%>,ou=operations,ou=itim,<%tenant.dn%>">
+	<OperationParameter name="people" type="List"/>  
+	<OperationParameter name="restoreAccounts" type="String"/>   
+</ObjectProfileOperation>
+		]]></value>
+
+		<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation  
+  name="multiUserDelete" 
+  isStatic="true"  
+  isSystem="true"  
+  definitionDN="erglobalid=<%operation.global.multiuserdelete=00000000000000000044%>,ou=operations,ou=itim,<%tenant.dn%>">
+	<OperationParameter name="people" type="List"/>
+	<OperationParameter name="deleteAccounts" type="String"/>  
+</ObjectProfileOperation>
+		]]></value>	    
+		
+	</modification>
+</modifyRequest>
+
+<modifyRequest dn="ertype=Account, ou=category, ou=itim, <%tenant.dn%>">
+	<modification name="erxml" operation="add">
+  		<value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;ObjectProfileOperation
+  name=&quot;multiaccountadopt&quot;
+  isStatic=&quot;true&quot;
+  isSystem=&quot;true&quot;
+  definitionDN=&quot;erglobalid=00000000000000000036,ou=operations,ou=itim,<%tenant.dn%>&quot;
+&gt;
+  &lt;OperationParameter
+    name=&quot;account&quot;
+    type=&quot;Account&quot;
+  /&gt;
+&lt;/ObjectProfileOperation&gt;
+      		</value>
+
+		<value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;ObjectProfileOperation
+  name=&quot;singleaccountadopt&quot;
+  isStatic=&quot;false&quot;
+  isSystem=&quot;true&quot;
+  definitionDN=&quot;erglobalid=00000000000000000037,ou=operations,ou=itim,<%tenant.dn%>&quot;
+&gt;
+  &lt;OperationParameter
+    name=&quot;account&quot;
+    type=&quot;Account&quot;
+  /&gt;
+&lt;/ObjectProfileOperation&gt;
+      		</value> 
+
+	</modification>
+</modifyRequest>
+
+<modifyRequest dn="erformname=erHostedService,ou=formTemplates,ou=itim,<%tenant.dn%>">
+	<modification name="erxml" operation="replace">
+  		<value><![CDATA[
+<page>
+<body>
+<form action="formvalidator0">
+  <formElement name="data.erservicename" label="$erservicename" required="true">
+    <input name="data.erservicename" size="50" type="text"/>
+    <constraint>
+      <type>REQUIRED</type>
+      <parameter>true</parameter>
+    </constraint>
+  </formElement>
+  <formElement name="data.erservice" label="$erservice" required="true">
+    <searchFilter type="input">
+      <filter>(&amp;(objectclass&#61;erserviceitem)(!(objectclass&#61;erDSMLInfoService))(!(objectclass&#61;erDSML2Service))(!(objectclass&#61;erHostedService))(!(erisdeleted&#61;Y)))</filter>
+      <base>global</base>
+      <attribute>erservicename</attribute>
+      <sourceAttribute>dn</sourceAttribute>
+      <size/>
+      <prepopulate>false</prepopulate>
+    </searchFilter>
+    <constraint>
+      <type>REQUIRED</type>
+      <parameter>true</parameter>
+    </constraint>
+  </formElement>
+  <formElement name="data.erprerequisite" label="$erprerequisite">
+    <searchControl type="input" category="Service">
+      <comboItem/>
+    </searchControl>
+  </formElement>
+  <formElement name="data.owner" label="$owner">
+    <searchControl type="input" category="Person">
+      <comboItem/>
+    </searchControl>
+  </formElement>
+  <formElement name="data.erobjectprofilename" label="$erobjectprofilename" required="true">
+    <input name="data.erobjectprofilename" size="50" type="text"/>
+    <constraint>
+      <type>REQUIRED</type>
+      <parameter>true</parameter>
+    </constraint>
+  </formElement>
+</form>
+</body>
+</page>
+      ]]></value>
+	</modification>
+</modifyRequest>
+
+<!-- This file contains the modified default data entries which are either at 
+     the tenant-scope (tenant.tmpl) or specific to the root organization (rootOrganization.tmpl)
+     between ITIM 4.6 Enterprise and ITIM 5.0. 
+
+     The upgrade program will load this file only once.
+          
+     Note: DO NOT add new entries in this file, new entries should be added into
+     	     tenant.tmpl, rootOrganization.tmpl, OR organization.tmpl.
+          
+     -->
+ 
+
+    <!-- ========================================================  -->
+    <!-- Add "erUid", "owner" and "erService" to ITIMAccount       -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="erobjectprofilename=ITIMAccount,ou=serviceProfile,ou=itim,<%tenant.dn%>">    
+	<modification name="erattrmap" operation="add">
+        <value>erUid=erUid</value>
+        <value>owner=owner</value>
+        <value>erService=erService</value>
+    </modification>
+    </modifyRequest>
+
+    <!-- ========================================================  -->
+    <!-- Add "requestAccess","removeAccess","approveRoleByOwner","approveRole" to erxml attribute -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="ertype=Global,ou=category,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="add">
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="requestAccess"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.requestAccess=000000000000000000063%>,ou=operations,ou=itim,<%tenant.dn%>"
+>
+  <OperationParameter
+    name="owner"
+    type="Person"
+  />
+  <OperationParameter
+    name="service"
+    type="Service"
+  />
+  <OperationParameter
+    name="account"
+    type="Account"
+  />
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="removeAccess"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.removeAccess=000000000000000000064%>,ou=operations,ou=itim,<%tenant.dn%>"
+>
+  <OperationParameter
+    name="owner"
+    type="Person"
+  />
+  <OperationParameter
+    name="service"
+    type="Service"
+  />
+  <OperationParameter
+    name="account"
+    type="Account"
+  />
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="approveRolesByOwner"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.approveRolesByOwner=00000000000000000076%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+  <OperationParameter name="person" type="Person" description="A person with new roles that need approval by the role owner."/>
+  <OperationParameter name="container" type="OrganizationalContainer" description="Organizational Container for the person with roles to approve."/>
+</ObjectProfileOperation>
+]]>
+      </value>
+        <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<ObjectProfileOperation
+  name="approveRole"
+  isStatic="true"
+  isSystem="true"
+  definitionDN="erglobalid=<%operation.global.approveRole=00000000000000000077%>,ou=operations,ou=itim,<%tenant.dn%>"
+  >
+    <OperationParameter name="personIn" type="Person" description="Person the approval is for."/>
+    <OperationParameter name="roleIn" type="OrgRole" description="Role the approval is for."/>
+</ObjectProfileOperation>
+]]>
+      </value>
+	</modification>
+    </modifyRequest>
+  
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account suspend      -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountsuspend%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace">
+<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="globalLSProcessName"
+    WORKFLOWID="LS"
+    AUTHOR="Corey Williams"
+    COUNTRY_KEY="US"
+    DESCRIPTION="multipleAccountSuspendProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="43200000"
+    CREATED="04-March-2005"
+    VALID_FROM="04-March-2005"
+    VALID_TO=""
+    CLASSIFICATION="LS"
+    VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+	<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Suspend Account Loop -->
+	<ACTIVITY ACTIVITYID="SUSPENDACCOUNTS" LIMIT="0" NAME="Split Account collection" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="SuspendAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="suspendAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+	</ACTIVITY>
+	
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="SUSPENDACCOUNTS"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="SUSPENDACCOUNTS" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="com.ibm.itim.dataservices.model.DistinguishedName" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+    </modification>
+ </modifyRequest>
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account restore      -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountrestore%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace">    
+    <value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION
+    NAME="globalLRProcessName"
+    WORKFLOWID="LR"
+    AUTHOR="Corey Williams"
+    COUNTRY_KEY="US"
+    DESCRIPTION="multipleAccountRestoreProcessDesc"
+    DURATION_UNIT="m"
+    LIMIT="43200000"
+    CREATED="04-March-2005"
+    VALID_FROM="04-March-2005"
+    VALID_TO=""
+    CLASSIFICATION="LR"
+    VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+		<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Restore Account Loop -->
+	<ACTIVITY ACTIVITYID="RESTOREACCOUNTS" LIMIT="0" NAME="Split Account collection" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="RestoreAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="restoreAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+	</ACTIVITY>
+	
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="RESTOREACCOUNTS"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="RESTOREACCOUNTS" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="Account" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+    </modification>
+  </modifyRequest>
+  
+ <!-- ========================================================  -->
+ <!-- modify workflow definition for multi account delete       -->
+ <!-- ========================================================  -->
+ <modifyRequest dn="erglobalid=<%operation.global.multiaccountdelete%>,ou=operations,ou=itim,<%tenant.dn%>">    
+	<modification name="erxml" operation="replace"> 
+	<value><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PROCESSDEFINITION 
+        NAME="globalLDProcessName"
+        WORKFLOWID="LD"
+        AUTHOR="Corey Williams"
+        COUNTRY_KEY="US"
+        DESCRIPTION="multipleAccountDeleteProcessDesc"
+        DURATION_UNIT="m"
+        LIMIT="43200000"
+        CREATED="04-March-2005"
+        VALID_FROM="04-March-2005"
+        VALID_TO=""
+        CLASSIFICATION="LD"
+        VERSION="1.0">
+	<ESCALATION_PARTICIPANT PARTICIPANTID="SystemAdmin" TYPE="SA" NAME=""/>
+	<PARAMETERS>
+		<IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+	</PARAMETERS>
+
+	<!-- Process Start -->
+	<ACTIVITY ACTIVITYID="START" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+	</ACTIVITY>
+	
+	<!-- Delete Person Loop -->
+	<ACTIVITY ACTIVITYID="deleteAccounts"
+		DESCRIPTION="Multiple Account Deletion." LIMIT="86400000"
+		NAME="Split Account collection"
+		PRIORITY="NORMAL" PROCESS="SYNC">
+		<IMPLEMENTATION_TYPE>
+			<APPLICATION APPLICATIONID="DeleteAccounts" CLASS_NAME="com.ibm.itim.workflowextensions.AccountExtensions" METHOD_NAME="deleteAccounts"/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+		<PARAMETERS>
+		    <IN_PARAMETERS RELEVANT_DATA_ID="accounts"/>
+		</PARAMETERS>
+		<PARTICIPANT PARTICIPANTID="ID127272672169882670" TYPE="SA"/>
+		<SCRIPT EVENT="onComplete">
+          	WorkflowRuntimeContext.setProcessResult(WorkflowRuntimeContext.getActivityResult()); 
+      		WorkflowRuntimeContext.setProcessResultDetail(WorkflowRuntimeContext.getActivityResultDetail());          
+        </SCRIPT>
+   	</ACTIVITY>
+
+	<!-- Process Complete -->
+	<ACTIVITY ACTIVITYID="END" LIMIT="0">
+		<IMPLEMENTATION_TYPE>
+			<ROUTE/>
+		</IMPLEMENTATION_TYPE>
+		<TRANSITION_RESTRICTION JOIN="XOR"/>
+	</ACTIVITY>
+	
+	<!-- TRANSITIONS -->
+	<TRANSITION TRANSITIONID="TRANSTART">
+		<TRANSITION_KIND>
+			<REGULAR FROM="START" TO="deleteAccounts"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+
+	<TRANSITION TRANSITIONID="TRANEND">
+		<TRANSITION_KIND>
+			<REGULAR FROM="deleteAccounts" TO="END"/>
+		</TRANSITION_KIND>
+	</TRANSITION>
+	<RELEVANT_DATA RELEVANT_DATA_ID="accounts" TYPE="List" NAME="accounts" COLLECTION_TYPE="com.ibm.itim.dataservices.model.DistinguishedName" DESCRIPTION="Accounts" CONTEXT="SUBJECT"/>
+</PROCESSDEFINITION>]]>
+    	    </value>
+	
+    </modification>
+  </modifyRequest>  
+</batchRequest>
+

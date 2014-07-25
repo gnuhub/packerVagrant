@@ -1,0 +1,3396 @@
+#####################################################################
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# WasConfigUtil.jacl
+# 
+# Contains a bunch of utility JACL procedures. These are usable both
+# in the single server and Cluster configuration contexts.
+#
+# Usage:
+# Source this util as a profile before using any defined
+# procs in it; i.e., 
+#   wsadmin -profile WasConfigUtil.jacl -f your.jacl <args>
+#
+#
+# NOTE! 
+# If the performance of this proves bad, this can be split
+# into multiple utils, for eg. one for each proc that is profiled
+# when the relavant operation is performed.
+#
+#
+# List of available utils:
+#   - find_servers_given_cluster_node
+#   - update_trans_service
+#   - update_trans_service_cluster_node
+#   - set_default_thread_pool_cluster_node
+#   - del_jvm_path
+#   - del_jvm_path_cluster_node
+#   - update_jvm
+#   - update_jvm_cluster_node
+#   - get_name (Return the base name of the config object)
+#   - find_jdbc_driver
+#   - set_env_var_server
+#   - find_env_var_node
+#   - set_env_var_node
+#   - set_env_var_cluster_node
+#   - get_bootstrap_port
+#   - get_serverid_from_cmemberid
+#   - list_cluster_member_servers
+#   - list_cluster_member_nodes
+#   - get_jms_sid
+#   - find_listener_port
+#   - remove_listener_ports
+#   - crt_jms_shared_queue_was6
+#   - crt_jms_shared_queue_dest_was6
+#   - crt_jms_qcf
+#   - crt_jms_qcf_was6
+#   - create_queue
+#   - remove_old_queues
+#   - define_itim_queues
+#   - remove_itim_objects
+#   - remove_itim_queues
+#   - remove_was_qdests
+#   - create_itim_j2c_auth_alias
+#   - find_itim_j2c_auth_alias
+#   - find_object_id
+#   - update_itim_datasource_props
+#   - update_itim_property
+#   - remove_itim_property
+#   - get_itim_property_value
+#   - crt_jdbc_driver
+#   - update_itim_datasource
+#   - verify_cluster_name
+#   - get_nodes
+#   - get_host_name
+#   - verify_cluster_membership
+#   - verify_node_name
+#   - create_sib_bus
+#   - add_bus_member
+#   - modify_me_datastore
+#   - create_sib_objects
+#   - create_activation_spec
+#   - create_activation_spec_for_shared_queue
+#   - create_queue_dest
+#   - create_itimhelp_url_provider
+#   - set_default_thread_pool
+#   - reset_default_role_user
+#   - create_itim_bus_policy
+#   - list_message_engine_in_policy
+#   - find_shared_lib 
+#   - add_shared_lib
+#   - find_itim_bus_policy
+#   - create_object_cache_instance
+#   - get_temp_directory
+#
+######################################################################
+
+#################### Return Codes #########################
+#
+# All defined procedures return "SUCCESS" upon successful
+# completion of the said operation. Other return codes
+# could be defined and used by the caller/callee for
+# whatever purpose
+#
+set SUCCESS "SUCCESS"
+# No failure detected, but, config operation was not performed.
+# Hence, configuration is UNCHANGED
+set UNCHANGED "UNCHANGED"
+# Failure
+set FAILURE "FAILURE"
+
+#################### Procedures #########################
+# find_servers_given_cluster_node {cluster node}
+# Given a cluster and node, find the server on that node
+# which is a member of the cluster
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc find_servers_given_cluster_node"
+proc find_servers_given_cluster_node {cluster node} {
+  global AdminConfig
+
+  # First, get cluster members. Then ferret out the server
+  # on this node that is a member of the cluster
+  puts "--> proc find_servers_given_cluster_node: $cluster $node"
+  set clusterid [$AdminConfig getid /ServerCluster:$cluster]
+  if { $clusterid == "" } {
+      puts "Cluster $cluster does not exist"
+      return "CLUSTER_DOES_NOT_EXIST" 
+  }
+  set cmembers [$AdminConfig showAttribute $clusterid members]
+  puts "--> cmembers: $cmembers"
+  set members [lindex $cmembers 0]
+  set num_members [llength $members]
+  puts "--> members: $members"
+  puts "--> num_members: $num_members"
+
+  set srvlist ""
+  for {set i 0} {$i < $num_members} {incr i} {
+     # set mid = member config id in the cmembers
+     set cmemberid [lindex $members $i]
+
+     set nodeName [$AdminConfig showAttribute $cmemberid nodeName]
+     if {$nodeName == $node} {
+        # Found the config id for the member on the given node.
+        # Add to srvlist
+        set server [$AdminConfig showAttribute $cmemberid memberName]
+        lappend srvlist $server
+        puts "--> srvlist: $srvlist"
+     }
+  }
+
+  return $srvlist
+}
+
+######
+# update_trans_service {sid tt ct}
+# Update the default transaction lifetime timeout to 1200 seconds, and
+#        the client inactivity timeout to 600 seconds if these values
+#        are smaller.
+# 
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc update_trans_service"
+
+proc update_trans_service {sid tt ct} {
+  global AdminConfig
+
+  puts "--> proc update_trans_service"
+
+  if { $tt == "" }  {
+     set tt 1200
+  }
+  if { $ct == "" }  {
+     set ct 600
+  } 
+  set tsid [$AdminConfig list TransactionService $sid]
+  puts "--> transaction service id is $tsid"
+  set curr_tt [$AdminConfig showAttribute $tsid totalTranLifetimeTimeout]
+  set curr_ct [$AdminConfig showAttribute $tsid clientInactivityTimeout]
+  set curr_mt [$AdminConfig showAttribute $tsid propogatedOrBMTTranLifetimeTimeout]
+  puts "--> current transaction lifetime timeout value is $curr_tt"
+  puts "--> current client inactivity timeout value is $curr_ct"
+  puts "--> current maximum transaction timeout value is $curr_mt"
+
+  if { $curr_tt > 120 } {
+     set tt $curr_tt
+  }
+  if { $curr_ct > 60 } {
+     set ct $curr_ct
+  }
+  
+  set mt $curr_mt
+  if { $curr_mt < $tt } {
+     set mt $tt
+  }
+  puts "--> transaction lifetime timeout value is $tt"
+  puts "--> client inactivity timeout value is $ct"
+  puts "--> maximum transaction timeout value is $mt"
+
+  set tt_list [list totalTranLifetimeTimeout $tt]
+  set ct_list [list clientInactivityTimeout $ct]
+  set mt_list [list propogatedOrBMTTranLifetimeTimeout $mt]
+  set attr [list $tt_list $ct_list $mt_list]
+  puts "-->attr=$attr"
+  
+  $AdminConfig modify $tsid $attr
+
+  global AdminConfig
+  global AdminControl
+
+
+  # This is for z/OS. It returns multiple JVM's so we need to only get the
+  # servant's jvm. I'm not sure if the os.name will be able to be accessed 
+  # with j2ee security enabled
+  set zos z/OS
+  set jvms [$AdminControl queryNames type=JVM,*]
+  set jvm [lindex $jvms 0]
+  set tempos [$AdminControl invoke $jvm getProperty os.name]
+  set curros $tempos
+  if { [regexp $zos $curros] == 1 } {
+    # for z/os
+    puts " --> is z/OS"
+    # the string that is the property
+    set mdbstring control_region_mdb_request_timeout
+    set mdbtimeout 1200
+ 
+    # the current list of properties
+    set appsrv [$AdminConfig list ApplicationServer $sid]
+    set curr_props [$AdminConfig showAttribute $appsrv properties]
+
+    set num_props [llength $curr_props]
+    # lets create the property
+    set new_name [list name $mdbstring]
+    set new_desc [list description "Control Region MDB Request Timeout"]
+    set new_req [list required false]
+    set new_value [list value $mdbtimeout]
+    set new_prop [list $new_desc $new_name $new_req $new_value]
+
+    # a flag to see if we find it
+    set found no
+    set yes _yes
+
+    if { $curr_props != "{}" } {
+      # Go through each property
+      for {set i 0} {$i < $num_props} {incr i} {
+        set prop [lindex $curr_props $i]
+      
+        # get the properties name
+        set prop_name [$AdminConfig showAttribute $prop name]
+ 
+        # check if its the mdb property
+        if { [regexp $prop_name $mdbstring] == 1 } {
+          # we found it
+          set found $yes
+
+          # lets get the value and make sure its big enough. If its big enough
+          # then we'll just leave it alone
+          set prop_val [$AdminConfig showAttribute $prop value]
+          if { $prop_val < 1200 } {
+            $AdminConfig modify $prop $new_prop
+            puts "--> modifying control region MDB request timeout to $mdbtimeout"
+          } else {
+            puts "--> keeping control region MDB request timeout of $mdbtimeout"
+          }
+        }
+      }
+    }
+    # if we didn't find it then lets create it
+    if { [regexp $found $yes] == 0 } {
+      # 
+      puts "--> creating control region MDB request timeout of $mdbtimeout"
+      $AdminConfig create Property $appsrv $new_prop
+    }
+  }
+  return SUCCESS
+}
+
+######
+# update_trans_service_cluster_node {cluster node tt ct}
+# Update the provided values to transaction lifetime timeout 
+# and client inactivity timeout of the transaction service of
+# a server residing on the 'node', which is a member of
+# the 'cluster'
+# This is to be run on a node, on which a server which is a
+# member of a cluster resides. The server name is unknown.
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc update_trans_service_cluster_node"
+proc update_trans_service_cluster_node {cluster node tt ct} {
+  global AdminConfig
+
+  puts "--> proc update_trans_service_cluster_node"
+  # First, get cluster member servers residing on the node.
+  set servers [find_servers_given_cluster_node $cluster $node]
+  puts "--> update_trans_service_cluster_node: servers: $servers"
+  set num_servers [llength $servers]
+  puts "--> update_trans_service_cluster_node: num_servers: $num_servers"
+
+  if { $num_servers == 0 } {
+     return UNCHANGED
+  }   
+
+  for {set i 0} {$i < $num_servers} {incr i} {
+     set server [lindex $servers $i]
+     puts "--> update_trans_service_cluster_node: server: $server"
+     set sid [$AdminConfig getid /Node:$node/Server:$server]
+     puts "--> update_trans_service_cluster_node: sid: $sid"
+     set rc [update_trans_service $sid $tt $ct]
+  }
+
+  return $rc
+}
+
+######
+# set_default_thread_pool_cluster_node {cluster node p1 p2 p3}
+#
+# This is to be run on a node, on which a server which is a
+# member of a cluster resides. The server name is unknown.
+#
+puts "--> profiling proc set_default_thread_pool_cluster_node"
+proc set_default_thread_pool_cluster_node {cluster node p1 p2 p3} {
+  global AdminConfig
+
+  puts "--> proc set_default_thread_pool_cluster_node"
+  # First, get cluster member servers residing on the node.
+  set servers [find_servers_given_cluster_node $cluster $node]
+  puts "--> set_default_thread_pool_cluster_node: servers: $servers"
+  set num_servers [llength $servers]
+  puts "--> set_default_thread_pool_cluster_node: num_servers: $num_servers"
+
+  if { $num_servers == 0 } {
+     return UNCHANGED
+  }   
+
+  for {set i 0} {$i < $num_servers} {incr i} {
+     set server [lindex $servers $i]
+     puts "--> update_trans_service_cluster_node: server: $server"
+     set sid [$AdminConfig getid /Node:$node/Server:$server]
+     puts "--> set_default_thread_pool_cluster_node: sid: $sid"
+     set rc [set_default_thread_pool $sid $p1 $p2 $p3]
+  }
+
+  return $rc
+}
+
+######
+# del_jvm_path {node server path}
+# Add the provided 'path' to the JVM classpath for the
+# node:server
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc del_jvm_path"
+
+proc del_jvm_path {sid path} {
+  global AdminConfig
+  global AdminControl
+
+  puts "--> proc del_jvm_path"
+  # This is for z/OS. It returns multiple JVM's so we need to only get the
+  # servant's jvm. I'm not sure if the os.name will be able to be accessed 
+  # with j2ee security enabled
+  set zos z/OS
+  set jvms [$AdminControl queryNames type=JVM,*]
+  set jvm [lindex $jvms 0]
+  set tempos [$AdminControl invoke $jvm getProperty os.name]
+  set curros $tempos
+  if { [regexp $zos $curros] == 1 } {
+    # for z/os
+    puts " --> is z/OS"
+
+    set procDefs [$AdminConfig showAttribute $sid processDefinitions]
+    # procDefs is a list of a list so we need to get the first element
+    set procDefs [lindex $procDefs 0]
+    foreach pd $procDefs {
+      puts " --> looking at processDef $pd"
+      set procType [$AdminConfig showAttribute $pd processType]
+      
+      # If its the servant region then we need to edit the classpath
+      # and file encoding
+      set servReg Servant
+      if { [regexp $procType $servReg] } { 
+        puts " --> This is the Servant Regions process def $pd"
+        set jvmEntry [$AdminConfig showAttribute $pd jvmEntries]
+        # Again a list of a list
+        set jvmEntry [lindex $jvmEntry 0]
+
+        # This is the jvm we want
+        set jvmattr $jvmEntry
+      }
+    }
+    
+    # delete the control_region_mdb_request_timeout custom property
+    set mdbstring control_region_mdb_request_timeout
+    set appsrv [$AdminConfig list ApplicationServer $sid]
+    set curr_props [$AdminConfig showAttribute $appsrv properties]
+    set num_props [llength $curr_props]
+    
+    if { $curr_props != "{}" } {
+      # Go through each property
+      for {set i 0} {$i < $num_props} {incr i} {
+        set prop [lindex $curr_props $i]
+      
+        # get the properties name
+        set prop_name [$AdminConfig showAttribute $prop name]
+ 
+        # check if its the mdb property
+        if { [regexp $prop_name $mdbstring] == 1 } {
+          # we found it now lets delete it
+          puts "--> deleting $prop_name"
+          $AdminConfig remove $prop 
+        }
+      }
+    }
+  } else {
+  set pd [$AdminConfig list ProcessDef $sid]
+  puts "--> process def: $pd"
+  set jvmattr [$AdminConfig list JavaVirtualMachine $pd]
+  puts "--> jvmattr: $jvmattr"
+  }
+
+  # find the "path" in classpath
+  set classpath [$AdminConfig showAttribute $jvmattr classpath]
+  puts "--> existing classpath: $classpath"
+
+  if { [regexp $path $classpath] == 0 } {
+        $AdminConfig modify $jvmattr {{classpath ""}}
+        set cplist [split $classpath \;]
+        set num [llength $cplist]
+
+        for {set i 0} {$i < $num} {incr i} {
+            set cp [lindex $cplist $i]
+
+            if {$cp != $path} {
+                puts "--> adding classpath $cp"
+                set cpname [list "classpath" $cp]
+                set attr [list $cpname]
+                puts "--> adding attr $attr"
+                $AdminConfig modify $jvmattr $attr
+            }
+        }
+  }
+  return SUCCESS
+}
+
+######
+# del_jvm_path_cluster_node {cluster node driver}
+# Add the provided 'path' to the JVM classpath for the
+# server residing on the 'node', which is a member of
+# the 'cluster'
+# This is to be run on a node, on which a server which is a
+# member of a cluster resides. The server name is unknown.
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc del_jvm_path_cluster_node"
+proc del_jvm_path_cluster_node {cluster node driver} {
+  global AdminConfig
+
+  puts "--> proc del_jvm_path_cluster_node"
+  # First, get cluster member servers residing on the node.
+  set servers [find_servers_given_cluster_node $cluster $node]
+  puts "--> found in the node servers: $servers"
+  set num_servers [llength $servers]
+  puts "--> number of servers: $num_servers"
+
+  if { $num_servers == 0 } {
+     return UNCHANGED
+  }   
+
+  for {set i 0} {$i < $num_servers} {incr i} {
+     set server [lindex $servers $i]
+     puts "--> del_jvm_path_cluster_node: server: $server"
+     set sid [$AdminConfig getid /Node:$node/Server:$server]
+     puts "--> del_jvm_path_cluster_node: sid: $sid"
+     set rc [del_jvm_path $sid $driver]
+  }
+
+  return $rc
+}
+
+######
+# update_jvm {node server path}
+# Add the provided 'path' to the JVM classpath for the
+# node:server
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc update_jvm"
+# proc update_jvm {node server path} {
+proc update_jvm {sid path} {
+  global AdminConfig
+  global AdminControl
+
+  puts "--> proc update_jvm"
+
+  # This is for z/OS. It returns multiple JVM's so we need to only get the
+  # servant's jvm. I'm not sure if the os.name will be able to be accessed 
+  # with j2ee security enabled
+  set zos z/OS
+  set jvms [$AdminControl queryNames type=JVM,*]
+  set jvm [lindex $jvms 0]
+  set tempos [$AdminControl invoke $jvm getProperty os.name]
+  set curros $tempos
+  if { [regexp $zos $curros] == 1 } {
+    # for z/os
+    puts " --> is z/OS"
+    set procDefs [$AdminConfig showAttribute $sid processDefinitions]
+    # procDefs is a list of a list so we need to get the first element
+    set procDefs [lindex $procDefs 0]
+    foreach pd $procDefs {
+      puts " --> looking at processDef $pd"
+      set procType [$AdminConfig showAttribute $pd processType]
+      
+      # If its the servant region then we need to edit the classpath
+      # and file encoding
+      set servReg Servant
+      if { [regexp $procType $servReg] } { 
+        puts " --> This is the Servant Regions process def $pd"
+        set jvmEntry [$AdminConfig showAttribute $pd jvmEntries]
+        # Again a list of a list
+        set jvmEntry [lindex $jvmEntry 0]
+
+        # This is the jvm we want
+        set jvmattr $jvmEntry
+      }
+    }
+  } else {
+
+  # set sid [$AdminConfig getid /Node:$node/Server:$server/]
+  set pd [$AdminConfig list ProcessDef $sid]
+  puts "--> process def: $pd"
+  set jvmattr [$AdminConfig list JavaVirtualMachine $pd]
+  puts "--> jvmattr: $jvmattr"
+  }
+
+  #Set the JVM initial and maximum heap sizes
+  set initial [$AdminConfig showAttribute $jvmattr initialHeapSize]
+  set maximum [$AdminConfig showAttribute $jvmattr maximumHeapSize]
+  puts "initial=$initial maximum=$maximum"
+
+  if { ($initial == 0) } {
+    set newinit [list initialHeapSize 128]
+  } else {
+      set newinit [list initialHeapSize $initial]
+  }
+  puts "newinit=$newinit"
+
+  # Adjust max heap size default based on if this is a SSI launchpad install or not
+  # It checks for the ITIM_SSI_INSTALL file in the system temp directory as the trigger
+  if {[file exists [file join [get_temp_directory] "ITIM_SSI_INSTALL"]]} {
+    set defaultMaxHeapSize 512
+    puts "--> ITIM_SSI_INSTALL (Launchpad Single Server Install) Setting default Max Heap Size to $defaultMaxHeapSize"
+  } else {
+    set defaultMaxHeapSize 1024
+    puts "--> Setting default Max Heap Size to $defaultMaxHeapSize"
+  }
+
+  if { ($maximum == 0) } {
+    puts "--> Changing maximumHeapSize to the default value of $defaultMaxHeapSize"
+    set newmax [list maximumHeapSize $defaultMaxHeapSize]
+  } else {
+    puts "--> Keeping the existing maximumHeapSize already configured as $maximum and not setting to default value of $defaultMaxHeapSize"
+    set newmax [list maximumHeapSize $maximum]
+	}
+  puts "newmax=$newmax"
+
+  # check if 'path' already in classpath and set encoding
+  set classpath [$AdminConfig showAttribute $jvmattr classpath]
+  puts "--> existing classpath: $classpath"
+  
+  # check if UTF-8 encoding already defined in generic JVM arguments,
+  # if not, append it.
+  set genericJvmArgs [$AdminConfig showAttribute $jvmattr genericJvmArguments]
+  puts "--> existing generic JVM arguments: $genericJvmArgs"
+ 
+  set encoding "Dclient.encoding.override=UTF-8"
+  if { [regexp $encoding $genericJvmArgs] == 0 } {
+      append genericJvmArgs " -" $encoding
+  } 
+  set newJvmArgs [list genericJvmArguments $genericJvmArgs]
+  puts "newJvmArgs=$newJvmArgs"
+  
+  if { [regexp $path $classpath] == 0 } {
+    puts "--> adding $path to classpath"
+    set cp   [list classpath $path]
+    set attr [list $cp $newJvmArgs $newinit $newmax]
+  } else {
+    # already in classpath. dont add
+    puts "--> skipping -- not adding $path to classpath"
+    set attr [list $newJvmArgs $newinit $newmax]
+  }  
+  puts "attr=$attr"
+  
+  $AdminConfig modify $jvmattr $attr
+  return SUCCESS
+}
+
+######
+# update_jvm_cluster_node {cluster node driver}
+# Add the provided 'path' to the JVM classpath for the
+# server residing on the 'node', which is a member of
+# the 'cluster'
+# This is to be run on a node, on which a server which is a
+# member of a cluster resides. The server name is unknown.
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc update_jvm_cluster_node"
+proc update_jvm_cluster_node {cluster node driver} {
+  global AdminConfig
+
+  puts "--> proc update_jvm_cluster_node"
+  # First, get cluster member servers residing on the node.
+  set servers [find_servers_given_cluster_node $cluster $node]
+  puts "--> update_jvm_cluster_node: servers: $servers"
+  set num_servers [llength $servers]
+  puts "--> update_jvm_cluster_node: num_servers: $num_servers"
+
+  if { $num_servers == 0 } {
+     return UNCHANGED
+  }   
+
+  for {set i 0} {$i < $num_servers} {incr i} {
+     set server [lindex $servers $i]
+     puts "--> update_jvm_cluster_node: server: $server"
+     set sid [$AdminConfig getid /Node:$node/Server:$server]
+     puts "--> update_jvm_cluster_node: sid: $sid"
+     set rc [update_jvm $sid $driver]
+  }
+
+  return $rc
+}
+
+#-----------------------------------------------------------------
+# get_name - Return the base name of the config object. 
+#-----------------------------------------------------------------
+puts "--> profiling proc get_name"
+proc get_name {args} {
+   # arg[0] - object id
+      
+   set id [lindex $args 0]
+   set endIndex [expr [string first "(" $id] - 1]
+   
+   return [string range $id 0 $endIndex]
+}
+
+#-----------------------------------------------------------------
+# find_jdbc_driver {scope dbtype is_xa is_was6}
+# Find the JDBC driver resource under the scope
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc find_jdbc_driver"
+
+proc find_jdbc_driver {scope dbtype is_xa is_was6} {
+  global AdminConfig
+
+  puts "--> proc find_jdbc_driver"
+  puts "--> scope='$scope'"
+
+  set jdbclist [$AdminConfig list JDBCProvider $scope]
+  set njdbc [llength $jdbclist]
+  set found "false"
+  if {$dbtype == "IBM_DB" || $dbtype == "IBM_ZDB"} {
+     if {$is_was6 == "false"} {
+        set classname COM.ibm.db2.jdbc.DB2XADataSource
+	set provider_name "ITIM DB2 JDBC Provider"
+     } else {
+        if {$is_xa == "true"} {
+	   set provider_name "ITIM XA DB2 JDBC Provider"
+           set classname com.ibm.db2.jcc.DB2XADataSource
+	} else {
+	   set provider_name "ITIM non-XA DB2 JDBC Provider"
+           set classname com.ibm.db2.jcc.DB2ConnectionPoolDataSource
+        }
+     }
+  }
+  if {$dbtype == "ORACLE_DB"} {
+     if {$is_was6 == "false"} {
+        set provider_name "ITIM ORACLE JDBC Provider"
+        set classname oracle.jdbc.xa.client.OracleXADataSource
+     } else {
+        if {$is_xa == "true"} {
+	   set provider_name "ITIM XA ORACLE JDBC Provider"
+           set classname oracle.jdbc.xa.client.OracleXADataSource
+	} else {
+	   set provider_name "ITIM non-XA ORACLE JDBC Provider"
+           set classname oracle.jdbc.pool.OracleConnectionPoolDataSource
+        }
+     }
+  } 
+  if {$dbtype == "MS_DB"} {
+     if {$is_was6 == "false"} {
+        set provider_name "ITIM MSSQL JDBC Provider"
+        set classname com.jnetdirect.jsql.JSQLXADataSource 
+     } else {
+        if {$is_xa == "true"} {
+	   set provider_name "ITIM XA MSSQL JDBC Provider"
+           set classname com.microsoft.sqlserver.jdbc.SQLServerXADataSource 
+	} else {
+	   set provider_name "ITIM non-XA MSSQL JDBC Provider"
+           set classname com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource
+        }
+     }
+  }
+
+  set scope_name [get_name $scope] 
+  puts "--> the scope name of the scope is '$scope_name'"
+  puts "--> number of jdbc provider is $njdbc"
+  puts "--> searching jdbc class '$classname' where provider name is '$provider_name'"
+
+  set itim_jdbc ""
+  for {set i 0} {$i < $njdbc} {incr i} {
+   set jdbcId   [lindex $jdbclist $i]
+   puts "--> current jdbcid is $jdbcId"
+   if {[regexp $provider_name $jdbcId] == 1} {
+
+     set endIndex [expr [string first "|" $jdbcId] - 1]
+     if { $endIndex < 0 } {
+        set endIndex [expr [string first ":" $jdbcId] - 1]
+     }
+     set sString  [string range $jdbcId 0 $endIndex]
+     set stIndex  [expr [string last "/" $sString] + 1]
+     set sName    [string range $sString $stIndex $endIndex]
+
+     puts "--> Extracted jdbc provider scope name is $sName" 
+
+     # WAS 7.0 puts quotes around getid values (scope) so also compare against "name
+     if { $scope_name == $sName || "$scope_name" == "\"$sName"} {
+        set impclass [$AdminConfig showAttribute $jdbcId implementationClassName] 
+        puts "--> extracted jdbc class name is $impclass"
+        if { $impclass == $classname } { 
+           set itim_jdbc $jdbcId
+           break
+        }
+     }
+   }
+  }
+
+  puts "--> itim_jdbc: $itim_jdbc"
+  return $itim_jdbc
+}
+
+
+######
+# set_env_var_server {node server varname varval descript}
+# Sets the env variable 'varname' with value 'varval' under
+# the scope of node:server
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc set_env_var_server"
+# proc set_env_var_server {node server varname varval descript} {
+proc set_env_var_server {sid varname varval descript} {
+  global AdminConfig
+
+  puts "--> proc set_env_var_server"
+  # set sid [$AdminConfig getid /Node:$node/Server:$server]
+  set vlist [$AdminConfig list VariableSubstitutionEntry $sid]
+  set vid [lindex [$AdminConfig list VariableMap $sid] 0]
+
+  set found "false"
+  for {set i 0} { ($i < [llength $vlist]) } { incr i } {
+      set entry [lindex $vlist $i]
+      set symname [$AdminConfig showAttribute $entry symbolicName]
+      puts "--> symbolic name is $symname"    
+      if {$symname == $varname} {
+        set value [list value $varval]
+        set dsc   [list description $descript]
+        set attr  [list $value $dsc]
+        $AdminConfig modify $entry $attr
+        # $AdminConfig save
+        set found "true"
+        puts "***** found the variable, and update the value to $varval *****"
+        puts " break from for loop "
+        break     
+      }  
+  }
+  if { $found == "false" } {
+        set sname [list symbolicName $varname]
+        set dsc   [list description $descript]
+        set var   [list value $varval]
+        set attr  [list $sname $var $dsc]
+        puts "***** $varname not found, creating and setting to $varval *****"
+        $AdminConfig create VariableSubstitutionEntry $vid $attr
+  }
+  return SUCCESS
+}
+
+######
+# find_env_var_node {node varname}
+# Find the env variable 'varname' under the scope of node
+
+puts "--> profiling proc find_env_var_node"
+proc find_env_var_node {node varname} {
+  global AdminConfig
+
+  puts "--> proc find_env_var_node"
+  set nid [$AdminConfig getid /Node:$node]
+  puts "--> nid: $nid"
+  set vlist [$AdminConfig list VariableSubstitutionEntry $nid]
+
+  # Need to set var at the node scope. Multiple variable maps can
+  # show up at the node level, because of the underlying server-scope
+  # variable maps.
+  set vmlist [$AdminConfig list VariableMap $nid]
+  foreach vid $vmlist {
+
+    puts "--> vid = $vid"
+    if {[regexp "/servers/" $vid] == 0} {
+      if {[regexp "/nodes/" $vid] == 1} { 
+         # Found the variable map corresponding to the node
+         set found "false"
+         for {set i 0} { ($i < [llength $vlist]) } { incr i } {
+             set entry [lindex $vlist $i]
+             if {[regexp "/servers/" $entry] == 0} {
+                if {[regexp "/nodes/" $entry] == 1} { 
+                   set symname [$AdminConfig showAttribute $entry symbolicName]
+                   puts "--> symbolic name is $symname"    
+                   if {$symname == $varname} {
+                       set found "true"
+                       puts "--> found the variable, and the entry id is $entry *****"
+                       puts "--> break from for loop "
+                       break     
+                   }  
+                }
+             }   
+         }
+         if { $found == "false" } {
+		 set entry $vid
+		 puts "--> the variable is not found, return vid $vid "            
+         }
+         return $entry
+      }
+    }
+  }
+  puts "--> nothing located and will return empty entry !!!!!"
+  return ""
+}
+
+######
+# set_env_var_node {node varname varval descript}
+# Sets the env variable 'varname' with value 'varval' under
+# the scope of node
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc set_env_var_node"
+proc set_env_var_node {node varname varval descript} {
+  global AdminConfig
+
+  puts "--> proc set_env_var_node"
+
+  set entry [find_env_var_node $node $varname]
+  puts "--> return entry for $varname is $entry"
+  if { [regexp "VariableSubstitutionEntry" $entry] == 1 }  {
+      set value [list value $varval]
+      set dsc   [list description $descript]
+      set attr  [list $value $dsc]
+      $AdminConfig modify $entry $attr
+      set found "true"
+      puts "--> found the variable, and update the value to $varval *****"  
+      return SUCCESS
+  } elseif { [regexp "VariableMap" $entry] == 1 } { 
+      set sname [list symbolicName $varname]
+      set dsc   [list description $descript]
+      set var   [list value $varval]
+      set attr  [list $sname $var $dsc]
+      puts "--> $varname not found, creating and setting to $varval *****"
+      $AdminConfig create VariableSubstitutionEntry $entry $attr
+      return SUCCESS
+  }
+  return UNCHANGE
+}
+
+######
+# set_env_var_cluster_node {cluster node varname varval descript}
+# Sets the env variable 'varname' with value 'varval' under
+# the scope of node:server, where server is a cluster member
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc set_env_var_cluster_node"
+proc set_env_var_cluster_node {cluster node varname varval descript} {
+  global AdminConfig
+
+  puts "--> proc set_env_var_cluster_node"
+
+  # First, get cluster member servers residing on the node.
+  set servers [find_servers_given_cluster_node $cluster $node]
+  puts "--> set_env_var_cluster_node: servers: $servers"
+  set num_servers [llength $servers]
+  puts "--> set_env_var_cluster_node: num_servers: $num_servers"
+
+  if { $num_servers == 0 } {
+     return UNCHANGED
+  }   
+
+  for {set i 0} {$i < $num_servers} {incr i} {
+     set server [lindex $servers $i]
+     puts "--> set_env_var_cluster_node: server: $server"
+     set sid [$AdminConfig getid /Node:$node/Server:$server]
+     puts "--> set_env_var_cluster_node: sid: $sid"
+     set rc [set_env_var_server $sid $varname $varval $descript]
+  }
+
+  return $rc
+}
+
+######
+# get_bootstrap_port{node server}
+# For single server, this proc should be called with
+# node and server=server1. For Cluster, server=nodeagent
+# should be used
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc get_bootstrap_port"
+# proc get_bootstrap_port {node server} {
+proc get_bootstrap_port {sid} {
+  global AdminConfig
+
+  puts "--> proc get_bootstrap_port"
+  # set sid [$AdminConfig getid /Node:$node/Server:$server]
+  set nid [$AdminConfig list NameServer $sid]
+  set bid [$AdminConfig showAttribute $nid BOOTSTRAP_ADDRESS]
+  set bsport [$AdminConfig showAttribute $bid bsport]
+  puts "BootStrap port --> $bsport"
+
+  return $bsport
+}
+
+######
+# get_serverid_from_cmemberid {cmemberid}
+#     cmember = Cluster member config id
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc get_serverid_from_cmemberid"
+proc get_serverid_from_cmemberid {cmemberid} {
+  global AdminConfig
+
+  puts "--> proc get_serverid_from_cmemberid"
+  puts "--> cmemberid: $cmemberid"
+
+  set mname [$AdminConfig showAttribute $cmemberid memberName]
+  set node [$AdminConfig showAttribute $cmemberid nodeName]
+  set mid [$AdminConfig getid /Node:$node/Server:$mname/]
+  puts "--> Member server ID: $mid"
+
+  return $mid
+  
+}
+
+######
+# list_cluster_member_servers {cluster}
+#     cluster = Cluster name   
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc list_cluster_member_servers"
+proc list_cluster_member_servers {cluster} {
+  global AdminConfig
+
+  puts "--> proc list_cluster_member_servers"
+  set clusterid [$AdminConfig getid /ServerCluster:$cluster]
+  if { $clusterid == "" } {
+      puts "Cluster $cluster does not exist"
+      return "CLUSTER_DOES_NOT_EXIST" 
+  }
+  set cmembers [$AdminConfig showAttribute $clusterid members]
+  puts "--> cmembers: $cmembers"
+  set members [lindex $cmembers 0]
+  set num_members [llength $members]
+  puts "--> members: $members"
+  puts "--> num_members: $num_members"
+
+  set mlist ""
+  for {set i 0} {$i < $num_members} {incr i} {
+     # set mid = member config id in the cmembers
+     set cmemberid [lindex $members $i]
+
+     set mid [get_serverid_from_cmemberid $cmemberid]
+     puts "--> mid: $mid"
+     lappend mlist $mid
+  }
+
+  return $mlist
+  
+}
+
+######
+# list_cluster_member_nodes {cluster}
+#     cluster = Cluster name   
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc list_cluster_member_nodes"
+proc list_cluster_member_nodes {cluster} {
+  global AdminConfig
+
+  puts "--> proc list_cluster_member_nodes"
+  set clusterid [$AdminConfig getid /ServerCluster:$cluster]
+  if { $clusterid == "" } {
+      puts "Cluster $cluster does not exist"
+      return "CLUSTER_DOES_NOT_EXIST" 
+  }
+  set cmembers [$AdminConfig showAttribute $clusterid members]
+  puts "--> cmembers: $cmembers"
+  set members [lindex $cmembers 0]
+  set num_members [llength $members]
+  puts "--> members: $members"
+  puts "--> num_members: $num_members"
+
+  set mlist ""
+  for {set i 0} {$i < $num_members} {incr i} {
+     # set mid = member config id in the cmembers
+     set cmemberid [lindex $members $i]
+
+     set nodename [$AdminConfig showAttribute $cmemberid nodeName]
+     puts "--> nodename: $nodename"
+     if {[regexp $nodename $mlist] == 0} {
+        lappend mlist $nodename
+     }
+  }
+  puts "--> the node list : $mlist"
+  return $mlist
+  
+}
+
+######
+# get_jms_sid {node server configtype}
+# Get the cofig id of the WebSphere internal JMS Server on node.
+# If configtype is CLUSTER, then there is one JMS server per node
+# and the server parameter is not relevant.
+# If configtype is SINGLE_SERVER, then there is one per server on
+# the node.
+puts "--> profiling proc get_jms_sid"
+proc get_jms_sid {node server configtype} {
+  global AdminConfig
+
+  puts "--> proc get_jms_sid"
+  puts "--> node: $node"
+  puts "--> configtype: $configtype"
+  puts "--> server: $server"
+
+  set nid [$AdminConfig getid /Node:$node]
+  puts "--> nid: $nid"
+
+  if {$configtype == "SINGLE_SERVER"} {
+     set sid [$AdminConfig getid /Node:$node/Server:$server]
+     puts "--> sid: $sid"
+     # Get JMS server under server scope
+     set jmsslist [$AdminConfig list JMSServer $sid]
+  } else {
+     # Get JMS server under node scope
+     set jmsslist [$AdminConfig list JMSServer $nid]
+  }
+  puts "--> jmsslist: $jmsslist"
+  set jmssid [lindex $jmsslist 0]
+
+  return $jmssid
+}
+
+######
+# find_listener_port {mlsid jndiname}
+#
+puts "--> profiling proc find_listener_port"
+proc find_listener_port {mlsid jndiname} {
+  global AdminConfig
+
+  puts "--> proc find_listener_port"
+  puts "--> input dest jndi name is $jndiname"
+  set lplist [$AdminConfig list ListenerPort $mlsid]
+  set nlplist [llength $lplist]
+  set listener_port ""
+  set lpid ""
+  for {set i 0} {$i < $nlplist} {incr i} {
+     set lpi [lindex $lplist $i]
+     puts "--> current lpid is $lpi"
+     set curJndiName [$AdminConfig showAttribute $lpi destinationJNDIName]
+     puts "--> current dest jndi name is $curJndiName"
+     # if { $curJndiName == $jndiname }
+     if { [regexp $jndiname $curJndiName] ==1 }  { 
+        puts "--> found listener port $lpi"
+        set listener_port $lpi
+        break 
+     } 
+  }
+  return $listener_port
+}
+
+######
+# remove_listener_ports {sid}
+#   This routine create listener ports needed by the ITIM server.
+#
+puts "--> profiling proc remove_listener_ports"
+proc remove_listener_ports {sid} {
+  global AdminConfig
+
+  puts "--> proc remove_listener_ports"
+  
+  set mlsid [$AdminConfig list MessageListenerService $sid]
+  puts "--> Message Listener Servive id is $mlsid"
+  set lpid    [find_listener_port $mlsid "adhocSyncQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "partitioningServiceQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "workflowQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "mailServicesQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "remoteServicesQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "remotePendingQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "sharedWorkflowQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "policyAnalysisQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "policySimulationQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  set lpid    [find_listener_port $mlsid "importExportQueue"]
+  if { $lpid != "" } {
+     puts "--> remove listener port $lpid"
+     $AdminConfig remove $lpid
+  }
+  return SUCCESS
+}
+
+######
+# crt_jms_shared_queue_was6 {scope_args}
+#  Creates the ITIM share queue and activation specification
+#
+
+puts "--> profiling proc crt_jms_shared_queue_was6"
+
+proc crt_jms_shared_queue_was6 {scope_args jms_cluster_name} {
+    global AdminConfig
+  
+    if {[llength $scope_args] == 1} {
+        set cluster_name [lindex $scope_args 0]
+        set node   "none"
+        set server "none"
+        puts "Adding JMS instance to ${cluster_name}..."
+    } else {
+        set cluster_name "none"
+        set node    [lindex $scope_args 0]
+        set server  [lindex $scope_args 1]
+        puts "Adding JMS instance to ${node} - ${server}..."
+    }
+    set bus_name "itim_bus"
+    set rc SUCCESS
+
+    # get J2C Resource Adapter id
+    if { $cluster_name == "none" } {
+       set j2cra [$AdminConfig getid /Node:$node/Server:$server/J2CResourceAdapter:SIB\ JMS\ Resource\ Adapter/]
+       set nid   [$AdminConfig getid /Node:$node/]
+       set scope [$AdminConfig getid /Node:$node/Server:$server]
+    
+       puts "--> node name is $node; node id is $nid"
+       puts "--> server name is $server; server id is $scope"
+    } else {
+       set j2cra [$AdminConfig getid /ServerCluster:$cluster_name/J2CResourceAdapter:SIB\ JMS\ Resource\ Adapter/]
+       set scope [$AdminConfig getid /ServerCluster:$cluster_name/]
+       puts "--> cluster id is $scope"
+    } 
+    puts "--> WAS6 default jsm resource adapter id is $j2cra"
+ 
+    set aop  [find_object_id $scope AdminObject adminObjectInterface javax.jms.Queue]
+    set aobj [list adminObject $aop]
+
+    create_queue $j2cra $aobj "sharedWorkflowQueue" "itim_wf_shared" "itim_wf_shared" \
+			"ITIM Shared Workflow Queue" $bus_name "Application"
+
+    create_queue $j2cra $aobj "policyAnalysisQueue" "itim_policy" "itim_policy" \
+			"ITIM Policy Analysis Queue" $bus_name "Application"
+ 
+    create_queue $j2cra $aobj "policySimulationQueue" "itim_policy_simulation" "itim_policy_simulation" \
+			"ITIM Policy Simulation Queue" $bus_name "NonPersistent"
+
+    #create j2c activation spec for each activation point
+    # Fix : Defect#52235 Activation spec for shared queues needs to have target set as the JMS cluster (WasConfigUtil.jacl - create_activation_spec) 
+    # Pass JMS cluster name to create_activation_spec_for_shared_queue for cluster environment.
+    if { $cluster_name == "none" } {
+	    set asid [create_activation_spec $j2cra ITIMSharedWorkflowActivationSpec \
+			sharedWorkflowActivationSpec $bus_name sharedWorkflowQueue 5 1] 
+	
+	    set asid [create_activation_spec $j2cra ITIMPolicyAnalysisActivationSpec \
+			policyAnalysisActivationSpec $bus_name policyAnalysisQueue 5 1] 
+	
+	    set asid [create_activation_spec $j2cra ITIMPolicySimulationActivationSpec \
+			policySimulationActivationSpec $bus_name policySimulationQueue 5 1] 
+    } else {
+	    set asid [create_activation_spec_for_shared_queue $j2cra ITIMSharedWorkflowActivationSpec \
+			sharedWorkflowActivationSpec $bus_name sharedWorkflowQueue 5 1 $jms_cluster_name] 
+	
+	    set asid [create_activation_spec_for_shared_queue $j2cra ITIMPolicyAnalysisActivationSpec \
+			policyAnalysisActivationSpec $bus_name policyAnalysisQueue 5 1 $jms_cluster_name] 
+	
+	    set asid [create_activation_spec_for_shared_queue $j2cra ITIMPolicySimulationActivationSpec \
+			policySimulationActivationSpec $bus_name policySimulationQueue 5 1 $jms_cluster_name] 
+	}
+    return $rc
+}
+
+
+######
+# crt_jms_shared_queue_dest_was6 {scope_args}
+#  Creates the ITIM share queue and activation specification
+#
+
+puts "--> profiling proc crt_jms_shared_queue_dest_was6"
+
+proc crt_jms_shared_queue_dest_was6 {scope_args} {
+    global AdminConfig
+  
+    if {[llength $scope_args] == 1} {
+        set cluster_name [lindex $scope_args 0]
+        set note   "none"
+        set server "none"
+        puts "Adding JMS instance to ${cluster_name}..."
+    } else {
+        set cluster_name "none"
+        set node    [lindex $scope_args 0]
+        set server  [lindex $scope_args 1]
+        puts "Adding JMS instance to ${node} - ${server}..."
+    }
+    set bus_name "itim_bus"
+    set rc SUCCESS
+
+    set queue_args   [list "itim_wf_shared" "itim_policy" "itim_policy_simulation"]
+    set bus_name "itim_bus"
+    set bus_id [$AdminConfig getid "/SIBus:$bus_name/"]
+    puts "ITIM bus id is $bus_id"
+    if { $bus_id != "" } {
+       foreach queue_name $queue_args {
+         puts "--> create queue destination for $queue_name"
+         set qid [create_queue_dest $scope_args $queue_name $bus_id $bus_name] 
+         if { $qid == "" }  {
+	    puts "--> failed to create itim_bus queue destination of $queue_name."
+	    set rc FAILURE
+  	    break
+         }        
+       }
+    } else {
+       set rc FAILURE
+       puts "--> ITIM bus does not exist for the share queues !!!"
+    }
+    puts "--> exit crt_jms_shared_queue_dest_was6 with return code $rc"
+    return $rc
+}
+
+
+######
+# crt_jms_qcf {scope j2cra bus_name qcf_name qcf_jndi_name}
+#  Creates the ITIM Queue Connection factory (shared or non-shared)
+# 	- determine whether "ITIM Queue Connection Factory" exists
+#	- if the factory exists, extract existing values
+# 	- if the factory not exists, create it and set attributes
+#
+
+puts "--> profiling proc crt_jms_qcf"
+proc crt_jms_qcf {scope j2cra bus_name qcf_name qcf_jndi_name} {
+  global AdminConfig
+
+  puts "--> to create $qcf_name withe JNDI name $qcf_jndi_name"
+  # Find the existing ITIM queue connection factory
+  set itim_qcf [find_object_id $scope "J2CConnectionFactory" \
+                                       "jndiName" $qcf_jndi_name]
+
+  if { $itim_qcf != "" } {
+    puts "--> Found ITIM queue connection factory $itim_qcf"
+    puts "--> Will retrieve data then remove the $qcf_name"
+    set cPool    [$AdminConfig showAttribute $itim_qcf connectionPool]
+    set maxCon   [$AdminConfig showAttribute $cPool maxConnections]
+    set minCon   [$AdminConfig showAttribute $cPool minConnections]
+    set cTimeout [$AdminConfig showAttribute $cPool connectionTimeout]
+    set uTimeout [$AdminConfig showAttribute $cPool unusedTimeout]
+    set aTimeout [$AdminConfig showAttribute $cPool agedTimeout]
+    set rTime    [$AdminConfig showAttribute $cPool reapTime]
+    set pPolicy  [$AdminConfig showAttribute $cPool purgePolicy]
+
+    $AdminConfig remove $itim_qcf 
+  } else {
+    set maxCon 50
+    set cTimeout 180
+    set minCon 1
+    set rTime  180
+    set uTimeout 1800
+    set aTimeout 0
+    set pPolicy  EntirePool   
+
+  }
+    puts "--> "
+    puts "--> proceeding to create $qcf_name" 
+    puts "--> "
+
+    set temp_list [$AdminConfig listTemplates J2CConnectionFactory]
+    foreach ftemp $temp_list {
+       if {[regexp "J2CConnectionFactoryTemplate" $ftemp] == 1}  {
+          puts "--> found J2CConnectionFactoryTemplate $ftemp"
+	  break
+       }
+    }
+
+    set name    [list name $qcf_name]
+    set jndi    [list jndiName $qcf_jndi_name]
+    set desc    [list description $qcf_name]
+    set authd   [list authDataAlias "itim_jms"]
+    set authxa  [list xaRecoveryAuthAlias "itim_jms"]
+
+    set acon    [list [list maxConnections $maxCon] [list connectionTimeout $cTimeout] \
+	        [list minConnections $minCon] [list reapTime $rTime] [list unusedTimeout $uTimeout] \
+	        [list agedTimeout $aTimeout]  [list purgePolicy $pPolicy]]
+    set conp    [list connectionPool $acon]
+
+    set cdp     [find_object_id $scope ConnectionDefinition connectionFactoryInterface javax.jms.QueueConnectionFactory]
+    set cdef    [list connectionDefinition $cdp]
+
+    set qfAttrs [list $name $jndi $desc $conp $authxa $authd $cdef]
+    set j2ccf   [$AdminConfig createUsingTemplate J2CConnectionFactory $j2cra $qfAttrs $ftemp]
+
+    puts "--> J2CConnectionFactory id: $j2ccf"
+
+    if { $j2ccf != "" } {
+       # create service integration Bus and other
+       set rc [update_itim_property $j2ccf "2" "propertySet" "resourceProperties" "BusName" $bus_name]
+       set rc [update_itim_property $j2ccf "2" "propertySet" "resourceProperties" "NonPersistentMapping" "ReliableNonPersistent"]
+       set rc [update_itim_property $j2ccf "2" "propertySet" "resourceProperties" "PersistentMapping" "AssuredPersistent"]
+       if {[regexp "enrole.jms.QueueConnectionFactory" $qcf_jndi_name] == 1}  {
+          puts "--> Extra setting for $qcf_name"
+          set rc [update_itim_property $j2ccf "2" "propertySet" "resourceProperties" "ConnectionProximity" "Server"]
+          set rc [update_itim_property $j2ccf "2" "propertySet" "resourceProperties" "TargetSignificance" "Required"]
+       }
+    } else {
+       puts "--> ***** $qcf_name is failed to be created!"
+       return ""
+    }
+    return $j2ccf
+}
+
+
+######
+# crt_jms_qcf_was6 {scope_args schema q_suffix}
+#  Creates the ITIM Queue Connection factory for 'node'
+# 	- determine whether "ITIM Queue Connection Factory" exists
+#	- if the factory exists, extract existing values
+# 	- if the factory not exists, create it
+#	- create the queues required by ITIM
+#       - create activation specs
+#	- create SIB itim_bus if it does not exist
+#	- create message engine
+#
+
+puts "--> profiling proc crt_jms_qcf_was6"
+proc crt_jms_qcf_was6 {scope_args schema q_suffix} {
+  global AdminConfig
+
+  if {[llength $scope_args] == 1} {
+      set cluster [lindex $scope_args 0]
+      set node   "none"
+      set server "none"
+      puts "Adding JMS instance to ${cluster}..."
+  } else {
+      set cluster "none"
+      set node    [lindex $scope_args 0]
+      set server  [lindex $scope_args 1]
+      puts "Adding JMS instance to ${node} - ${server}..."
+  }
+  set bus_name "itim_bus"
+
+  puts "--> node: $node"
+  puts "--> server: $server"
+  puts "--> cluster: $cluster"
+  puts "--> q_suffix: $q_suffix"
+  puts "--> bus_name: $bus_name"
+
+  # get J2C Resource Adapter id
+  if { $cluster == "none" } {
+    set j2cra [$AdminConfig getid /Node:$node/Server:$server/J2CResourceAdapter:SIB\ JMS\ Resource\ Adapter/]
+    set nid [$AdminConfig getid /Node:$node/]
+    set sid [$AdminConfig getid /Node:$node/Server:$server]
+    puts "--> node id is $nid"
+    puts "--> server id is $sid"
+    set scope $sid
+  } else {
+    set j2cra [$AdminConfig getid /ServerCluster:$cluster/J2CResourceAdapter:SIB\ JMS\ Resource\ Adapter/]
+    set scope [$AdminConfig getid /ServerCluster:$cluster/]
+    puts "--> cluster id is $scope"
+  } 
+  puts "--> WAS6 default jsm resource adapter id is $j2cra"
+
+  set itim_qcf  [crt_jms_qcf $scope $j2cra $bus_name "ITIM Queue Connection Factory" "enrole.jms.QueueConnectionFactory"]
+  set itim_sqcf [crt_jms_qcf $scope $j2cra $bus_name "ITIM Shared Queue Connection Factory" "enrole.jms.SharedQueueConnectionFactory"]
+
+  set aop  [find_object_id $scope AdminObject adminObjectInterface javax.jms.Queue]
+  set aobj [list adminObject $aop]
+
+  # Find or create the ITIM queue definitions
+
+  set itim_wf itim_wf
+  set itim_ms itim_ms
+  set itim_ps itim_ps
+  set itim_rs itim_rs
+  set itim_rs_pending itim_rs_pending
+  set itim_adhocSync  itim_adhocSync
+  set itim_import_export itim_import_export
+
+  create_queue $j2cra $aobj "mailServicesQueue" "itim_ms" $itim_ms "ITIM Mail Services Queue" $bus_name "Application"
+
+  create_queue $j2cra $aobj "remoteServicesQueue" "itim_rs" $itim_rs "ITIM Remote Services Queue" $bus_name "Application"
+
+  create_queue $j2cra $aobj "workflowQueue" "itim_wf" $itim_wf "ITIM Workflow Queue" $bus_name "Application"
+
+  create_queue $j2cra $aobj "adhocSyncQueue" "itim_adhocSync" $itim_adhocSync "ITIM Adhoc Sync Queue" $bus_name "Application"
+
+  create_queue $j2cra $aobj "remotePendingQueue" "itim_rs_pending" $itim_rs_pending "ITIM Remote Pending Queue" $bus_name "Application"
+
+  create_queue $j2cra $aobj "partitioningServiceQueue" "itim_ps" $itim_ps "ITIM Partitioning Service Queue" $bus_name "Application"
+
+  create_queue $j2cra $aobj "importExportQueue" "itim_import_export" $itim_import_export "ITIM import export Queue" $bus_name "Application"
+
+  #create j2c activation spec for each activation point
+  
+  create_activation_spec $j2cra "ITIMImportExportActivationSpec" \
+		"importExportActivationSpec" $bus_name "importExportQueue" 2 1
+
+  create_activation_spec $j2cra "ITIMLocalWorkflowActivationSpec" \
+		"localWorkflowActivationSpec" $bus_name "workflowQueue" 50 1  
+
+  create_activation_spec $j2cra "ITIMMailServicesActivationSpec" \
+		"mailServicesActivationSpec" $bus_name "mailServicesQueue" 3 1 
+
+  create_activation_spec $j2cra "ITIMPartitioningServiceActivationSpec" \
+		"partitioningServiceActivationSpec" $bus_name "partitioningServiceQueue" 5 1  
+
+  create_activation_spec $j2cra "ITIMAdhocSyncActivationSpec" \
+		"adhocSyncActivationSpec" $bus_name "adhocSyncQueue" 5 1
+
+  create_activation_spec $j2cra "ITIMRemoteServicesActivationSpec" \
+		"remoteServicesActivationSpec" $bus_name "remoteServicesQueue" 5 1 
+
+  create_activation_spec $j2cra "ITIMRemoteServicesPendingActivationSpec" \
+		"remoteServicesPendingActivationSpec" $bus_name "remotePendingQueue" 5 1 
+
+  # create SIB bus and SIB messaging engine and define all queue point
+  set default_ds   false
+  set ds_jndi      itimBusDataSource 
+  set auth_alias   itim_init
+  # set schema       ITIML000
+  set create_table false
+
+  set queue_args   [list $itim_wf $itim_ms $itim_rs $itim_rs_pending $itim_adhocSync $itim_ps $itim_import_export]
+
+  create_sib_objects $bus_name $default_ds $ds_jndi $auth_alias $schema $create_table $scope_args $queue_args
+
+  return SUCCESS
+}
+
+
+#-------------------------------------------------------------------
+# create_queue {j2cra aobj jndi_name queue_name real_queue_name descript bus_name delivery_mode}
+#
+puts "--> profiling proc create_queue"
+proc create_queue {j2cra aobj jndi_name queue_name real_queue_name descript bus_name delivery_mode}  {
+    global AdminConfig
+ 
+  # Find the existing ITIM queue definition
+  set itim_qd [find_object_id $j2cra "J2CAdminObject" "jndiName" $jndi_name]
+  if { $itim_qd != "" } {
+    puts "--> Found $queue_name queue definition $itim_qd"
+    puts "--> Will not create a new $queue_name queue definition"
+  } else {
+    set name [list name $queue_name]
+    # set jndi [list jndiName $jdni_name.$q_suffix]
+    set jndi [list jndiName $jndi_name]	
+    set desc [list description $descript]
+
+    set qfAttrs [list $name $jndi $desc $aobj]
+
+    if {[catch {set itim_qd [$AdminConfig create J2CAdminObject $j2cra $qfAttrs]} result]} {
+        puts "--> WSADMIN EXCEPTION: ${result}"
+	puts "--> queue $queue_name failed to be created!"	
+    } else { 
+        puts "--> queue $queue_name created successfully!"
+        puts "--> queue id is - $itim_qd"
+        update_itim_property $itim_qd "1" "properties" "" "BusName" $bus_name
+        update_itim_property $itim_qd "1" "properties" "" "QueueName" $real_queue_name
+        update_itim_property $itim_qd "1" "properties" "" "DeliveryMode" $delivery_mode
+    }
+  }
+  return $itim_qd
+}
+
+######
+# remove_old_queues {jmsp q_suffix}
+#  Remove ITIM 4.5.* queue definitions
+
+puts "--> profiling proc remove_old_queues"
+proc remove_old_queues {jmsp q_suffix} {
+    global AdminConfig
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" mailServicesQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 mail service queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  } else {
+    puts "--> Not found ITIM 4.5 queue.  Return."
+    return UNCHANGED
+  }
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" remoteServicesQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 remote service queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  }
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" workflowQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 work flow queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  }
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" workflowPendingQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 work flow pending queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  }
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" workflowAbortQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 work flow abort queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  }
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" adhocSyncQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 adhoc sync queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  }
+
+  set itim_qd [find_object_id $jmsp "WASQueue" "jndiName" remotePendingQueue.$q_suffix]
+  if { $itim_qd != "" } {
+    puts "--> Found ITIM 4.5 remote pending queue definition $itim_qd"
+    puts "--> Will remove it"
+    $AdminConfig remove $itim_qd
+  } 
+  return SUCCESS
+}
+
+######
+# define_itim_queues {jmssid}
+#  Add the ITIM Queues to jms server 
+
+puts "--> profiling proc define_itim_queues"
+proc define_itim_queues {jmssid} {
+    global AdminConfig
+
+    puts "--> proc define_itim_queues: jmssid = $jmssid"
+    if {$jmssid == ""} {
+        return "UNCHANGED"
+    }
+
+    set queues [$AdminConfig showAttribute $jmssid queueNames]
+    if {[regexp "itim_ms" $queues] == 0} {
+        $AdminConfig modify $jmssid {{queueNames itim_ms}}
+    }
+    if {[regexp "itim_rs" $queues] == 0} {
+        $AdminConfig modify $jmssid {{queueNames itim_rs}}
+    }
+    if {[regexp "itim_wf" $queues] == 0} {
+        $AdminConfig modify $jmssid {{queueNames itim_wf}}
+    }
+    if {[regexp "itim_adhocSync" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_adhocSync}}
+    }
+    if {[regexp "itim_rs_pending" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_rs_pending}}
+    }
+
+    # below added for ITIM 46
+    if {[regexp "itim_ps" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_ps}}
+    }
+    if {[regexp "itim_wf_shared" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_wf_shared}}
+    }
+    if {[regexp "itim_policy" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_policy}}
+    }
+    if {[regexp "itim_policy_simulation" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_policy_simulation}}
+    }
+    if {[regexp "itim_import_export" $queues] == 0} {
+	    $AdminConfig modify $jmssid {{queueNames itim_import_export}}
+    }
+    
+    # above added for ITIM 46    
+
+    set nthreads [list numThreads 20]
+    set initStat [list [list initialState START]]
+    set stateMgr [list stateManagement $initStat]
+    set attr     [list $nthreads $stateMgr]
+    $AdminConfig modify $jmssid $attr
+  
+   return SUCCESS
+}
+
+
+######
+# remove_itim_objects {ob ob_text scope_id}
+#  Remove the ITIM/WAS object
+#
+#	ob      - object name
+#       ob_text - text within the ITIM object name
+#	scope   - scope where the object resides
+#
+
+puts "--> profiling proc remove_itim_objects"
+proc remove_itim_objects {ob ob_text scope_id} {
+    global AdminConfig
+    global AdminTask
+
+    puts "--> proc remove_itim_objects; ob: $ob; ob_text: $ob_text; scope_id: $scope_id"
+
+    set itim_list [$AdminTask $ob $scope_id]
+    # set itim_list [$AdminTask listSIBJMSQueues $scope_id]
+    set nq [llength $itim_list]
+    puts "Debug --> number of itim object items is $nq"
+
+    set itim_item ""
+    for {set i 0} {$i < $nq} {incr i} {
+       set itim_item [lindex $itim_list $i]
+
+       if {[regexp $ob_text $itim_item] == 1} {
+	  $AdminConfig remove $itim_item
+       }
+    }
+    return SUCCESS
+}
+
+######
+# remove_itim_queues {jmssid}
+#  Remove the ITIM Queues 
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc remove_itim_queues"
+proc remove_itim_queues {jmssid} {
+    global AdminConfig
+
+    puts "--> proc remove_itim_queues; jmssid: $jmssid"
+    set queues [$AdminConfig showAttribute $jmssid queueNames]
+    puts "--> queues:  $queues"
+
+    # If itim queues are configured, remove them
+    if {[regexp "itim_" $queues] == 1} {
+        # Reset the queues
+        $AdminConfig modify $jmssid {{queueNames ""}}
+
+        set qlist [split $queues \;]
+        set numqs [llength $qlist]
+
+        for {set i 0} {$i < $numqs} {incr i} {
+            set q [lindex $qlist $i]
+
+            if {[regexp "itim_" $q] == 0} {
+                puts "--> adding queue $q"
+                set qname [list "queueNames" $q]
+                set qnamelist [list $qname]
+
+                puts "--> adding queuenamelist $qnamelist"
+                $AdminConfig modify $jmssid $qnamelist
+            }
+        }
+
+        return SUCCESS
+    }
+
+    return UNCHANGED
+}
+
+######
+# remove_was_qdests {jmsp}
+#  Remove the Queue destinations
+
+puts "--> profiling proc remove_was_qdests"
+proc remove_was_qdests {jmsp} {
+    global AdminConfig
+
+    puts "--> proc remove_was_qdests; jmsp: $jmsp"
+    set qdlist [$AdminConfig list WASQueue $jmsp]
+
+    set num_qds [llength $qdlist]
+    set rc ""
+    for {set i 0} {$i < $num_qds} {incr i} {
+       set qd [lindex $qdlist $i]
+
+       set qname [$AdminConfig showAttribute $qd name]
+       if {[regexp "itim_" $qname] == 1} {
+           puts "--> deleting q destination $qname"
+           $AdminConfig remove $qd
+           set rc SUCCESS
+       }
+    }
+
+    return $rc
+}
+
+######
+# create_itim_j2c_auth_alias {alias_id desc userid password}
+#
+#   This procedure creates the J2C authentication alias used by
+#   itim DataSource.  This alias will have the name as 
+#   <node_name>/itim_init.
+#
+
+puts "--> profiling proc create_itim_j2c_auth_alias"
+
+proc create_itim_j2c_auth_alias {alias_id desc userid password} {
+  global AdminConfig
+  global AdminControl
+
+  puts "--> proc create_itim_j2c_auth_alias"
+  set adid [find_itim_j2c_auth_alias $alias_id]
+  set uid  [list userId $userid]
+  set pw   [list password $password]
+  puts "--> attempt to find JMS J2C authentication alias; which is : $adid"
+  puts "--> passed in uid is : $uid"
+
+  if { $adid == "" } {
+    set cell_name [$AdminControl getCell]
+    set securityId [$AdminConfig getid /Cell:$cell_name/Security:/]
+    puts "--> security id is - $securityId"
+   
+    set al   [list alias $alias_id]
+    set dsc  [list description $desc]
+    set attr [list $al $uid $pw $dsc]
+     
+    $AdminConfig create JAASAuthData $securityId $attr
+    puts "--> create itim j2c authentication alias id:   "
+  } else {
+    puts "--> found JMS J2C authentication alias.  attempt to modify it."
+    set attr [list $uid $pw]
+    # puts "--> $attr "
+    $AdminConfig modify $adid $attr
+  } 
+  return SUCCESS
+}
+
+######
+# find_itim_jms_j2c_auth_alias {alias_id}
+#
+#   This procedure tries to find the J2C authentication alias itim_jms.
+#   Returns Success if it is found else returns an empty String
+#
+
+puts "--> profiling proc find_itim_jms_j2c_auth_alias"
+
+proc find_itim_jms_j2c_auth_alias {alias_id } {
+
+set rc ""
+set aliasfound [find_itim_j2c_auth_alias $alias_id]
+  if { $aliasfound != "" } {
+	set rc SUCCESS
+   }
+return $rc
+}
+
+######
+# find_itim_j2c_auth_alias {alias_id}
+#
+#   This procedure tries to find the J2C authentication alias with
+#   the userId "enrole" and part of alias name as "itim_init".  If
+#   the alias is found, the alias id will be returned.  Otherwise, 
+#   an empty string will be returned.
+#
+
+puts "--> profiling proc find_itim_j2c_auth_alias"
+
+proc find_itim_j2c_auth_alias { alias_id } {
+  global AdminConfig
+  global AdminControl
+
+  puts "--> proc find_itim_j2c_auth_alias"
+  puts "--> find j2c authentication alias $alias_id"
+  set cell_name [$AdminControl getCell]
+  set securityId [$AdminConfig getid /Cell:$cell_name/Security:/]
+  puts "--> security id is - $securityId"
+  set adEntry    [$AdminConfig showAttribute $securityId authDataEntries]
+  puts "--> auth data entry is - $adEntry"
+  set adeList    [lindex $adEntry 0]
+  puts "--> auth data entry list is - $adeList"
+  set nEntries   [llength $adeList]
+
+  puts "--> nEntries: $nEntries"
+  set adid ""
+  for {set i 0} {$i < $nEntries} {incr i} {
+     set adi [lindex $adeList $i]
+#     set userid [$AdminConfig showAttribute $adi userId]	
+#     puts "--> current userId is $userid"	
+#     if { $userid == "enrole" } 
+     set alias [$AdminConfig showAttribute $adi alias]
+     puts "--> the current alias $alias"
+#     if {[regexp $alias_id $alias] == 1} 
+     if { $alias_id == $alias } {
+          puts "--> found j2c alias $alias_id with alias id $adi"
+          # set itimAlias $alias
+	    set adid $adi
+          break 
+     } 
+  }
+  puts "--> itim j2c authentication alias id:  $adid "
+  return $adid
+}
+
+######
+# find_object_id {scopeId obType obKey obValue}
+#
+# This procedure finds the object id based on the input parameters.
+# They are:
+#	scopeId : the scope that the object is under, such as server id (sid)
+#	obType  : the type of object, such as DataSource, WASQueueConnectionFactory
+#	obKey	  : the key word to be used for comparison, such as jndiName, implementationClassName
+# 	obValue : the value of the key word to be compared
+#
+# If the object is found, the object id will be returned.
+# If the object if not found, an empty string will be returned.
+#
+
+puts "--> profiling proc find_object_id"
+proc find_object_id {scopeId obType obKey obValue} {
+  global AdminConfig
+
+  puts "--> proc find_object_id"
+  puts "--> search scope id         : $scopeId"
+  puts "--> search object type id   : $obType"
+  puts "--> search object key word  : $obKey"
+  puts "--> search object key value : $obValue"
+
+  set oblist [$AdminConfig list $obType $scopeId]
+  set noblist [llength $oblist]
+  puts "--> number of object list: $noblist"
+  set obid ""
+  for {set i 0} {$i < $noblist} {incr i} {
+     set obi [lindex $oblist $i]
+     set curObValue [$AdminConfig showAttribute $obi $obKey]	
+     puts "--> current value of the object key is $curObValue"	
+
+     if { $curObValue == $obValue } {
+        set obid $obi
+        break 
+     } 
+  }
+
+  puts "--> object id is :  $obid "
+  return $obid
+}                                  
+
+######
+# update_itim_datasource_props {}
+
+puts "--> profiling proc update_itim_datasource_props"
+proc update_itim_datasource_props {dsid minPoolSize maxPoolSize} {
+  global AdminConfig
+
+  puts "--> proc update_itim_datasource_props"
+  puts "--> dsid: $dsid"
+
+  if {$minPoolSize == ""} {
+	set minPoolSize 5
+  }
+  if {$maxPoolSize == ""} {
+	set maxPoolSize 30
+  }   
+
+  set cid [$AdminConfig showAttribute $dsid connectionPool]
+  puts "--> ITIM datasource id is $dsid"
+  puts "--> connection pool id is $cid"
+  puts "--> minimun pool size is $minPoolSize"
+  puts "--> maximun pool size is $maxPoolSize"
+
+  set aTimeout [$AdminConfig showAttribute $cid agedTimeout]
+  set cTimeout [$AdminConfig showAttribute $cid connectionTimeout]
+  set pPolicy  [$AdminConfig showAttribute $cid purgePolicy]
+  set rTime    [$AdminConfig showAttribute $cid reapTime]
+  set uTimeout [$AdminConfig showAttribute $cid unusedTimeout]
+ 
+  set miPoolSize   [list minConnections $minPoolSize]
+  set maPoolSize   [list maxConnections $maxPoolSize]
+  set aTimeoutList [list agedTimeout $aTimeout]
+  set cTimeoutList [list connectionTimeout $cTimeout]
+  set uTimeoutList [list unusedTimeout $uTimeout]
+  set rTimeList    [list reapTime $rTime]
+  set pPolicyList  [list purgePolicy $pPolicy]
+
+  set attrlist1    [list $miPoolSize $maPoolSize $aTimeoutList $cTimeoutList $pPolicyList $rTimeList $uTimeoutList]
+  set conlist      [list connectionPool $attrlist1]
+  set attrlist2    [list $conlist]
+  $AdminConfig modify $dsid $attrlist2
+
+  return SUCCESS
+}                                       
+
+######
+# update_itim_property{}
+
+puts "--> profiling proc update_itim_property"
+proc update_itim_property {obid nest pname1 pname2 iname ivalue} {
+  global AdminConfig
+
+  puts "--> proc update_itim_property"
+
+  puts "--> ITIM object id is $obid"
+  puts "--> property nest level is $nest"
+  puts "--> property title1 is $pname1"
+  puts "--> property title2 is $pname2"
+  puts "--> property name is $iname"
+  puts "--> property value is $ivalue"
+
+  set found false
+  set pid  [$AdminConfig showAttribute $obid $pname1]
+  set cpid $pid
+  if { $nest == "2" } {
+     set pid  [$AdminConfig showAttribute $pid $pname2]
+  }
+  set pidlist [lindex $pid 0]
+  set npid [llength $pidlist]
+
+  for {set i 0} {$i < $npid} {incr i} {
+     set pidi [lindex $pidlist $i]
+     set pname [$AdminConfig showAttribute $pidi name]
+	
+     puts "--> current resource property name is $pname"	
+     if { $pname == $iname } {
+        set vlist [list value $ivalue]
+	set attr  [list $vlist]
+	puts "--> modify $iname with value - $ivalue"
+        $AdminConfig modify $pidi $attr
+        set found true
+	break
+     } 
+  }
+
+  if { $found == "false" && $iname != "oracle9iLogTraceLevel"} {
+     puts "--> not found the property $iname; will create the property"
+     set attrs [subst {{name $iname} {type java.lang.Integer} {value $ivalue}}]            
+     $AdminConfig create J2EEResourceProperty $cpid $attrs  
+     puts "--> create $iname with value - $ivalue"
+  }
+  return SUCCESS
+} 
+
+######
+# remove_itim_property{}
+
+puts "--> profiling proc remove_itim_property"
+proc remove_itim_property {obid nest pname1 pname2 iname } {
+  global AdminConfig
+
+  puts "--> proc remove_itim_property"
+
+  puts "--> ITIM object id is $obid"
+  puts "--> property nest level is $nest"
+  puts "--> property title1 is $pname1"
+  puts "--> property title2 is $pname2"
+  puts "--> property name is $iname"
+
+  set found false
+  set pid  [$AdminConfig showAttribute $obid $pname1]
+  set cpid $pid
+  if { $nest == "2" } {
+    set pid  [$AdminConfig showAttribute $pid $pname2]
+  }
+  set pidlist [lindex $pid 0]
+  set npid [llength $pidlist]
+
+  for {set i 0} {$i < $npid} {incr i} {
+    set pidi [lindex $pidlist $i]
+    set pname [$AdminConfig showAttribute $pidi name]
+    if { $pname == $iname } {
+      puts "--> found resource property $iname to be removed"
+      $AdminConfig remove $pidi
+      puts "--> removed $iname"
+      set found true
+      break
+    }
+  }
+
+  if { $found == "false" } {
+    puts "--> the property $iname is not present"
+  }
+  return SUCCESS
+}
+
+######
+# get_itim_property_value{}
+
+puts "--> profiling proc get_itim_property_value"
+proc get_itim_property_value {obid nest pname1 pname2 iname} {
+  global AdminConfig
+
+  puts "--> proc get_itim_property_value"
+
+  puts "--> ITIM object id is $obid"
+  puts "--> property nest level is $nest"
+  puts "--> property title1 is $pname1"
+  puts "--> property title2 is $pname2"
+  puts "--> property name is $iname"
+
+  set pid  [$AdminConfig showAttribute $obid $pname1]
+  if { $nest == "2" } {
+     set pid  [$AdminConfig showAttribute $pid $pname2]
+  }
+  set pidlist [lindex $pid 0]
+  set npid [llength $pidlist]
+
+  for {set i 0} {$i < $npid} {incr i} {
+     set pidi [lindex $pidlist $i]
+     set pname [$AdminConfig showAttribute $pidi name]
+	
+     puts "--> current resource property name is $pname"	
+     if { $pname == $iname } {
+        set ivalue [$AdminConfig showAttribute $pidi value]
+        puts "--> property value is $ivalue"
+	break
+     } 
+  }
+  return $ivalue
+} 
+
+
+#-----------------------------------------------------------------
+# crt_jdbc_driver {scope dbtype is_xa}
+#
+# Create the jdbc driver provider under the scope which can be at cluster or server level
+#    There are three database type - IBM_DB, ORACLE_DB, and MS_DB.  
+#
+puts "--> profiling proc crt_jdbc_driver"
+
+proc crt_jdbc_driver {scope dbtype is_xa} {
+  global AdminConfig
+
+  puts "--> proc crt_jdbc_driver"
+
+  set itim_jdbc [find_jdbc_driver $scope $dbtype $is_xa "true"]
+
+  # Changed during ITIM 4.6 below.  The following section will be either created
+  # of modified based on the discover of the proper jdbc driver
+
+    if { $is_xa == "true" } {
+       set xa   [list xa true]
+       set xa_txt "XA"
+    } else {
+       set xa   [list xa false]
+       set xa_txt "non-XA"
+    }
+
+    if {$dbtype == "IBM_DB" || $dbtype == "IBM_ZDB"} {
+
+      set cp  [list classpath \${ITIM_DB_JDBC_DRIVER_PATH}/db2jcc.jar\;\${ITIM_DB_JDBC_DRIVER_PATH}/db2jcc_license_cisuz.jar\;\${ITIM_DB_JDBC_DRIVER_PATH}/db2jcc_license_cu.jar]
+      set name [list name "ITIM $xa_txt DB2 JDBC Provider"]
+      set dbProviderType [list providerType "DB2 Universal JDBC Driver Provider"]
+      if { $is_xa == "true" } {
+         set ipn [list implementationClassName com.ibm.db2.jcc.DB2XADataSource]
+      } else {
+         set ipn [list implementationClassName com.ibm.db2.jcc.DB2ConnectionPoolDataSource]
+      }
+      set dsp  [list description "ITIM JDBC2 $xa_txt Compliant Driver (DB2)"]
+    } elseif { $dbtype == "ORACLE_DB" } {
+      set cp  [list classpath \${ITIM_DB_JDBC_DRIVER_PATH}/ojdbc.jar]
+      set ipn [list implementationClassName oracle.jdbc.xa.client.OracleXADataSource]
+      set dsp [list description "ITIM JDBC2 $xa_txt Compliant Driver (ORACLE)"]
+      set name [list name "ITIM $xa_txt ORACLE JDBC Provider"]
+      set dbProviderType [list providerType "Oracle JDBC driver"]
+      if { $is_xa == "false" } {
+         set ipn [list implementationClassName oracle.jdbc.pool.OracleConnectionPoolDataSource]
+      }
+    } elseif { $dbtype == "MS_DB" } {
+      set ipn [list implementationClassName com.microsoft.sqlserver.jdbc.SQLServerXADataSource]
+      set cp  [list classpath \${ITIM_DB_JDBC_DRIVER_PATH}/sqljdbc.jar] 
+      set dsp  [list description "ITIM JDBC2 $xa_txt Compliant Driver (MSSQL)"]
+      set name [list name "ITIM $xa_txt MSSQL JDBC Provider"]
+      
+      set dbProviderType [list providerType "DataDirect ConnectJDBC type 4 driver for MSSQL Server"]
+      if { $is_xa == "false" } {
+         set ipn [list implementationClassName com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource]
+      }
+    } 
+    
+    set attr [list $name $dbProviderType $cp $ipn $dsp $xa]   
+    puts "--> attr list is $attr"
+
+  # Changed during ITIM 4.6 above.
+
+  # If ITIM JDBC driver is not found, create a new jdbc driver
+  if {$itim_jdbc == ""} {
+    puts "--- "
+    puts "--- not found ITIM $xa_txt JDBC driver"
+    puts "--- will create ITIM $xa_txt JDBC driver and datasource" 
+    puts "--- "
+
+    set itim_jdbc [$AdminConfig create JDBCProvider $scope $attr]
+  } else {  
+    puts "--- "
+    puts "--- found ITIM $xa_txt JDBC driver" 
+    puts "--- "
+    
+    set cpvalue [$AdminConfig showAttribute $itim_jdbc classpath]
+    puts "--- Current classpath is $cpvalue"
+    if { $dbtype == "ORACLE_DB" &&  $cpvalue != "\${ITIM_DB_JDBC_DRIVER_PATH}/ojdbc.jar" } {
+    	puts "--- Update classpath to \${ITIM_DB_JDBC_DRIVER_PATH}/ojdbc.jar"
+    	puts "--- "
+    	# Clean up the classpath first before setting the new value. Otherwise, 
+    	# the new classpath will be appeneded to the old value instead of replace.
+    	set blankcp [list classpath " "]
+    	set attr [list $blankcp]
+    	puts "--> **** attr list is $attr"
+    	$AdminConfig modify $itim_jdbc $attr
+    	
+    	# Set the new classpath 
+    	set attr [list $cp]
+    	puts "--> **** attr list is $attr"
+    	$AdminConfig modify $itim_jdbc $attr
+    	
+    } else {
+    	puts "--- Do nothing"
+    	puts "---"
+    }
+    
+    
+  } 
+  return $itim_jdbc
+}
+
+######
+# update_itim_datasource {dburl dbuserid dbpasswd jdbcid dbtype dsname dsctext is_xa}
+
+puts "--> profiling proc update_itim_datasource"
+
+proc update_itim_datasource {dburl dbuserid dbpasswd jdbcid dbtype dsname dsctext is_xa} {
+  global AdminConfig
+
+  puts "--> proc update_itim_datasource"
+  puts "--> itim db url is $dburl"
+  puts "--> itim db userid is $dbuserid"
+  puts "--> itim jdbcid is $jdbcid"
+  puts "--> itim db type is $dbtype" 
+  puts "--> the data source jndi name is $dsname"
+  puts "--> the description of the data source is $dsctext"
+  puts "--> XA datasource - $is_xa"
+
+  # oracle url - jdbc:oracle:thin:enrole/password@myhost:1521:itimdb
+  # oracle url - jdbc:oracle:thin:@192.168.6.97:1521:itimdbsid
+  # oracle url - jdbc:oracle:thin:@//192.168.6.97:1521/dbSvcName
+  # ms sql url - jdbc:sqlserver://192.168.6.181:1433;database=itimdb (old IPV4 only syntax)
+  # ms sql url - jdbc:sqlserver://;server=HOST_OR_IPV4_OR_IPV6;port=1433;database=itimdb (syntax for both IPV4 and IPV6)
+  #              Please note, server value must not contain [ and ] for IPV6 address.  nnnn:nnnn...:nnnn w/o [ and ]
+  # db2 url    - jdbc:db2://hostname:50000/itimdb
+
+  # --------------------------------------------------------------------------------------
+  # In order to handle both IPV4 and IPV6 syntax, let's check for the IPV6 syntax
+  # and if found, fake out the rest of the parsing and restore the ipaddr.
+  # (IPV6: jdbc:db2://[aaaa:bbbb:cccc:dddd:aaaa:bbbb:cccc:dddd]:50000/itimdb)
+  # --------------------------------------------------------------------------------------
+  set ipv6 [regexp {(.*)(\[.+\])(.*)} $dburl match lhs ipv6addr rhs]
+  if {$ipv6 == 1} {
+    set fake "ipv6addr"
+    puts "--> Found IPV6 address: $ipv6addr"
+    set dburl $lhs$fake$rhs 
+  }
+
+  if {$dbtype != "ORACLE_DB"} {
+     set elems  [split $dburl :]
+     set num    [llength $elems]
+     set pos    [expr $num - 1]
+     set dbname [lindex $elems $pos] 
+     set port_number 0
+     if {$dbtype == "IBM_DB" || $dbtype == "IBM_ZDB"} { 
+        set lastelem $dbname
+        set lelems      [split $lastelem /]
+        set dbname      [lindex $lelems 1]
+        set port_number [lindex $lelems 0]	
+
+        set pos       [expr $num - 2]
+        set mixipaddr [lindex $elems $pos]
+        set ipelems   [split $mixipaddr /]
+        set ipaddr    [lindex $ipelems [expr [llength $ipelems]-1]]
+        if {$ipv6 == 1} {set ipaddr $ipv6addr}
+        puts "--> IBM DB2 Server IP address is $ipaddr"
+     } elseif {$dbtype == "MS_DB"} {
+        set altsyn [regexp {.*;server=(.*);port=(.*);database=(.*)} $dburl match ipaddr port_number dbname]
+        if {$altsyn != 1} {
+           set lastelem $dbname
+           set lelems   [split $lastelem =]
+           set lnum     [llength $lelems]
+           set dbname   [lindex $lelems [expr $lnum - 1]]
+           set lelems   [split $lastelem \;]
+           set port_number [lindex $lelems 0]	
+
+           set pos [expr $num - 2]
+           set mixipaddr [lindex $elems $pos]
+           set ipelems   [split $mixipaddr /]
+           set ipaddr    [lindex $ipelems [expr [llength $ipelems]-1]]
+           if {$ipv6 == 1} {set ipaddr $ipv6addr}
+        }
+     puts "--> MS SQL Server IP address is $ipaddr"
+     }
+
+     puts "--> elements are $elems ; number elements is $num"
+     puts "--> itim db name is $dbname"
+     puts "--> modify port number with value - $port_number"
+  }
+  
+  # Create itim j2c authentication alias
+  set rc [create_itim_j2c_auth_alias "itim_init" \
+               "itim initial j2c authentication alias" $dbuserid $dbpasswd] 
+
+  # Update (or create) ITIM data source
+  if {$dbtype == "IBM_DB" || $dbtype == "IBM_ZDB"} {
+
+     set dstemp [lindex [$AdminConfig listTemplates DataSource "DataSource_DB2_UNI_1"] 0]
+     puts "--> DB2 DataSource template id is -- $dstemp"
+  } elseif {$dbtype == "ORACLE_DB"} {
+     set dshelper   [list datasourceHelperClassname "com.ibm.websphere.rsadapter.Oracle11gDataStoreHelper"]
+     puts "--> Oracle DB Data store helper is -- $dshelper"
+     set dstemp [lindex [$AdminConfig listTemplates DataSource "DataSource_ora_6"] 0]
+     puts "--> Oracle DB DataSource template id is -- $dstemp"
+  } elseif {$dbtype == "MS_DB"} {
+     set dshelper   [list datasourceHelperClassname "com.ibm.websphere.rsadapter.MicrosoftSQLServerDataStoreHelper"]
+     
+     # DataSource_Microsoft_XA is a new DS templte introduced in WAS 6.1.0.15, 
+     # for WAS profiles created prior to FP15, still use the deprecated template DataSource_MS_2.
+     set dstemp [$AdminConfig listTemplates DataSource "DataSource_Microsoft_XA"]
+     if {$dstemp == ""} {
+     	set dstemp [$AdminConfig listTemplates DataSource "DataSource_MS_2"]
+     }
+     puts "--> MS SQL Server DataSource template id is -- $dstemp"
+  }
+  
+  # Fix - Defect#10713 IA: WAS 7 reports ITIM DATA sources missing provider Type Attribute
+  if {$dbtype == "IBM_DB" || $dbtype == "IBM_ZDB"} {
+     set dbProviderType [list providerType "DB2 Universal JDBC Driver Provider"]
+  } elseif {$dbtype == "ORACLE_DB"} {
+     set dbProviderType [list providerType "Oracle JDBC driver"]
+  } elseif {$dbtype == "MS_DB"} {
+     set dbProviderType [list providerType "DataDirect ConnectJDBC type 4 driver for MSSQL Server"]
+  }
+  
+  set name       [list name $dsctext]
+  set jndiname   [list jndiName $dsname]
+  set dsc        [list description $dsctext] 
+  set scsize     [list statementCacheSize 50]
+  set authd      [list authDataAlias "itim_init"]
+  set amap       [list [list mappingConfigAlias DefaultPrincipalMapping] \
+                     [list authDataAlias "itim_init"]]
+  set mapp       [list mapping $amap]
+
+  set minPoolSize 5
+  set maxPoolSize 30
+
+  # Find datasource for the node:server, if exists
+  set dsid [find_object_id $jdbcid "DataSource" "jndiName" $dsname]
+  if {$dsid == ""} { 
+    puts "--- $dsctext does not exist and will be created"
+    if {$dbtype == "ORACLE_DB" || $dbtype == "MS_DB"} { 
+    	set attr       [list $name $jndiname $dsc $dshelper $scsize $authd $mapp $dbProviderType]
+    } else {
+    	set attr       [list $name $jndiname $dsc $scsize $authd $mapp $dbProviderType]
+    }
+    puts "--> attr list is $attr"
+    set dsid [$AdminConfig createUsingTemplate DataSource $jdbcid $attr $dstemp]
+    puts "--> dsid: $dsid"
+  } else {
+    puts "--- dsctext exists and will be modifid"
+    set cPool       [$AdminConfig showAttribute $dsid connectionPool]
+    set minPoolSize [$AdminConfig showAttribute $cPool minConnections]
+    set maxPoolSize [$AdminConfig showAttribute $cPool maxConnections]
+ 
+    set sCacheSize [$AdminConfig showAttribute $dsid statementCacheSize]
+    set scsize     [list statementCacheSize $sCacheSize]
+    if {$dbtype == "ORACLE_DB"} { 
+        set attr       [list $name $dsc $dshelper $scsize $authd $mapp]
+    } else {
+        set attr       [list $name $dsc $scsize $authd $mapp]
+    }
+    # set attr       [list $name $jndiname $dsc $scsize $authd $mapp]
+    puts "--> attr list is $attr"
+    $AdminConfig modify $dsid $attr
+  }
+
+  if { $dsid != "" } {
+    set rc [update_itim_datasource_props $dsid $minPoolSize $maxPoolSize]
+    if { $rc != "SUCCESS" } {
+      return $rc
+    }
+    if {$dbtype == "IBM_DB"|| $dbtype == "IBM_ZDB"} {
+
+          set propSet    [$AdminConfig create J2EEResourcePropertySet $dsid {}]     
+          set attrs [subst {{name databaseName} {type java.lang.String} {value $dbname}}]
+          $AdminConfig create J2EEResourceProperty $propSet $attrs                       
+          set attrs [subst {{name driverType} {type java.lang.Integer} {value "4"}}]            
+          $AdminConfig create J2EEResourceProperty $propSet $attrs         
+          set attrs [subst {{name serverName} {type java.lang.String} {value $ipaddr}}]
+          $AdminConfig create J2EEResourceProperty $propSet $attrs
+          set attrs [subst {{name portNumber} {type java.lang.Integer} {value $port_number}}]
+          $AdminConfig create J2EEResourceProperty $propSet $attrs
+
+    } elseif {$dbtype == "ORACLE_DB"} { 
+    
+       set rc [update_itim_property $dsid "2" "propertySet" "resourceProperties" "URL" $dburl]
+       set rc [update_itim_property $dsid "2" "propertySet" "resourceProperties" "oracle9iLogTraceLevel" " "]
+       set rc [remove_itim_property $dsid "2" "propertySet" "resourceProperties" "databaseName"]
+       set rc [remove_itim_property $dsid "2" "propertySet" "resourceProperties" "portNumber"]
+
+    } elseif {$dbtype == "MS_DB"} { 
+
+       set rc [update_itim_property $dsid "2" "propertySet" "resourceProperties" "databaseName" $dbname]
+       set rc [update_itim_property $dsid "2" "propertySet" "resourceProperties" "portNumber" $port_number]
+       set rc [update_itim_property $dsid "2" "propertySet" "resourceProperties" "serverName" $ipaddr]
+       if {$is_xa == "false"}  {
+          set rc [update_itim_property $dsid "2" "propertySet" "resourceProperties" "enable2Phase" "false"]
+       }
+    } else {
+    }                                       
+    return $rc
+  } else {
+    return FAILURE
+  }
+}     
+
+######
+# verify cluster name {cluster}
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc verify_cluster_name"
+proc verify_cluster_name {cluster} {
+  global AdminConfig
+
+  puts "--> proc verify_cluster_name $cluster"
+  set cid [$AdminConfig getid /ServerCluster:$cluster/]
+  if {$cid == ""} {
+     return FAILURE
+  }
+
+  return SUCCESS
+}
+
+######
+# get_nodes {host ipaddr}
+# Given a host name, get all nodes
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc get_nodes"
+proc get_nodes {host ipaddr} {
+  global AdminConfig
+
+  puts "--> proc get_nodes $host $ipaddr"
+  set host [string toupper $host]
+  puts "--> host (in upper case): $host"
+  
+
+  set nodelist [$AdminConfig list Node]
+  set num_nodes [llength $nodelist]
+  puts "--> num_nodes: $num_nodes"
+
+  set nlist ""
+  for {set i 0} {$i < $num_nodes} {incr i} {
+     set nid [lindex $nodelist $i]
+     puts "--> nid: $nid"
+
+     set wasHostname [$AdminConfig showAttribute $nid hostName]
+     puts "--> wasHostname: $wasHostname"
+     set wasHostname [string toupper $wasHostname]
+     puts "--> wasHostname (in upper case): $wasHostname"
+     
+     set hostTokens [split $wasHostname .]
+     set hostname [lindex $hostTokens 0]
+     puts "--> hostname: $hostname"
+     if {$hostname == $host || $wasHostname == $ipaddr} {
+        set nodename [$AdminConfig showAttribute $nid name] 
+        puts "--> nodename: $nodename"
+
+        lappend nlist $nodename
+     }
+  }
+  if {$nlist == ""}  {
+	puts " ************** "
+	puts " Did not find $host in any WebSphere node in the cell.  Please check."
+	puts " ************** "
+  }
+  return $nlist
+}
+
+######
+# get_host_name {}
+# Given a host name, get all nodes
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc get_host_name"
+proc get_host_name {} {
+  global AdminConfig
+  global AdminControl
+
+  puts "--> proc get_host_name"
+
+  set node_name [$AdminControl getNode]
+  set node_list [$AdminConfig list Node]
+  set num_nodes [llength $node_list]
+  puts "--> num_nodes: $num_nodes"
+
+  set nlist ""
+  for {set i 0} {$i < $num_nodes} {incr i} {
+     set nid [lindex $node_list $i]
+     puts "--> nid: $nid"
+
+     if {[regexp $node_name $nid] != 0} {
+	 puts "--> Found node id : $nid"
+         set host_name [$AdminConfig showAttribute $nid hostName]
+	 break
+	}
+  }
+  return $host_name
+}
+
+######
+# verify cluster membership {cluster}
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc verify_cluster_membership"
+proc verify_cluster_membership {cluster localhost} {
+  global AdminConfig
+
+  puts "--> proc verify_cluster_membership $cluster"
+
+  set nodelist [list_cluster_member_nodes $cluster]
+  set num_members [llength $nodelist]
+  for {set i 0} {$i < $num_members} {incr i} {
+     set node [lindex $members $i]
+     puts "--> node: $node"
+
+     if {$localnode == $node} {
+        return SUCCESS
+     }
+  }
+
+  return FAILURE
+}
+
+######
+# verify node name {nodename localhost}
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc verify_node_name"
+proc verify_node_name {nodename localhost} {
+  global AdminConfig
+
+  puts "--> proc verify_node_name $nodename"
+  set nid [$AdminConfig getid /Node:$nodename/]
+  if {$nid == ""} {
+     return FAILURE
+  }
+
+  set host [$AdminConfig showAttribute $nid hostName]
+  if {$host != $localhost} {
+     return FAILURE
+  }
+
+  return SUCCESS
+}
+
+#-----------------------------------------------------------------
+# create_sib_bus - Create a new SIBus if one does not exist. Otherwise, 
+#            return the existing SIBus. 
+#-----------------------------------------------------------------
+puts "--> profiling proc create_sib_bus"
+proc create_sib_bus {busName authAlias} {
+   #    busName    - SIBus name
+   #    authAlias  - authentication alias name
+   
+   global AdminTask
+   global AdminConfig
+   
+   puts " "
+   puts "Creating SIBus ${busName}..."
+
+   # Check if the SIBus already exists
+
+   set SIBus [$AdminConfig getid "/SIBus:${busName}/"]      
+
+   if {$SIBus == ""} {  
+      set parms [list -bus $busName -interEngineAuthAlias $authAlias \
+   			-highMessageThreshold 500000]
+      if {[catch {set SIBus [$AdminTask createSIBus $parms]} result]} {
+         puts "--> WSADMIN EXCEPTION: ${result}"
+	 set SIBus ""
+      } else {
+         puts "${busName} created successfully!"
+      }      
+   } else {
+      puts "${busName} already exists!"
+   }
+                                          
+   return $SIBus
+}
+
+
+#-----------------------------------------------------------------
+# add_bus_member - Add the specified server or cluster to the
+#            SIBus if it does not already exist. Assumes that the
+#            specified SIBus already exists.
+#-----------------------------------------------------------------
+puts "--> profiling proc add_bus_member"
+proc add_bus_member {busName defaultDS dsJndi scope_args} {
+   #    busName    - SIBus name
+   #    defaultDS  - create default DS (true|false)
+   #    dsJndi     - jndi name of the datasource (only used if defaultDS = false)    
+   #    scope_args[0] - cluster name or node name
+   #    scope_args[1] - server name
+   
+   global AdminTask
+   global AdminConfig
+   
+   puts " "
+   if {[llength $scope_args] == 1} {
+      set clusterName [lindex $scope_args 0]
+      set nodeName   "none"
+      set serverName "none"
+      puts "--> Adding SIBus member ${clusterName}..."
+   } else {
+      set clusterName "none"
+      set nodeName    [lindex $scope_args 0]
+      set serverName  [lindex $scope_args 1]
+      puts "--> Adding SIBus member ${nodeName} - ${serverName}..."
+   }
+   
+   puts "--> Default DataSource:    ${defaultDS}"
+   if {$defaultDS == "false"} {
+      puts "--> Datasource JNDI Name:  ${dsJndi}"
+   }
+   
+   # Check if the bus member already exists
+
+   set parms [list -bus $busName]
+   set busMembers [$AdminTask listSIBusMembers $parms]
+    
+   foreach item $busMembers {
+      set cluster [$AdminConfig showAttribute $item cluster]
+      set node [$AdminConfig showAttribute $item node]
+      set server [$AdminConfig showAttribute $item server]
+
+      if {$cluster == $clusterName || ($server == $serverName && $node == $nodeName)} {
+         set member $item
+         break
+      }
+   }
+ 
+   if {[llength $scope_args] == 1} {
+      set parms [list -bus $busName -cluster $clusterName -createDefaultDatasource $defaultDS]
+   } else {
+      set parms [list -bus $busName -node $nodeName -server $serverName -createDefaultDatasource $defaultDS]
+   }
+   
+   if {$defaultDS == "false"} {
+      lappend parms -datasourceJndiName $dsJndi 
+   }
+
+   if {![info exists member]} { 
+      if {[catch {set member [$AdminTask addSIBusMember $parms]} result]} {
+         puts "--> WSADMIN EXCEPTION: ${result}"
+         set member ""
+      } else {
+         puts "--> SIBus member added successfully - $member!"
+   	 set parms [list -bus $busName]
+ 	 set busMembers [$AdminTask listSIBusMembers $parms]
+    
+   	 foreach item $busMembers {
+     	   set cluster [$AdminConfig showAttribute $item cluster]
+      	   set node [$AdminConfig showAttribute $item node]
+      	   set server [$AdminConfig showAttribute $item server]
+
+	   if {$cluster == $clusterName || ($server == $serverName && $node == $nodeName)} {
+             set member $item
+             break
+           }
+         }
+         puts "--> SIBus member added successfully - $member!"
+      }
+   } else {
+      puts "--> Bus member already exists!"
+   }
+                                          
+   return $member
+}
+
+
+#-----------------------------------------------------------------
+# modify_me_datastore - Modify the data store attributes for the 
+#            target messageing engine.  
+#-----------------------------------------------------------------
+puts "--> profiling proc modify_me_datastore"
+proc modify_me_datastore {meName authAlias schema createTable} {
+   #    meName      - name of the target message engine
+   #    authAlias   - authentication alias name
+   #    datasource  - datasource JNDI name
+   #    schema      - schema name  
+   
+   global AdminConfig
+
+   puts " "
+   puts "Modifying ME DataStore parameters..."
+
+   set me [$AdminConfig getid "/SIBMessagingEngine:${meName}/"]
+   set dataStore [$AdminConfig showAttribute $me dataStore]
+
+   if {$dataStore != ""} {
+      puts "  ME Name:          ${meName}"
+      puts "  AuthAlias:        ${authAlias}"
+      #puts "  DataSource JNDI:  ${datasource}"
+      puts "  Schema Name:      ${schema}"   
+
+      #set attrs [subst {{authAlias $authAlias} {dataSourceName $datasource} {schemaName $schema}}]
+      if { $createTable == "false" } {
+         set attrs [subst {{authAlias $authAlias} {schemaName $schema} {createTables false}}]
+      } else {
+         set attrs [subst {{authAlias $authAlias} {schemaName $schema}}]
+      }
+      $AdminConfig modify $dataStore $attrs
+
+      puts "${meName} data store modified successfully!"
+   } else {
+      puts "Data store could not be located for ${me}!"
+   }         
+}
+
+
+######
+# create_sib_objects {bus_name default_ds ds_jndi auth_alias schema create_table scope_args queue_args}
+#  This procedure does the following steps
+#
+#    Create SIB bus
+#    Add bus member based on the scope
+#    Set SIB service enable
+#    Create all queue destination 
+#
+
+puts "--> profiling proc create_sib_objects"
+proc create_sib_objects {bus_name default_ds ds_jndi auth_alias schema create_table scope_args queue_args} {
+    global AdminConfig
+    global AdminTask
+
+    puts " "
+    if {[llength $scope_args] == 1} {
+       set cluster_name [lindex $scope_args 0]
+       set me_name $cluster_name.000-$bus_name
+       set node_name    "none"
+       set server_name  "none"
+       set cluster_id [$AdminConfig getid /ServerCluster:$cluster_name]
+       puts "--> Adding SIBus member ${cluster_name}..."
+       puts "--> cluster id -> $cluster_id"
+    } else {
+       set cluster_name "none"
+       set node_name    [lindex $scope_args 0]
+       set server_name  [lindex $scope_args 1]
+       set me_name $node_name.$server_name-$bus_name
+       set sid [$AdminConfig getid /Node:$node_name/Server:$server_name] 
+       puts "--> Adding SIBus member ${node_name} - ${server_name}..."
+       puts "--> server id -> $sid"
+    }
+
+    set rc SUCCESS
+
+    set cellid [$AdminConfig list Cell]
+    puts "--> cell id -> $cellid"  
+
+    # set busid [find_object_id $cellid SIBus name $bus_name]
+    # set seid [find_object_id $sid SIBMessagingEngine name $ename]
+
+    set bus_id [create_sib_bus $bus_name "itim_jms"]
+    puts "--> sib bus id -> $bus_id"  
+    if { $bus_id == "" }  {
+	return FAILURE
+    } 
+
+    set sib_bm_id [add_bus_member $bus_name $default_ds $ds_jndi $scope_args]
+    puts "--> sib bus member id -> $sib_bm_id"
+
+    set me_id [$AdminConfig getid "/SIBMessagingEngine:\"${me_name}\"/"]
+    if {$me_id == ""} {
+        set parms [list -bus $bus_name -cluster $cluster_name -createDefaultDatasource "false" \
+		  -initialState "Started" -datasourceJndiName "itimBusDataSource"]
+        set me_id [$AdminTask createSIBEngine $parms]
+        puts "--> new message engine for itim cluster $cluster_name - $me_id"
+    } else {
+	puts "--> message engine $me_name exists"
+    }
+
+    modify_me_datastore $me_name $auth_alias $schema $create_table
+
+    #--------------------------
+    # set SIB service enable
+    if {[llength $scope_args] == 1} {
+    	set ssid  [$AdminConfig list SIBService $cluster_id]	
+        # may not need to do this on the cluster case
+    } else {
+        set ssid  [$AdminConfig list SIBService $sid]
+        set se    [list enable true]
+        set cre   [list configurationReloadEnabled true]
+        set attrs [list $se $cre]
+        $AdminConfig modify $ssid $attrs
+    }
+    #--------------------------
+
+
+    # Create destination point under sib bus
+    # There will be two group of ITIM queue.  They are
+    #
+    #    itim_wf, itim_ms, itim_rs, itim_rs_pending, itim_adhocSync, itim_ps, 
+    #    itim_import_export
+    #
+    foreach queue_name $queue_args {
+        puts "--> create queue destination for $queue_name"
+	set qid [create_queue_dest $scope_args $queue_name $bus_id $bus_name]
+        if { $qid == "" }  {
+	    set rc FAILURE
+  	    break
+        }
+    }
+   
+    return $rc
+}
+
+######
+# create_activation_spec {raid aname jndiname busname destjndi maxcon maxbatch}
+#  This procedure does the following steps
+#
+#    Create a J2C activation spec under the j2c resource adapter id
+#    Set the J2C activation spec's properties
+#
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc Create_activation_spec"
+proc create_activation_spec {raid aname jndiname busname destjndi maxcon maxbatch} {
+    global AdminConfig
+    global AdminTask
+
+    puts "--> proc Creatactivation_spec; aname: $aname; jndiname: $jndiname; busname: $busname; destjndi: $destjndi; maxcon: $maxcon; maxbatch: $maxbatch"
+    puts "--> j2c resource adapter id -> $raid"
+
+    set aid [find_object_id $raid J2CActivationSpec jndiName $jndiname]
+    if { $aid == "" } {
+        # create a j2c activation spec under the j2c resource adapter id
+	set ltype [$AdminTask listMessageListenerTypes $raid] 
+        # ltype should be javax.jms.MessageListener
+	set attrs [list -messageListenerType $ltype -name $aname \
+                        -jndiName $jndiname -destinationJndiName $destjndi \
+                        -authenticationAlias itim_jms]
+
+	set aid [$AdminTask createJ2CActivationSpec $raid $attrs]
+	#set aid [find_object_id $raid J2CActivationSpec jndiName $jndiname]
+	puts "--> newly create j2c activation spec id -> $aid"
+
+    update_itim_property $aid 1 resourceProperties "" busName $busname
+	update_itim_property $aid 1 resourceProperties "" destinationType javax.jms.Queue
+	update_itim_property $aid 1 resourceProperties ""  maxBatchSize $maxbatch
+	update_itim_property $aid 1 resourceProperties ""  maxConcurrency $maxcon
+    } else {
+        set maxbatch [get_itim_property_value $aid 1 resourceProperties ""  maxBatchSize]
+        set maxcon   [get_itim_property_value $aid 1 resourceProperties ""  maxConcurrency]
+    }
+    return $aid     
+}
+
+######
+# Fix : Defect#52235 Activation spec for shared queues needs to have target set as the JMS cluster (WasConfigUtil.jacl - create_activation_spec) 
+# Added a procedure create_activation_spec_for_shared_queue which accepts JMS Cluster Name as an extra arg and set the Target, Target Type and Target sigificance for Activation specs of shared queues.
+# create_activation_spec_for_shared_queue {raid aname jndiname busname destjndi maxcon maxbatch jmsClusterName}
+#  This procedure does the following steps
+#
+#    Create a J2C activation spec under the j2c resource adapter id
+#    Set the J2C activation spec's properties
+#
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc create_activation_spec_for_shared_queue"
+proc create_activation_spec_for_shared_queue {raid aname jndiname busname destjndi maxcon maxbatch jmsClusterName} {
+    global AdminConfig
+    global AdminTask
+
+    puts "--> proc Creatactivation_spec; aname: $aname; jndiname: $jndiname; busname: $busname; destjndi: $destjndi; maxcon: $maxcon; maxbatch: $maxbatch; jmsClusterName: $jmsClusterName"
+    puts "--> j2c resource adapter id -> $raid"
+
+    set aid [find_object_id $raid J2CActivationSpec jndiName $jndiname]
+    if { $aid == "" } {
+        # create a j2c activation spec under the j2c resource adapter id
+	set ltype [$AdminTask listMessageListenerTypes $raid] 
+        # ltype should be javax.jms.MessageListener
+	set attrs [list -messageListenerType $ltype -name $aname \
+                        -jndiName $jndiname -destinationJndiName $destjndi \
+                        -authenticationAlias itim_jms]
+
+	set aid [$AdminTask createJ2CActivationSpec $raid $attrs]
+	#set aid [find_object_id $raid J2CActivationSpec jndiName $jndiname]
+	puts "--> newly create j2c activation spec id -> $aid"
+
+    update_itim_property $aid 1 resourceProperties "" busName $busname
+	update_itim_property $aid 1 resourceProperties "" destinationType javax.jms.Queue
+	update_itim_property $aid 1 resourceProperties ""  maxBatchSize $maxbatch
+	update_itim_property $aid 1 resourceProperties ""  maxConcurrency $maxcon
+    } else {
+        set maxbatch [get_itim_property_value $aid 1 resourceProperties ""  maxBatchSize]
+        set maxcon   [get_itim_property_value $aid 1 resourceProperties ""  maxConcurrency]
+    }
+    update_itim_property $aid 1 resourceProperties "" target $jmsClusterName
+	update_itim_property $aid 1 resourceProperties "" targetType "BusMember"
+	update_itim_property $aid 1 resourceProperties "" targetSignificance "Preferred" 
+    return $aid     
+}
+
+
+######
+# create_queue_dest {node server qname busid bus_name}
+#  This procedure does the following steps
+#
+#    Create a SIB queue destination with engine uuid under SIBus
+#    Create a SIB localization queue point under SIBMessagingEngine with 
+#         corresponding SIBus queue destination uuid
+#
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc create_queue_dest"
+proc create_queue_dest {scope_args qname busid bus_name} {
+    global AdminConfig
+    global AdminTask
+
+    puts " "
+    if {[llength $scope_args] == 1} {
+       set cluster_name [lindex $scope_args 0]
+       set node_name    "none"
+       set server_name  "none"
+       set cluster_id [$AdminConfig getid /ServerCluster:$cluster_name]
+       puts "--> proc create_queue_dest; cluster: $cluster_name"
+       puts "--> cluster id -> $cluster_id"
+    } else {
+       set cluster_name "none"
+       set node_name    [lindex $scope_args 0]
+       set server_name  [lindex $scope_args 1]
+       set sid [$AdminConfig getid /Node:$node_name/Server:$server_name] 
+       puts "--> proc create_queue_dest; node: $node_name; server: $server_name"
+       puts "--> server id -> $sid"
+    }
+    puts "--> proc create_queue_dest; queue name: $qname; bus name: $bus_name"
+
+    set qid [find_object_id $busid SIBQueue identifier $qname]
+
+    if { $qid == "" } {
+       set reli ASSURED_PERSISTENT
+       if { $qname == "itim_policy_simulation" } { 
+	   set reli RELIABLE_NONPERSISTENT
+       }
+       # create a sib queue destination under the sib bus
+       if {[llength $scope_args] == 1} {
+          set attrs [list -bus $bus_name -name $qname -type Queue \
+			-reliability $reli -maxReliability $reli \
+			-maxFailedDeliveries 100 -cluster $cluster_name]
+       } else {
+          set attrs [list -bus $bus_name -name $qname -type Queue \
+			-reliability $reli -maxReliability $reli \
+	    	       	-maxFailedDeliveries 100 -node $node_name -server $server_name]
+       }
+       puts " attributes of createSIBDestination -> $attrs"
+       set qid [$AdminTask createSIBDestination $attrs]         
+    } else {
+       puts "--> SIB queue already exists; id -> $qid "
+    }
+
+    puts "--> complete the creation of SIB queue destination of $qname"
+    return $qid
+}
+
+
+######
+# create_itimhelp_url_provider {sid}
+#  This procedure does the following steps
+#
+#    Create itim help URL provider definition
+#
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling create_itimhelp_url_provider"
+proc create_itimhelp_url_provider {sid} {
+    global AdminConfig
+
+    puts "--> sid -> $sid"
+
+    set rc SUCCESS
+    set url_id [find_object_id $sid URLProvider name "itimhelp"]
+    if { $url_id == "" } {
+	puts "--> itim help url provider does not exist, will create it"
+	set url_name [list name itimhelp]
+	set url_desc [list description "URL provider for ITIM help"]
+	set url_protocol [list protocol reference]
+	set url_class [list streamHandlerClassName  \
+			 org.eclipse.osgi.framework.internal.protocol.reference.Handler]
+	set attrs [list $url_name $url_desc $url_protocol $url_class]
+	set url_id [$AdminConfig create URLProvider $sid $attrs]
+        if { $url_id == "" } {
+	    puts "--> itim help URLProvider creation failed!"
+    	    set rc FAILURE
+        } else {
+	    puts "--> new itim help URLProvider id is $url_id"
+        }
+    } else {
+	puts "--> itim help URLProvider id already exist.  Will not create a new id."
+    }
+    return $rc
+}
+
+######
+# set_default_thread_pool {sid max min timeout}
+#  This procedure does the following steps
+#
+#    Find the default thread pool id of the server
+#    Set the maximun pool size
+#    Set the minimun pool size
+#    set the inactive timeout
+#
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling set_default_thread_pool"
+proc set_default_thread_pool {sid max min timeout} {
+    global AdminConfig
+
+    puts "--> sid : $sid"
+
+    set rc SUCCESS
+    set service_list [$AdminConfig showAttribute $sid services]
+    set slist [lindex $service_list 0]
+    foreach item $slist {
+	if {[regexp "ThreadPoolManager" $item] != 0} {
+	    puts "--> Found thread pool manager id : $item"
+	    break
+	}
+    }
+    if { $item == "" } {
+       puts "--> Did not find Thread Pool Manager service !!"
+       set rc FAILURE
+    } else {
+       set tp_list [$AdminConfig showAttribute $item threadPools]
+       set tp_list [lindex $tp_list 0]
+       foreach item $tp_list {
+      	  set tp_name [$AdminConfig showAttribute $item name]
+	  puts "--> current thread pool name is $tp_name"
+          if { $tp_name == "Default" } {
+	     set max_size [list maximumSize $max]
+  	     set min_size [list minimumSize $min]
+	     set inact_timeout [list inactivityTimeout $timeout]
+	     set attrs [list $max_size $min_size $inact_timeout]
+	     $AdminConfig modify $item $attrs
+          }
+       }
+    }
+    return $rc
+}
+
+######
+# reset_default_role_user {bus_name userid}
+#  This procedure does the following steps
+#
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling reset_default_role_user"
+proc reset_default_role_user {bus_name userid} {
+    global AdminConfig
+    global AdminTask
+
+    puts "--> bus name is -> $bus_name"
+    puts "--> userid is -> $userid"
+    set rc FAILURE
+
+    if { $userid != ""  && $userid != "empty" } {
+      set role_list [list Sender Receiver Browser Creator]
+      foreach role $role_list {
+ 	puts "--> The current role to be checked is $role"
+
+	set parms [list -bus $bus_name -role $role -user $userid]
+	$AdminTask addUserToDefaultRole $parms
+	set parms [list -bus $bus_name -role $role]
+	set user_list [$AdminTask listUsersInDefaultRole $parms]
+	puts "--> secure messaging user list for role $role - $user_list"
+
+	set parms [list -bus $bus_name -role $role]
+        ## removed auth stuff from here
+      }
+      puts "--> add the $userid to $bus_name sib bus connector role"
+	set parms [list -bus $bus_name -user $userid]
+ 	$AdminTask addUserToBusConnectorRole $parms
+	set parms [list -bus $bus_name]
+	set user_list [$AdminTask listUsersInBusConnectorRole $parms]
+	puts "--> user list for role BusConnector - $user_list"
+
+      # special handling for the role IdentityAdopter
+
+	set parms [list -bus $bus_name -role IdentityAdopter -user $userid]
+	$AdminTask addUserToDefaultRole $parms
+	set parms [list -bus $bus_name -role IdentityAdopter]
+	set user_list [$AdminTask listUsersInDefaultRole $parms]
+	puts "--> secure messaging user list for role IdentityAdopter - $user_list"
+
+	set parms [list -bus $bus_name -role IdentityAdopter]
+        set group_list [$AdminTask listGroupsInDefaultRole $parms]
+        ## removed second block of code from here.
+    }
+    set rc SUCCESS
+    return $rc
+}
+
+
+#-----------------------------------------------------------------
+# create_static_policy - Create an itim_bus policy for an itim cluster
+#			member
+#-----------------------------------------------------------------
+puts "--> profiling proc create_itim_bus_policy"
+proc create_itim_bus_policy {name meName busName serverName nodeName} {
+   #    name	    - the name of the policy
+   # 	meName      - name of the target message engine
+   #    busName     - name of the SIB bus
+   #    serverName  - name of the server under the policy
+   #    nodeName	- name of the node serverName belongs to
+   global AdminConfig
+   global AdminTask
+
+   puts "--> policy name:          ${name}"
+   puts "--> message engine name:  ${meName}"
+   puts "--> SIB bus name:         ${busName}"
+   puts "--> server name:     	   ${serverName}" 
+   puts "--> Node name:           ${nodeName}"
+ 
+   set groupName [$AdminTask getDefaultCoreGroupName]
+   set group [$AdminConfig getid "/CoreGroup:${groupName}/"]
+   set clusterMembers [$AdminConfig getid "/CoreGroupServer:${serverName}/"]
+   foreach tmpMember $clusterMembers {
+   		if {0==[string compare [$AdminConfig showAttribute $tmpMember nodeName] $nodeName]} {
+   			set groupServer $tmpMember
+   		}
+   }
+   set policy [$AdminConfig getid "/StaticPolicy:\"${name}\"/"]
+
+   if {$policy == ""} {
+      puts "--> create $name "
+      set attrs [subst {{name "$name"} {servers {$groupServer}} {isAlivePeriodSec 0}  \
+			{policyFactory com.ibm.ws.hamanager.coordinator.policy.impl.StaticPolicyFactory}}]
+
+      if {[catch {set policy [$AdminConfig create StaticPolicy $group $attrs policies]} result]} {
+         puts "WSADMIN EXCEPTION: ${result}"
+         puts "Terminating due to exception!"
+         return FAILURE
+      } else {
+
+         set attrs [subst {{name type} {value WSAF_SIB}}]
+         $AdminConfig create MatchCriteria $policy $attrs MatchCriteria
+
+         # set attrs [subst {{name WSAF_SIB_MESSAGING_ENGINE} {value $meName}}]
+         set attrs [list [list name WSAF_SIB_MESSAGING_ENGINE] [list value $meName]]         
+         $AdminConfig create MatchCriteria $policy $attrs MatchCriteria
+         
+         set attrs [subst {{name WSAF_SIB_BUS} {value ${busName}}}]
+         $AdminConfig create MatchCriteria $policy $attrs MatchCriteria
+      }
+   } else {
+      puts "$name aleady exist.  Will not create a new one."
+   }
+   return SUCCESS         
+}
+
+######
+# list_message_engine_in_policy {cluster bus_name}
+#     cluster = Cluster name  
+#     This routine lists all message engines defined in the existing group
+#       policies, if any. 
+
+puts "--> profiling proc list_message_engine_in_policy"
+proc list_message_engine_in_policy {cluster bus_name} {
+  global AdminConfig
+  set nodes [list_cluster_member_nodes $cluster]
+  set me_list ""
+  foreach node $nodes {
+      set mem_list [find_servers_given_cluster_node $cluster $node]
+      foreach mem $mem_list {
+	 set policy_name ${bus_name}_${node}_${mem}_policy
+	 puts "--> the current policy name is $policy_name"
+	 set policy_id [$AdminConfig getid "/StaticPolicy:\"${policy_name}\"/"]
+	 if { $policy_id != "" } {
+	    set mc_list [$AdminConfig showAttribute $policy_id MatchCriteria]
+	    set mc_list [lindex $mc_list 0]
+	    foreach mc $mc_list {
+		if { [regexp "WSAF_SIB_MESSAGING_ENGINE" $mc] == 1 } {
+		   set me [$AdminConfig showAttribute $mc value]
+		   puts "--> found the message engine $me in $policy_name"
+	           lappend me_list $me
+		   break
+		}
+	    }
+         } else {
+	    puts "--> policy $policy_name does not exist"
+	 }
+      }
+  }
+  puts "--> the message engine (defined in the policies) list is $me_list"
+  return $me_list
+}
+
+######
+# find_shared_lib {sid lib_name}
+#
+# Find the shared library with the input shared library name lib_name 
+#   of server identifier sid.
+#
+
+puts "--> profiling proc find_shared_lib"
+
+proc find_shared_lib {sid lib_name} {
+  global AdminConfig
+
+  puts "--> proc find_shared_lib"
+  puts "--> sid $sid"
+  set itim_slib ""
+  set lidlist [$AdminConfig list Library $sid]
+  set lidnum  [llength $lidlist]
+  puts "lidnum $lidnum "
+  for {set i 0} {$i < $lidnum} {incr i} {
+     set slid [lindex $lidlist $i]
+     puts "--> find_shared_lib: slid: $slid"
+     if {[regexp $lib_name $slid] == 1}  {
+	  set itim_slib $slid
+	  puts "Debug --> found $lib_name library"
+        break
+     }	
+  }
+  puts "--> itim_slib: $itim_slib"
+  return $itim_slib
+}
+
+######
+# add_shared_lib {sid jar_list lib_name}
+#
+# Add the members on the jar_list to the share lib classpath for the sid.
+#   The script will check whether the member already exists in the ITIM_LIB
+#   prior to adding the new member to the shared lib.
+#   
+
+puts "--> profiling proc add_shared_lib"
+proc add_shared_lib {sid jar_list lib_name} {
+  global AdminConfig
+
+  puts "--> proc add_shared_lib"
+  # Check the existence of the to-be-created shared library.  The shared
+  #   library can be at different scope, i.e. server or cluster.
+  set itim_slib [find_shared_lib $sid $lib_name]
+
+  set name [list name $lib_name]
+  set dsp  [list description "Shared library of $lib_name"]
+
+  if {$itim_slib != ""} {
+     puts "--> Extract the existing jar members from $lib_name"
+     set cp_list [$AdminConfig showAttribute $itim_slib classPath]
+     puts "--> classpath list is $cp_list"
+
+     # The following code examines whether the member in the jar_list existing in the current 
+     #   shared library.  If the member is not in the current shared library, add the member to
+     #   the list.
+     foreach mem $jar_list {
+        puts "--> check $mem"
+        set mem_copy $mem
+        set i [string last "/" $mem]
+        # puts "--> index is $i"
+        if { $i >= 0 } {
+           set j [expr [string length $mem] - 1]
+           set i [expr $i + 1]
+           set mem [string range $mem $i $j]
+           # puts --> trim member is $mem"
+        }
+        if {[regexp $mem $cp_list] == 0} {
+	   puts "--> adding the $mem_copy to the current classpath list"
+	   append cp_list "\;" $mem_copy
+        }     
+        # puts "--> $cp_list"
+     }
+     puts "--> modified classpath $cp_list"
+     set attr_list [list [list classPath $cp_list]]
+     puts "--> Modify the currect $lib_name library"
+     $AdminConfig modify $itim_slib $attr_list
+  } else {
+     # The shared library does not exist.  Create a list with all the members in the jar_list.
+     # Create the shared library.
+     set cp_list ""
+     set count 0
+     set num [llength $jar_list]
+     puts "number items in the jar_list $num"
+     foreach mem $jar_list {
+	puts "--> adding the $mem to the current classpath list"
+        if { $count == 0 } {
+           set cp_list $mem
+        } else {
+	   append cp_list "\;" $mem  
+           puts "--> $count add $mem to cp_list"
+        }
+        incr count 
+     }
+     puts "--> the final cp_list is $cp_list"
+     set cp   [list classPath $cp_list]
+     set attr [list $name $dsp $cp]
+     $AdminConfig create Library $sid $attr
+  }	 
+  return SUCCESS
+}
+
+#-----------------------------------------------------------------
+# find_itim_bus_policy - find an itim_bus policy for an itim cluster
+#			member
+#-----------------------------------------------------------------
+puts "--> profiling proc find_itim_bus_policy"
+proc find_itim_bus_policy {name} {
+   #    name	    - the name of the policy
+    
+   global AdminConfig
+   global AdminTask
+
+   puts "--> policy name:          ${name}"
+   set policyid [$AdminConfig getid "/StaticPolicy:\"${name}\"/"]
+   
+   return $policyid
+}
+
+######
+#  create_object_cache_instance {scope name jndi_name description cache_size disable_dep_id 
+#                           replication_type puch_frequency enable_cache_rep rep_domain_name} 
+#	
+#      This script creates an Object Cache Instance at the scope based on 
+#      the input parameter.  The script also creates the instance of data
+#      replication domain if the input argument rep_domain_name is not empty
+#      and the instance does not exist.  The object identifier of the newly 
+#      created object cache instance will be returned on successfully creating
+#      the instance.
+#
+
+
+puts "--> profiling proc create_object_cache_instance"
+
+proc create_object_cache_instance {scope instance_name jndi_name description cache_size  \
+                                         disable_dep_id replication_type puch_frequency  \
+                                         enable_cache_rep rep_domain_name} {
+  global AdminConfig
+  global AdminControl
+
+  puts "--> proc create_object_cache_instance"
+  puts "--> the scope of the object is $scope"
+
+  set cache_provider_id [$AdminConfig list CacheProvider $scope]
+  puts "--> cache provider ID at the requested scope is $cache_provider_id"
+
+  set oci_list   [list name $instance_name]
+  set jndi_list  [list jndiName $jndi_name]
+  set dsp_list   [list description $description]
+  set cs_list    [list cacheSize $cache_size]
+  set dd_list    [list disableDependencyId $disable_dep_id]
+  set rt_list    [list replicationType $replication_type]
+  set pf_list    [list pushFrequency $puch_frequency]
+  set ecr_list   [list enableCacheReplication $enable_cache_rep]
+
+  # When the replication domain name is not empty, check to determine the
+  # existence of the instance.  If the instance does not exist, creates the
+  # instance.
+
+  if { $rep_domain_name != ""} {
+     puts "--> data replication domain name is $rep_domain_name"
+     set cell_name [$AdminControl getCell]
+     set cellid    [$AdminConfig getid /Cell:$cell_name]
+     puts "--> Cell name is $cell_name"
+     puts "--> Cell id is $cellid"
+
+     # The data replication domain only exists at the cell scope.
+     set oid       [find_object_id $cellid DataReplicationDomain name $rep_domain_name]
+
+     if { $oid == ""} {
+        puts "--> not found the data replication domain of $rep_domain_name.  Will create it."
+
+        # Replicate data in the entire domain
+	set num_replicase [list numberOfReplicas -1]
+	set data_list     [list defaultDataReplicationSettings [list $num_replicase]]
+	set name_list     [list name $rep_domain_name]
+	set attr_list     [list $data_list $name_list]
+	set oid           [$AdminConfig create DataReplicationDomain $cellid $attr_list]
+        puts "--> created the data replication domain object $oid"
+     } else {
+        puts "--> found the data replication domain id $oid"
+     }
+
+     # Set up the argument of CacheReplication which is required when the replication 
+     # domain is set.
+     set rep_mode      [list dataReplicationMode BOTH]
+     set domain_name   [list messageBrokerDomainName $rep_domain_name]
+     set cache_rep     [list cacheReplication [list $rep_mode $domain_name]]
+     set attr_list     [list $oci_list $jndi_list $dsp_list $cs_list $dd_list $rt_list \
+				    $pf_list $ecr_list $cache_rep]     
+  } else { 
+     set attr_list     [list $oci_list $jndi_list $dsp_list $cs_list $dd_list $rt_list \
+			  	    $pf_list $ecr_list]
+  }
+  puts "--> attribute list of Object Cache Instance is $attr_list"
+
+  set oid [$AdminConfig create ObjectCacheInstance $cache_provider_id $attr_list]
+  puts "--> Created ITIM Object Cache Instance $instance_name. "
+  puts "--> The identifier is - $oid.  "
+
+  return $oid 
+}
+
+######
+# get_temp_directory
+# Return the temp directory.
+# For non-Windows always return /tmp
+# For Windows return %java.io.tmpdir% or %TMP% or %TEMP% or %TMPDIR% or %TEMPDIR% or %SystemDrive% or C:
+
+# The following puts is useful for debugging in case of syntax
+# errors in specific procs
+puts "--> profiling proc get_temp_directory"
+proc get_temp_directory {} {
+  puts "--> proc get_temp_directory"
+  global tcl_platform
+  puts "--> \$tcl_platform(os)='$tcl_platform(os)'"
+  if {![regexp -nocase "Win" $tcl_platform(os)]} {
+    puts "--> Platform is not Windows, returning /tmp"
+    return "/tmp"
+  }
+  global env
+  foreach tempvar {java.io.tmpdir TMP TEMP TMPDIR TEMPDIR SYSTEMDRIVE} {
+    if {![info exists env($tempvar)]} {
+      puts "--> Environment variable $tempvar is not defined"
+      continue
+    }
+    set tempdir $env($tempvar)
+    puts "--> env($tempvar)=$env($tempvar)"
+    if {[file isdirectory $tempdir]} {
+      puts "--> Platform is Windows, returning $tempdir"
+      return $tempdir
+    }
+  }
+  puts "--> Platform is Windows, returning default location C:"
+  return "C:"
+}

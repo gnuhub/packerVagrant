@@ -1,0 +1,85 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This jacl script is to create enroleDataSource under the 
+#  "ITIM XA JDBC driver provider" and itimBusDataSource under the
+#  "ITIM non_XA JDBC driver provider".  If the definition of the 
+#  JDBC driver provider is not defined, the code also invokes the
+#  procedure to create the JDBC driver provider.  Note that the 
+#  JDBC driver provider is at the ITIM cluster scope. 
+#
+
+if {$argc < 5} { 
+    puts "  "
+    puts "Incorrect number of args.  Three arguments are required."  
+    puts "   arg1 - cluster name"  
+    puts "   arg2 - itim db url, i.e. jdbc:db2://localhost:50000/itimdb"
+    puts "   arg3 - itim database user id"
+    puts "   arg4 - itim database user password"
+    puts "   arg5 - database type (IBM_DB, IBM_ZDB, ORACLE_DB, MS_DB)"
+    puts "  "
+} else {
+
+    set cluster   [lindex $argv 0]
+    set db_url    [lindex $argv 1]
+    set userid    [lindex $argv 2]
+    set user_pw   [lindex $argv 3]
+    set db_type   [lindex $argv 4]
+
+    puts "--> cluster name is $cluster"
+    puts "--> itim db url is $db_url"
+    puts "--> itim db user id is $userid"
+    puts "--> db type is $db_type"
+
+    set cid [$AdminConfig getid /ServerCluster:$cluster]
+    set is_xa "true"
+    set is_was6 "true"
+    set jdbc_id [find_jdbc_driver $cid $db_type $is_xa $is_was6]
+
+    # If ITIM XA JDBC driver provider at cluster $cluster level is not found,
+    # invoke crt_jdbc_driver to configure the ITIM XA JDBC driver provider.
+    if {$jdbc_id == ""} {
+       puts "--> Not found ITIM JDBC driver provider at cluster $cluster......"
+       puts "--> create jdbc driver provider at the clsuter level"
+       set jdbc_id [crt_jdbc_driver $cid $db_type $is_xa]
+       puts "--> new XA jdbc id is $jdbc_id"
+    } 
+
+    # update (or create) ITIM data source - enroleDataSource
+    set ds_name     "enroleDataSource"
+    set description "ITIM Data Source"
+    set rc [update_itim_datasource $db_url $userid $user_pw $jdbc_id $db_type $ds_name $description $is_xa]  
+    puts "--> Create or update a new data source with return code -> $rc" 
+    if { $rc == "SUCCESS" } { 
+       $AdminConfig save
+    }
+
+    set is_xa "false"
+    set jdbc_id [find_jdbc_driver $cid $db_type $is_xa $is_was6]
+    # If ITIM non-XA JDBC driver provider at cluster $cluster is not found, create a new jdbc driver
+    if {$jdbc_id == ""} {
+       puts "--> "
+       puts "--> Not found ITIM non-XA JDBC driver provider.  Will create the "
+       puts "--> ITIM non-XA JDBC driver provider at cluster level." 
+       puts "--> "
+       set jdbc_id [crt_jdbc_driver $cid $db_type $is_xa]
+       puts "--> new non-XA jdbc id is $jdbc_id"
+    }
+
+    # update (or create) ITIM bus data source - itimBusDataSource
+    if { $jdbc_id != ""} {
+       set ds_name     "itimBusDataSource"
+       set description "ITIM Bus DataSource of $cluster"
+       set rc [update_itim_datasource $db_url $userid $user_pw $jdbc_id $db_type $ds_name $description $is_xa]    
+       puts "--> Create or update ITIM bus data source with return code -> $rc" 
+       if { $rc == "SUCCESS" } { 
+           $AdminConfig save
+       }
+    }
+}

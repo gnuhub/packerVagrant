@@ -1,0 +1,71 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# Delete the enroleDataSource from WAS config
+#
+# wsadmin.bat -f g:\was5\cJDBCDriver.jacl node1 "g:\\program files\\sqllib"
+#   (if use the above varialbe value, cannot have the end file separator - scripting error..)
+#   (better to enter "g:/program files/sqllib"
+#
+#
+
+if {$argc < 4} { 
+  puts "  "
+  puts "Incorrect number of args.  two arguments are required."  
+  puts "   arg1 - cluster name" 
+  puts "   arg2 - host name" 
+  puts "   arg3 - host ip" 
+  puts "   arg4 - itim classpath"
+} else {
+
+  set cluster   [lindex $argv 0]
+  set host      [lindex $argv 1]
+  set ipaddr    [lindex $argv 2]
+  set itim_path [lindex $argv 3]
+
+  puts "cluster name is $cluster"
+  puts "host name is $host"
+  puts "host ip is $ipaddr"
+  puts "ITIM path is $itim_path"
+
+  set nodes ""
+  if {$host != "null"} {
+      puts "get the list of nodes on the host: $host"
+      set nodes [get_nodes $host $ipaddr]
+  } else {
+      puts "get the list of member nodes of the cluster: $cluster"
+      set nodes [list_cluster_member_nodes $cluster]
+  }
+
+  puts "Debug --> nodelist: $nodes"     
+  set num_nodes [llength $nodes]
+
+  set rc ""
+  for {set i 0} {$i < $num_nodes} {incr i} {
+     set node [lindex $nodes $i]
+     puts "Debug --> node: $node" 
+     set servers [find_servers_given_cluster_node $cluster $node]
+     puts "Debug --> servers: $servers" 
+     set num_servers [llength $servers]
+     puts "Debug --> num_servers: $num_servers" 
+
+     for {set j 0} {$j < $num_servers} {incr j} {
+        set server [lindex $servers $j]
+
+        set sid [$AdminConfig getid /Node:$node/Server:$server]
+        if {$sid != ""} {
+    		set rc [del_jvm_path $sid $itim_path]
+    		puts "Debug --> rc: $rc"
+        }
+     }
+  }
+  $AdminConfig save
+}

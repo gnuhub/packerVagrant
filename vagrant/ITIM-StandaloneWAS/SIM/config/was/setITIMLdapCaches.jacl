@@ -1,0 +1,100 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2007, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This script invokes create_ITIM_ldap_cache to create ITIM primary and
+#  secondary LDAP cache instances.  The script is used for both ITIM single
+#  server case and ITIM cluster case.
+#  New changes made to the script in the ISIM 6.0 release to create the new WSSession cache for ITIM single server and cluster case.
+
+  global AdminConfig
+  set rc "SUCCESS"
+
+  if {$argc == 1} { 
+
+     set cluster       [lindex $argv 0]
+     set is_cluster    "true"
+     set scope_id [$AdminConfig getid /ServerCluster:$cluster]
+     puts "Create ITIM ldap cache instances to ${cluster}..."
+
+  } elseif {$argc == 2} { 
+
+     set node        [lindex $argv 0]
+     set server      [lindex $argv 1]
+     set is_cluster  "false"
+     set scope_id    [$AdminConfig getid /Node:$node/Server:$server]
+     puts "Create ITIM ldap cache instances to ${node} - ${server}..."
+
+  } else {
+     puts "  "
+     puts "Incorrect number of args.  One or two arguments are required." 
+     puts "--> Cluster name for the ITIM cluster setup, or"
+     puts "--> Node name and server name for the ITIM singler server setup."
+     return
+  }
+  
+  # Prepare the parameters for ITIM LDAP cache instances
+
+  set instance_name_list [list LdapCache SecondaryLdapCache WSSession_Cache]
+  set jndi_name_list     [list services/cache/ldap_lt_cache services/cache/ldap_st_cache services/cache/ws_session]
+  set description_list   [list "Primary Cache Instance for Identity Manager" \
+                               "Secondary Cache Instance for Identity Manager" \
+			       "WSSession Cache for the webservices session objects for Identity Manager"]
+  set cache_size_list    [list 20000 2000 2000]
+  set disable_dep_id     "true"
+
+  if { $is_cluster == "true" } {
+      set replication_type      PUSH
+      set puch_frequency        5
+      set enable_cache_rep_list [list "true" "false" "true"]
+      set rep_domain_name_list  [list "ItimReplicationDomain" "" "ItimReplicationDomain"]
+  } else {
+      set replication_type      NONE
+      set puch_frequency        1
+      set enable_cache_rep_list [list "false" "false" "false"]
+      set rep_domain_name_list  [list "" "" ""]
+  }
+
+  # Creates ITIM primary and secondary LDAP cache instances
+
+  for {set i 0} {$i < 3} {incr i} {
+
+     set instance_name    [lindex $instance_name_list $i]
+     set jndi_name        [lindex $jndi_name_list $i]
+     set description      [lindex $description_list $i]
+     set cache_size       [lindex $cache_size_list $i]    
+     set rep_domain_name  [lindex $rep_domain_name_list $i]
+     set enable_cache_rep [lindex $enable_cache_rep_list $i]
+
+     set oci_id [find_object_id $scope_id ObjectCacheInstance jndiName $jndi_name]
+
+     if { $oci_id == "" } {
+        puts "--> Create the cache object instance $instance_name"
+	set parm_list [list $instance_name $jndi_name $description $cache_size $disable_dep_id]
+        set oci_id [create_object_cache_instance $scope_id $instance_name $jndi_name  \
+                                     $description $cache_size $disable_dep_id $replication_type  \
+                                     $puch_frequency $enable_cache_rep $rep_domain_name]
+        if { $oci_id == "" } {
+           puts "--> Fail to create the ITIM cache instance $instance_name."
+           set rc "FAILURE"
+           break
+        } 
+        puts "--> The $instance_name object cache instance is created with the ID $oci_id"
+     } else {
+        puts "--> The cache object instance $instance_name already created."
+     }
+}
+
+if { $rc=="SUCCESS" } {
+     puts "--> Configure ITIM cache instance $instance_name successfully.  Save the configuration."
+     $AdminConfig save
+} else {
+     puts "--> Create ITIM cache instances failed"
+}
+
+  

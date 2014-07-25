@@ -1,0 +1,249 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2007, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+#
+
+    set scope_args   [lindex $argv 0]
+    set db_type      [lindex $argv 1]
+
+    puts "--> scope_args is $scope_args"
+    puts "--> db type is $db_type"
+
+    if {[llength $scope_args] == 1} {
+        set cluster_name [lindex $scope_args 0]
+        set node   "none"
+        set server "none"
+        puts "The ITIM cluster name is ${cluster_name}..."
+    } else {
+        set cluster_name "none"
+        set node    [lindex $scope_args 0]
+        set server  [lindex $scope_args 1]
+        puts "The node name and the server name are ${node} - ${server}..."
+    }
+
+    set queue_args   [list "itim_wf" "itim_ms" "itim_rs" "itim_rs_pending" "itim_adhocSync" "itim_ps" "itim_import_export"]
+    set squeue_args  [list "itim_wf_shared" "itim_policy" "itim_policy_simulation"]
+    set all_queue_args   [list "itim_wf" "itim_ms" "itim_rs" "itim_rs_pending" "itim_adhocSync" \
+ 				"itim_ps" "itim_import_export" "itim_wf_shared" "itim_policy" "itim_policy_simulation"]
+    set WQ_queue_args   [list "WQ_itim_wf" "WQ_itim_ms" "WQ_itim_rs" "WQ_itim_rs_pending" "WQ_itim_adhocSync" \
+ 				"WQ_itim_ps" "WQ_itim_import_export" "WQ_itim_wf_shared" "WQ_itim_policy" "WQ_itim_policy_simulation"]
+
+    set cid [$AdminConfig list Cell]
+    set sid [$AdminConfig getid /Node:$node/Server:$server]
+    set node [$AdminControl getNode]
+
+#---------------------------------------------------------------------
+#  Remove the ITIM 4.6 JDBC driver provider configuration.
+#---------------------------------------------------------------------
+proc removeJDBCProvider {sid dbtype}  {
+
+    global AdminConfig
+    puts "--> Remove ITIM 4.6 JDBC provider"
+
+    set is_was6 "false"
+    set is_xa "true"
+    set jdbcid [find_jdbc_driver $sid $dbtype $is_xa $is_was6]
+    if { $jdbcid != "" } {
+        puts "--> ITIM 4.6 XA jdbc provider found: $jdbcid" 
+        $AdminConfig remove $jdbcid
+    }
+}
+
+
+#---------------------------------------------------------------------
+#  Remove the ITIM 4.6 shared JMS queue connection factory as well as 
+#   shared queues.
+#---------------------------------------------------------------------
+proc removeJMSSharedObjects {cid}  {
+
+    global AdminConfig
+    global squeue_args
+    puts "squeue_args $squeue_args"
+    set sqcf_id [find_object_id $cid "WASQueueConnectionFactory" "jndiName" "enrole.jms.SharedQueueConnectionFactory"]
+    if {$sqcf_id != ""} {
+       puts "--> Found ITIM/WAS5 shared queue connection factory.  Will be removed."
+       $AdminConfig remove $sqcf_id
+    }
+
+    foreach queue_name $squeue_args {
+       set qid [find_object_id $cid "WASQueue" "name" $queue_name]
+       if {$qid != ""} {
+          puts "--> Found and remove ITIM shared WASQueue of $queue_name"
+          $AdminConfig remove $qid
+       }
+    }
+
+}
+
+
+#---------------------------------------------------------------------
+#  Remove the ITIM 4.6 JMS queue connection factory (non-shared) as well as 
+#   queues.
+#---------------------------------------------------------------------
+proc removeJMSObjects {sid}  {
+
+    global AdminConfig
+    global queue_args 
+    set qcf_id  [find_object_id $sid "WASQueueConnectionFactory" "jndiName" "enrole.jms.QueueConnectionFactory"]
+    if {$qcf_id != ""} {
+       puts "--> Found ITIM/WAS5 queue connection factory.  Will be removed."
+       $AdminConfig remove $qcf_id
+    }
+ 
+    foreach queue_name $queue_args {
+       set qid [find_object_id $sid "WASQueue" "name" $queue_name]
+       if {$qid != ""} {
+          puts "--> Found and remove ITIM WASQueue of $queue_name"
+          $AdminConfig remove $qid
+       }
+    }
+
+    set rc [remove_listener_ports $sid]
+}
+
+
+#---------------------------------------------------------------------
+#  Remove the queue destinations on the migrated node bus.
+#---------------------------------------------------------------------
+proc removeSIBObjects {bus_name} {
+
+    global AdminConfig
+    global all_queue_args 
+    global WQ_queue_args
+    set busid [$AdminConfig getid "/SIBus:${bus_name}/"]
+
+    if { $busid != "" } {
+
+        puts "--> Migrated SIB bus for $bus_name found."
+        puts "--> Migrated ITIM queue destinations will be removed."
+
+        # Remove the ITIM destination points under sib bus
+        # There will be two groups of ITIM queue, shared and non-shared.  
+        #
+        foreach queue_name $all_queue_args {
+            puts "--> Remove the queue destinations of $queue_name"
+	    set qid [find_object_id $busid SIBQueue identifier $queue_name]
+            if { $qid != "" }  {
+	        $AdminConfig remove $qid
+            }
+        }
+
+        # Remove the ITIM destination points under sib bus
+        # There will be two groups of ITIM queue, shared and non-shared.  
+        #
+        foreach alias_name $WQ_queue_args {
+            puts "--> Remove the queue destinations of $alias_name"
+            set aid [find_object_id $busid SIBDestinationAlias identifier $alias_name]
+            if { $aid != "" }  {
+	        $AdminConfig remove $aid
+            }
+        }
+    } else {
+        puts "--> Migrated SIB bus for $bus_name does not exist"
+    }
+}
+
+
+#-----------------------------------------------------------------
+# get_node_name - Return the base name of the server ID config object. 
+#-----------------------------------------------------------------
+proc get_node_name {sid} {
+      
+   set beginIndex [expr [string first "/nodes/" $sid] + 7]
+   set endIndex   [expr [string first "/servers/" $sid] - 1]
+   
+   return [string range $sid $beginIndex $endIndex]
+}
+
+
+#---------------------------------------------------------------------
+#  Remove the queue points on the migrated messaging engine.
+#---------------------------------------------------------------------
+proc removeQueuePoints {node server bus_name}  {
+
+    global AdminConfig
+    global AdminTask
+
+    # set server [get_name $sid]
+    # set node   [get_node_name $sid]
+
+    set busid [$AdminConfig getid "/SIBus:${bus_name}/"]
+
+    if { $busid != "" } {    
+
+        set parms [list -bus $bus_name -node $node -server $server]
+        set meid [$AdminTask listSIBEngines $parms]
+        if { $meid != "" } {
+            puts "--> Migrated messaging engine for $node-$server found."
+            puts "--> ITIM queue points under this messaging engine will be removed."
+            set qp_list [$AdminConfig showAttribute $meid localizationPoints]
+            set qp_list [lindex $qp_list 0]
+
+            foreach qpid $qp_list {
+	        set qp_name [$AdminConfig showAttribute $qpid identifier]
+                if { [regexp "itim_" $qp_name] == 1 }  {
+	            puts "--> This is an ITIM queue point $qp_name, and will be removed."
+                    $AdminConfig remove $qpid
+                }
+            }
+        } else {
+            puts "--> Migrated messaging engine for $node-$server does not exist"
+        }
+    } 
+}
+
+#-----------------------------------------------------------------
+# get_node_name - Return the node name based on the server ID. 
+#-----------------------------------------------------------------
+proc get_node_name {sid} {
+      
+   set beginIndex [expr [string first "/nodes/" $sid] + 7]
+   set endIndex   [expr [string first "/servers/" $sid] - 1]
+   
+   return [string range $sid $beginIndex $endIndex]
+}
+
+#---------------------------------------------------------------------
+#  This is the main routine which invokes different sub-routines to
+#   remove the migrated ITIM 4.6 configurations.
+#---------------------------------------------------------------------
+
+    removeJMSSharedObjects $cid
+
+    if {$node != "none" &&  $server != "none"}  {
+
+        set bus_name $node
+	removeJDBCProvider $sid $db_type
+	removeJMSObjects $sid
+	removeQueuePoints $node $server $bus_name
+	removeSIBObjects $bus_name
+ 
+    } else {
+
+        set sids [list_cluster_member_servers $cluster_name]
+        foreach sid $sids {
+           
+            set node     [get_node_name $sid]
+            set bus_name $node
+	    removeJDBCProvider $sid $db_type
+	    removeJMSObjects $sid
+
+            set jmssid [get_jms_sid $node "jmsserver" "CLUSTER"]
+            if { $jmssid != "" } {
+                puts "--> cleanup ITIM queue definitions in the jmsserver: $jmssid"
+                set rc [remove_itim_queues $jmssid]
+            } 
+
+	    removeQueuePoints $node "jmsserver" $bus_name
+	    removeSIBObjects $bus_name
+
+        }
+    }
+
+    puts "--> Save the changes of removeWas5objects"
+    $AdminConfig save

@@ -1,0 +1,46 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to create a new environment variable
+# require input 
+#     $objname  - object name of the object to be removed  
+#
+
+if {$argc < 2} { 
+  puts "  "
+  puts "You have to enter the type and name of the object to be removed." 
+  puts "     arg1 -- objtype "
+  puts "     arg2 -- objname "  
+  puts " "
+}
+if {$argc >= 2} {
+
+  #  set nodename [lindex $argv 0]
+  set objtype   [lindex $argv 0]
+  set objname   [lindex $argv 1]
+  puts " "
+  #  puts "node name is $nodename"
+  puts "object type is $objtype"
+  puts "object name is $objname"
+  puts " "
+    
+  # have to figure out how to handle space in the objname !!!
+     
+  set objid [$AdminConfig getid /$objtype:$objname/]
+  puts "objid is $objid"
+  if { $objid == "" } {
+    puts "Cannot find the object to be removed.  Please check."
+  }
+  if { $objid != "" } {
+    $AdminConfig remove $objid
+    $AdminConfig save
+  }
+}        

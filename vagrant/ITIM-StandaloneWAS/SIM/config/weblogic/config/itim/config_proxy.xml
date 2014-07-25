@@ -1,0 +1,44 @@
+<!--If your domain is active, please do not edit the config.xml file. Any changes made to that file while the domain is active will not have any effect on the domain's configuration and are likely to be lost. If your domain is inactive, you may edit this file with an XML editor. If you do so, please refer to the configuration DTD.  In general, we recommend that changes to your configuration file be made through the Administration Console.-->
+
+<Domain Name="enrole">
+ <Server 
+  Name="%SERVER_NAME%"
+  NativeIOEnabled="true"
+  ListenPort="%HTTP_PORT%">
+  TransactionLogFilePrefix="config/enrole/logs/"
+  <SSL
+   Name="%SERVER_NAME%"
+   ListenPort="%HTTPS_PORT%"
+   Enabled="true"
+   ServerCertificateFileName="config/enrole/democert.pem"
+   ServerKeyFileName="config/enrole/demokey.pem"
+   ServerCertificateChainFileName="config/enrole/ca.pem"
+ />
+  <Log
+   FileName="config/enrole/logs/%SERVER_NAME%.log"
+  />
+  </Server>
+
+
+ <Security
+  Name="enrole"
+  GuestDisabled="false"
+ />
+
+ <Log
+  FileName="config/enrole/logs/enrole.log" 
+ />
+
+
+</Domain>
+
+
+
+
+
+
+
+
+
+
+

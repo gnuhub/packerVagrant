@@ -1,0 +1,184 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2006, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# Currently, this script requires four input - node name. 
+#
+# This script performs:
+#
+#     - invoke create_itim_j2c_auth_alias to create itim_jms J2C authentication alias
+#     - invoke crt_jms_qcf_was6 to create ITIM JMS queue connection factory, itim_bus, 
+#	   non-shared queues, and activation specifications at the itim cluster scope
+#     - invoke crt_jms_shared_queue_was6 to create ITIM shared queue and activation
+#	   specifications
+#     - set the static policy under the default core group for each cluster member to 
+#   	   map the cluster member to a messaging engine.
+#     - create all needed messaging engine, and set the datastore for it.
+#     - add the itim jms cluster as a member of itim_bus
+#     - create the messaging engine for the cluster member of the ITIM JMS cluster.
+#     - invoke crt_jms_shared_queue_dest_was6 to create ITIM shared queue destination
+#	   under itim_bus
+#     - invoke reset_default_role_user to set itim_jms with proper roles with itim_bus
+#
+#
+
+if {$argc < 2} { 
+  puts "  "
+  puts "Incorrect number of args.  One argument is required."  
+  puts "   arg1 - ITIM cluster name" 
+  puts "   arg2 - ITIM JMS cluster name"
+  puts "   arg3 - jms userid (which is ITIM EJB userid)" 
+  puts "   arg4 - jms userid password"
+  puts "  "
+} else {
+
+  set cluster     [lindex $argv 0]
+  set jms_cluster [lindex $argv 1]
+  set userid      [lindex $argv 2]
+  set password    [lindex $argv 3] 
+
+  if { $userid == "" } {
+     set userid empty
+     set password empty
+  }
+
+  puts "--> ITIM cluster name is $cluster"
+  puts "--> ITIM JMS cluster name is $jms_cluster"
+  puts "--> JMS user id is $userid"
+
+  puts "--> configure ITIM JMS J2C authentication alias itim_jms"
+  set rc [create_itim_j2c_auth_alias "itim_jms" \
+                    "itim jms j2c authentication alias" $userid $password] 
+
+  # Create non-shared ITIM JMS objects which include ITIM SIB bus, queue
+  # connection factory, queues, and activation specification points.
+
+  set mem ""
+  set schema ITIML000
+  set target [list $cluster]
+  set rc  [crt_jms_qcf_was6 $target $schema $mem]
+
+  # Create ITIM shared queues and corresponding activation specification points.
+
+  if { $rc=="SUCCESS" || $rc=="UNCHANGED" } {
+     puts "--> configure ITIM shared queue objects"
+     # Fix : Defect#52235 Activation spec for shared queues needs to have target set as the JMS cluster (WasConfigUtil.jacl - create_activation_spec) 
+     # Pass JMS Cluster name to crt_jms_shared_queue_was6
+     set rc [crt_jms_shared_queue_was6 $target $jms_cluster]
+  }  
+
+  set bus_name   "itim_bus"
+  set default_ds "false"
+
+  # extract the list of message engines associated to itim_bus and used 
+  # by any existing itim core group policy.
+
+  set me_list [list_message_engine_in_policy $cluster $bus_name]
+
+  # create extra itim cluster message engine in itim_bus
+  set nodes [list_cluster_member_nodes $cluster]
+  set i 0
+
+  # Process all nodes contains ITIM cluster member to set up static policy
+  foreach node $nodes {
+      set mem_list [find_servers_given_cluster_node $cluster $node]
+
+      # Process all cluster members within a node to set the static policy
+      #   which links the messaging engine to the cluster member.
+      foreach mem $mem_list {
+
+	 # Find a messagning engine name that is not being used currently
+         set k 0
+         set found "false"
+         while { $found == "false" } {
+            set me_name ${cluster}.00${k}-${bus_name}
+            if {[regexp $me_name $me_list] == 0 } {
+	       puts "--> the message engine name $me_name is not currently used"
+               set found "true"
+            }
+            incr k
+         }
+
+	 set policy_name ${bus_name}_${node}_${mem}_policy
+	 # Check to see whether the policy already exist
+	 set policy [$AdminConfig getid "/StaticPolicy:\"${policy_name}\"/"]
+
+	 # If the policy does not exist, create the policy and add the messaging
+	 #   engine name to the me_list.
+         if { $policy == "" } {
+	    set rc [create_itim_bus_policy $policy_name $me_name $bus_name $mem $node]
+            puts "--> add $me_name to the used message engine list"
+	    lappend me_list $me_name
+         } else {
+            puts "--> $policy_name aleady exist.  Will not create a new one."
+         }
+  	 incr i
+      }
+  }
+
+  puts "total number of cluster member is $i"
+  set cellid [$AdminConfig list Cell]
+  set busid  [find_object_id $cellid SIBus name $bus_name]
+
+  # get bus itim cluster member id
+  # create new message engine under itim cluster member
+  set create_table "false"
+  set auth_alias   "itim_init"
+  set parms [list -bus $bus_name -cluster $cluster -createDefaultDatasource "false" \
+		  -initialState "Started" -datasourceJndiName "itimBusDataSource"]
+
+  puts "--> create $i-1 message engines under the itim cluster $cluster"
+
+  # Create i-1 messaging engines with certain naming convention under itim_bus. 
+  # If the messaging engine has been created already, it will skip the creation of
+  # this particular messaging engine.
+
+  for {set j 1} {$j < $i} {incr j} {
+     if {$j > 9} {
+        set me_name $cluster.0$j-$bus_name
+     } else {
+        set me_name $cluster.00$j-$bus_name
+     }
+     set me_id [$AdminConfig getid "/SIBMessagingEngine:\"${me_name}\"/"]
+     if {$me_id == ""} {
+        set me_id [$AdminTask createSIBEngine $parms]
+        puts "--> new message engine for itim cluster $cluster - $me_id"
+     } else {
+	puts "--> message engine $me_id already exist"
+     }
+     set schema itiml00$j
+     puts "--> modify sib engine $me_name with schema $schema"
+     # Set the datastore for the messaging engine.
+     modify_me_datastore $me_name $auth_alias $schema $create_table
+  }
+
+  # Add the itim jms cluster as a member of itim_bus
+  set ds_jndi 	 "itimSharedBusDataSource"
+  set target     [list $jms_cluster]
+
+  set sib_bm_id [add_bus_member $bus_name $default_ds $ds_jndi $target]
+  puts "--> sib bus member id -> $sib_bm_id"
+ 
+  # Set the datastore for the messaging engine of the ITIM JMS cluster member.
+  set auth_alias   "itim_init"
+  set create_table "false"
+  set schema       "itims000"
+  set me_name       $jms_cluster.000-$bus_name
+  modify_me_datastore $me_name $auth_alias $schema $create_table
+
+  puts "--> create ITIM shared queue destination under itim_bus"
+  set rc [crt_jms_shared_queue_dest_was6 $target]
+
+  $AdminConfig save
+
+  # Set itim_jms with proper roles with itim_bus.
+  set rc [reset_default_role_user $bus_name $userid]
+  if { $rc == "SUCCESS" } {  
+     $AdminConfig save
+  }
+}

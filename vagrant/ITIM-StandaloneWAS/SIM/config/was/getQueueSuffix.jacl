@@ -1,0 +1,56 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# Currently, this script requires three inputs - cluster_name, host_name, 
+# and ip_address 
+#
+
+if {$argc < 2} { 
+   puts "  "
+   puts "Incorrect number of args.  Two argument is required."  
+   puts "   arg1 - cluster-name" 
+   puts "   arg2 - host-name"
+} else {
+
+  set cluster [lindex $argv 0]
+  set host [lindex $argv 1]
+  set ipaddr [lindex $argv 2]
+  set found "false"
+
+  puts "cluster name is $cluster"
+  puts "host name is $host"
+  puts "ipaddr is $ipaddr"
+   
+  # get the list of nodes on the host
+  set nodes [get_nodes $host $ipaddr]
+  set num_nodes [llength $nodes]
+  puts "Debug --> nodes: $nodes"
+  puts "Debug --> num_nodes: $num_nodes"
+
+  for {set i 0} {$i < $num_nodes} {incr i} {    
+      set node [lindex $nodes $i]
+      set servers [find_servers_given_cluster_node $cluster $node]
+      if {$servers != ""} {
+          puts "Found a server in the cluster $cluster"
+	    puts "server_list: $servers"
+	    set found "true"
+          break
+      }
+  }
+
+  if {$found == "true"} {
+	set server [lindex $servers 0]
+  } else {
+	set server "myserver"
+  }
+  puts "getDefaultSuffix:$server"
+  # $AdminConfig save
+}

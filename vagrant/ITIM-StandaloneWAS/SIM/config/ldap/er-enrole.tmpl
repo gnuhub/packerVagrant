@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsml>
+	<directory-entries>
+
+	<!-- ******************************************************** -->
+  	<!--                   ITIM LDAP data         	           -->
+  	<!-- ******************************************************** -->  
+	
+		<entry dn="ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>organizationalUnit</oc-value>
+			</objectclass>
+			<attr name="ou"><value>itim</value></attr>
+		</entry>	
+
+		<entry dn="ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>organizationalUnit</oc-value>
+			</objectclass>
+			<attr name="ou"><value>constraints</value></attr>
+		</entry>					
+		
+		<entry dn="erdictionaryname=password,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erDictionary</oc-value>
+			</objectclass>
+			<attr name="erdictionaryname"><value>password</value></attr>
+		</entry>			
+
+	<!-- ******************************************************** -->
+  	<!--                   ITIM constraints         	           -->
+  	<!-- ******************************************************** -->  
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.1,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.1</value></attr>
+			<attr name="cn"><value>erOrgStatus</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$active$0</value>
+				<value>enum$inactive$1</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.2,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.2</value></attr>
+			<attr name="cn"><value>erAccountStatus</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$active$0</value>
+				<value>enum$inactive$1</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.5,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.5</value></attr>
+			<attr name="cn"><value>erType</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$BINARY_SYNTAX$1.3.6.1.4.1.1466.115.121.1.5</value>
+				<value>enum$BIT_STRING_SYNTAX$1.3.6.1.4.1.1466.115.121.1.6</value>
+				<value>enum$BOOLEAN_SYNTAX$1.3.6.1.4.1.1466.115.121.1.7</value>
+				<value>enum$CERTIFICATE_SYNTAX$1.3.6.1.4.1.1466.115.121.1.8</value>
+				<value>enum$DN_SYNTAX$1.3.6.1.4.1.1466.115.121.1.12</value>
+				<value>enum$DIRECTORY_STRING_SYNTAX$1.3.6.1.4.1.1466.115.121.1.15</value>
+				<value>enum$FAX_SYNTAX$1.3.6.1.4.1.1466.115.121.1.23</value>
+				<value>enum$GENERALIZED_TIME_SYNTAX$1.3.6.1.4.1.1466.115.121.1.24</value>
+				<value>enum$IA5_STRING_SYNTAX$1.3.6.1.4.1.1466.115.121.1.26</value>
+				<value>enum$INTEGER_SYNTAX$1.3.6.1.4.1.1466.115.121.1.27</value>
+				<value>enum$OID_SYNTAX$1.3.6.1.4.1.1466.115.121.1.38</value>
+				<value>enum$POSTAL_ADDRESS_SYNTAX$1.3.6.1.4.1.1466.115.121.1.41</value>
+				<value>enum$PHONE_NUMBER_SYNTAX$1.3.6.1.4.1.1466.115.121.1.50</value>
+				<value>enum$UTC_TIME_SYNTAX$1.3.6.1.4.1.1466.115.121.1.53</value>
+				<value>enum$NUMERIC_STRING$1.3.6.1.4.1.1466.115.121.1.36</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.7,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.7</value></attr>
+			<attr name="cn"><value>erPersonStatus</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$active$0</value>
+				<value>enum$inactive$1</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.11,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.11</value></attr>
+			<attr name="cn"><value>erCategory</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$ORG$Organization</value>
+				<value>enum$ORGUNIT$OrganizationUnit</value>
+				<value>enum$LOCATION$Location</value>
+				<value>enum$BPUNIT$BusinessPartnerOrganization</value>
+				<value>enum$PERSON$Person</value>
+				<value>enum$BPPERSON$BPPerson</value>
+				<value>enum$SERVICE$Service</value>
+				<value>enum$ACCOUNT$Account</value>
+				<value>enum$SERVICE_PROFILE$ServiceProfile</value>
+				<value>enum$OBJECT_PROFILE$ObjectProfile</value>
+				<value>enum$ROLE$Role</value>
+				<value>enum$SYSTEM_ROLE$SystemRole</value>
+				<value>enum$ATTRIBUTE_CONSTRAINT$AttributeConstraint</value>
+				<value>enum$SYSTEM_USER$SystemUser</value>
+				<value>enum$POLICY_BASE$PolicyBase</value>
+				<value>enum$POLICY_ITEM_BASE$PolicyItemBase</value>
+				<value>enum$IDENTITY_POLICY$IdentityPolicy</value>
+				<value>enum$PASSWORD_POLICY$PasswordPolicy</value>
+				<value>enum$PROVISIONING_POLICY$ProvisioningPolicy</value>
+				<value>enum$CUSTOM_PROCESS$CustomProcess</value>
+				<value>enum$FORM_TEMPLATE$FormTemplate</value>
+				<value>enum$TENANT$Tenant</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.16,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.16</value></attr>
+			<attr name="cn"><value>erIsReadOnly</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.22,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.22</value></attr>
+			<attr name="cn"><value>erBPOrgStatus</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$active$0</value>
+				<value>enum$inactive$1</value>
+			</attr>
+		</entry>	
+		
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.37,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.37</value></attr>
+			<attr name="cn"><value>erIsDelegated</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>			
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.39,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.39</value></attr>
+			<attr name="cn"><value>erSystemRoleCategory</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$ENDUSER_CATEGORY$1</value>
+				<value>enum$SUPERVISOR_CATEGORY$2</value>
+				<value>enum$SYSTEMADMIN_CATEGORY$3</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.44,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.44</value></attr>
+			<attr name="cn"><value>erOverride</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>			
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.50,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.50</value></attr>
+			<attr name="cn"><value>erGlobalId</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.36</value></attr>
+		</entry>		
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.51,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.51</value></attr>
+			<attr name="cn"><value>erIsDeleted</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>		
+		
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.53,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.53</value></attr>
+			<attr name="cn"><value>erCheckPolicy</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>			
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.54,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.54</value></attr>
+			<attr name="cn"><value>erDisallowedAction</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$ActionNone$NONE</value>
+				<value>enum$ActionSuspend$SUSPEND</value>
+				<value>enum$ActionDelete$DELETE</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.55,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.55</value></attr>
+			<attr name="cn"><value>erConstraintViolationAction</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$ActionNone$NONE</value>
+				<value>enum$ActionSuspend$SUSPEND</value>
+				<value>enum$ActionDelete$DELETE</value>
+				<value>enum$ActionOverride$OVERRIDE</value>
+			</attr>
+		</entry>	
+		
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.56,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.56</value></attr>
+			<attr name="cn"><value>erIdentityLookupMethod</value></attr>
+			<attr name="ercustomconstraint">
+				<value>enum$alias$ALIAS</value>
+			</attr>
+		</entry>	
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.62,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.62</value></attr>
+			<attr name="cn"><value>erIsActive</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>		
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.63,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.63</value></attr>
+			<attr name="cn"><value>erLostPswdByMail</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>		
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.64,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.64</value></attr>
+			<attr name="cn"><value>erPswdEditAllowed</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>		
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.67,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.67</value></attr>
+			<attr name="cn"><value>erLastAccessDate</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.24</value></attr>
+		</entry>
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.3,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.3</value></attr>
+			<attr name="cn"><value>erUseWorkflow</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>			
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.70,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.70</value></attr>
+			<attr name="cn"><value>erPswdLastChanged</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.24</value></attr>
+		</entry>
+
+		<entry dn="eroid=1.3.6.1.4.1.6054.1.1.101,ou=constraints,ou=itim,<%enrole.ldapserver.root%>">
+			<objectclass>
+				<oc-value>top</oc-value>
+				<oc-value>erattributeconstraint</oc-value>
+			</objectclass>
+			<attr name="eroid"><value>1.3.6.1.4.1.6054.1.1.101</value></attr>
+			<attr name="cn"><value>erChangePswdRequired</value></attr>
+			<attr name="ertype"><value>1.3.6.1.4.1.1466.115.121.1.7</value></attr>
+		</entry>
+  	
+	</directory-entries>
+</dsml>

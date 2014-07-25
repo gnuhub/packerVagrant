@@ -1,0 +1,90 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# Currently, this script requires four input - node name. 
+#
+# This script invokes the following procedures in WasConfigUtil.jacl:
+#
+#     - create_itim_j2c_auth_alias to create itim_jms J2C authentication alias
+#     - crt_jms_qcf_was6 to create ITIM JMS queue connection factory, itim_bus, 
+#	   non-shared queues, and activation specifications
+#     - crt_jms_shared_queue_was6 to create ITIM shared queue and activation
+#	   specifications
+#     - crt_jms_shared_queue_dest_was6 to create ITIM shared queue destination
+#	   under itim_bus
+#     - reset_default_role_user to set itim_jms with proper roles with itim_bus
+#
+
+
+if {$argc < 4} { 
+   puts "  "
+   puts "Incorrect number of args.  One argument is required."  
+   puts "   arg1 - node-name" 
+   puts "   arg2 - server-name"
+   puts "   arg3 - jms userid (which is ITIM EJB userid)" 
+   puts "   arg4 - jms userid password"
+   puts "  "
+} else {
+
+  set node_name    [lindex $argv 0]
+  set server_name  [lindex $argv 1]
+  set q_suffix     [lindex $argv 1]
+  set userid       [lindex $argv 2]
+  set password     [lindex $argv 3] 
+
+  if { $userid == "" } {
+     set userid empty
+     set password empty
+  }
+
+  puts "--> node name is $node_name"
+  puts "--> server name is $server_name"
+  puts "--> JMS user id is $userid"
+
+  # Set the scope which will be used by the procedure to perform
+  # real work in WasConfigUtil.jacl.
+
+  # set target [subst {$node_name $server_name}]
+  set target [list $node_name $server_name]
+  puts "--> target string is $target"
+
+  
+  puts "--> configure ITIM JMS J2C authentication alias itim_jms"
+  set rc [create_itim_j2c_auth_alias "itim_jms" \
+                  "itim jms j2c authentication alias" $userid $password] 
+ 
+  # Find if the Jython script has created the alias
+  #set rc [find_itim_jms_j2c_auth_alias "itim_jms"]
+	
+  if { $rc=="SUCCESS" || $rc=="UNCHANGED"} {
+      puts "--> configure ITIM JMS queue objects and itim_bus"
+      set rc [crt_jms_qcf_was6 $target "itiml000" $q_suffix]
+  } 
+
+  if { $rc=="SUCCESS" || $rc=="UNCHANGED"} {
+      puts "--> configure ITIM shared queue objects"
+      # Fix : Defect#52235 Activation spec for shared queues needs to have target set as the JMS cluster (WasConfigUtil.jacl - create_activation_spec) 
+      # Set JMS Cluster Name to empty string as this script is for single server. JMS Cluster Name is passed to crt_jms_shared_queue_was6
+      set jms_cluster ""
+      set rc [crt_jms_shared_queue_was6 $target $jms_cluster]
+  }  
+
+  if { $rc=="SUCCESS" || $rc=="UNCHANGED"} {
+      puts "--> create ITIM shared queue destination under itim_bus"
+      set rc [crt_jms_shared_queue_dest_was6 $target]
+  }
+
+  if { $rc=="SUCCESS" || $rc=="UNCHANGED"} {      
+      $AdminConfig save
+      set rc [reset_default_role_user "itim_bus" $userid]
+      if { $rc == "SUCCESS" } {  
+          $AdminConfig save
+      }
+  } 
+}

@@ -1,0 +1,149 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2006, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This script performs the following tasks at the Deployment Manager 
+#  on the ITIM cluster uninstallation - 
+#	
+#	- Stop the ITIM JMS messaging engine
+#	- Stop all the ITIM applicaiton messaging engines
+#	- Delete itim_bus (bus members and messaging engines as well)
+#	- Remove ITIM non-XA JDBC provider for the ITIM JMS cluster
+#	- Remove ITIM queue connection factory, queues, and activation spec points
+#	- Delete all static policies set for ITIM applicagtion cluster
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Two arguments are required." 
+  puts "   arg1 - itim application cluster name" 
+  puts "   arg2 - itim jms cluster name"
+  puts "   arg3 - database type"
+  puts "  "
+} else {
+
+  set itim_cluster [lindex $argv 0]
+  set jms_cluster  [lindex $argv 1]
+  set db_type      [lindex $argv 2]
+
+  puts "--> itim application cluster name is $itim_cluster"
+  puts "--> itim jms cluster name is $jms_cluster"
+  puts "--> database type is $db_type"
+
+  # Get ITIM application and ITIM JMS cluster object IDs  
+  set cid     [$AdminConfig getid /ServerCluster:$itim_cluster]
+  set jms_cid [$AdminConfig getid /ServerCluster:$jms_cluster]
+
+  puts "--> itim application cluster id is $cid"
+  puts "--> itim jms cluster id is $jms_cid"
+
+  set found false
+  set nodes [list_cluster_member_nodes $itim_cluster]
+  set num_nodes [llength $nodes]
+
+  # Stop the JMS cluster message engine
+  for {set i 0} {$i < $num_nodes} {incr i} { 
+     set node [lindex $nodes $i]
+     set serverlist [find_servers_given_cluster_node $jms_cluster $node]
+     if {$serverlist != ""} {
+        set num_servers [llength $serverlist]
+        puts "--> serverlist: $serverlist"
+
+        for {set k 0} {$k < $num_servers} {incr k} {
+           set server [lindex $serverlist $k]
+           set objNameString [$AdminControl completeObjectName WebSphere:type=SIBMessagingEngine,node=$node,process=$server,*]
+           if {$objNameString != ""} { 
+               $AdminControl invoke $objNameString stop 
+	       puts "--> found and stop the JMS message engine associates to the node/server $node/$server"
+	       set found true
+  	       break
+           }
+        }
+	if { $found == "true" } {
+	   puts "--> The JMS message engine is stopped, exit the outer loop"
+	   break
+	}
+     }
+  }
+  
+  # Stop all remaining ITIM application cluster message engines
+  for {set i 0} {$i < $num_nodes} {incr i} { 
+     set node [lindex $nodes $i]
+     set serverlist [find_servers_given_cluster_node $itim_cluster $node]
+     if {$serverlist != ""} {
+        set num_servers [llength $serverlist]
+        puts "--> serverlist: $serverlist"
+
+        for {set k 0} {$k < $num_servers} {incr k} {
+           set server [lindex $serverlist $k]
+           set objNameString [$AdminControl completeObjectName WebSphere:type=SIBMessagingEngine,node=$node,process=$server,*]
+           if {$objNameString != ""} { 
+               $AdminControl invoke $objNameString stop 
+	       puts "--> found and stop the ITIM message engine associates to the node/server $node/$server"
+           }
+        }
+     } 
+  }
+
+  # Delete ITIM bus, bus members, and message engines
+  if {[catch {set rc [$AdminTask deleteSIBus {-bus "itim_bus"}]} result]} {
+      puts "--> itim_bus does not exist"
+  } else {
+      puts "--> delete SIB itim_bus"
+  }
+
+  # Remove ITIM non-XA JDBC provider for the ITIM JMS cluster
+  if { $jms_cid != "" } {
+     set is_xa   "false"
+     set is_was6 "true"
+     set jdbc_id [find_jdbc_driver $jms_cid $db_type $is_xa $is_was6]
+     puts "--> the itim jms cluster non-XA jdbc driver provider id is: $jdbc_id"
+     if {$jdbc_id != ""} {
+        $AdminConfig remove $jdbc_id
+     }
+  }
+
+  # Remove ITIM queue connection factory, queues, and activation spec points
+  if { $cid != "" } {
+     # Find and remove the existing ITIM queue connection factory
+     set itim_qcf [find_object_id $cid "J2CConnectionFactory" \
+                              "jndiName" "enrole.jms.QueueConnectionFactory"]
+     if {$itim_qcf != ""} {
+        $AdminConfig remove $itim_qcf
+     }
+
+     # Find and remove the existing ITIM shared queue connection factory
+     set itim_qcf [find_object_id $cid "J2CConnectionFactory" \
+                              "jndiName" "enrole.jms.SharedQueueConnectionFactory"]
+     if {$itim_qcf != ""} {
+        $AdminConfig remove $itim_qcf
+     }
+
+     # remove ITIM shared queues
+     set rc [remove_itim_objects "listSIBJMSQueues" "itim_" $cid]
+
+     # remove ITIM shared activation spec
+     set rc [remove_itim_objects "listSIBJMSActivationSpecs" "ITIM" $cid]
+  }
+
+  # Delete all statis policies set for ITIM applicagtion cluster
+  set groupName [$AdminTask getDefaultCoreGroupName]
+  set group [$AdminConfig getid "/CoreGroup:${groupName}/"]
+  set bus_name itim_bus
+  set policy_list [$AdminConfig showAttribute $group policies]
+  set policy_list [lindex $policy_list 0]
+  foreach policy $policy_list {
+     set policy_name [$AdminConfig showAttribute $policy name]
+     puts "--> current policy name is $policy_name"
+     if { [regexp $bus_name $policy_name] == 1 }  {
+        puts "--> delete $policy_name"
+	$AdminConfig remove $policy
+     }
+  }
+  $AdminConfig save
+}

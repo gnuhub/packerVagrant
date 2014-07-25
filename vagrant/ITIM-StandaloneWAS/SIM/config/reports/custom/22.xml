@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/********************************************************************
+*
+* Licensed Materials - Property of IBM
+*
+* (C) Copyright IBM Corp. 2005, 2012 All Rights Reserved.
+*
+* US Government Users Restricted Rights - Use, duplication, or
+* disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+*
+*
+*******************************************************************/-->
+<AdHocReport Version="1.1">
+	<Created>
+		<Time>2004-09-28 15:49:41.443</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</Created>
+	<LastUpdate>
+		<Time>2004-09-28 15:49:41.443</Time>
+		<TimeZone>GMT</TimeZone>
+		<Name>itim manager</Name>
+	</LastUpdate>
+	<Style>standard</Style>
+	<ReportHeader>
+		<Title>dummy</Title>
+	</ReportHeader>
+	<Page Lines="45">
+		<PageHeader>
+			<TimeStamp TimeZone="GMT" show="YES"/>
+			<User show="YES"/>
+			<Logo show="YES"/>
+		</PageHeader>
+		<Body>
+			<Query>
+				<Columns>
+					<Column Width="10" id="1">
+						<Header>serviceName</Header>
+						<Source>Service.erservicename</Source>
+						<Sort Order="1" Type="ASC"/>
+					</Column>
+					<Column Width="10" id="2">
+						<Header>userId</Header>
+						<Source>Account.eruid</Source>
+						<Sort Order="2" Type="ASC"/>
+					</Column>
+					<Column Width="10" id="3">
+						<Header>reason</Header>
+						<Source>Account.eraccountcompliance</Source>
+						<Sort Order="3" Type="ASC"/>
+					</Column>
+				</Columns>
+				<Tables>
+					<Table>Service</Table>
+					<Table>Account</Table>
+				</Tables>
+				<Filter><![CDATA[Account.erservice = Service.DN AND Service.DN like '_USERINPUT_' AND Account.eraccountcompliance like '_USERINPUT_' AND Account.eraccountcompliance > '1']]></Filter>
+			</Query>
+		</Body>
+		<PageFooter>
+			<PageNumber Format="1OfN" show="YES"/>
+		</PageFooter>
+	</Page>
+</AdHocReport>

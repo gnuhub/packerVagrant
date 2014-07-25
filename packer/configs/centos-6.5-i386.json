@@ -1,9 +1,13 @@
 {
+	"variables": {
+		"vboxVersion": "4.3.10"
+	 },
+
     "builders": [{
         "type": "virtualbox-iso",
         "virtualbox_version_file": ".vbox_version",
         "headless": false,
-		"vm_name": "CentOS-6.5-i386",
+		"vm_name": "centos-6.5-i386_{{user `vboxVersion`}}",
         "guest_os_type": "RedHat",
         "disk_size": 40960,
 
@@ -33,7 +37,7 @@
         "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
     }],
     "post-processors": [{
-        "output": "../build/centos-6.5-i386.box",
+        "output": "../build/centos-6.5-i386_{{user `vboxVersion`}}.box",
         "type": "vagrant"
     }],
     "provisioners": [{
@@ -42,7 +46,8 @@
         "scripts": [
             "../scripts/vagrant.sh",
             "../scripts/vboxguest.sh",
-            "../scripts/compact.sh"
+            "../scripts/compact.sh",
+            "../scripts/installChef.sh"
         ]
     }]
 }

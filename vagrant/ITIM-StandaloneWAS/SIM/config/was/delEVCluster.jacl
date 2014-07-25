@@ -1,0 +1,71 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# Delete the environment variables from WAS config
+#
+# wsadmin.bat -f g:\was5\cJDBCDriver.jacl node1 "g:\\program files\\sqllib"
+#   (if use the above varialbe value, cannot have the end file separator - scripting error..)
+#   (better to enter "g:/program files/sqllib"
+#
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  two arguments are required."  
+  puts "   arg1 - cluster name" 
+  puts "   arg2 - host name" 
+  puts "   arg3 - host ip" 
+} else {
+
+  set cluster [lindex $argv 0]
+  set host    [lindex $argv 1]
+  set ipaddr    [lindex $argv 2]
+
+  puts "cluster name is $cluster"
+  puts "host name is $host"
+  puts "host ip is $ipaddr"
+
+  set nodes ""
+  if {$host != "null"} {
+      puts "get the list of nodes on the host: $host"
+      set nodes [get_nodes $host $ipaddr]
+  } else {
+      puts "get the list of member nodes of the cluster: $cluster"
+      set nodes [list_cluster_member_nodes $cluster]
+  }
+  
+  puts "nodelist: $nodes"     
+  set num_nodes [llength $nodes]
+
+  set rc ""
+  for {set i 0} {$i < $num_nodes} {incr i} {
+     set node [lindex $nodes $i]
+     puts "node: $node" 
+     set varId [find_env_var_node $node ITIM_HOME]
+     puts "return variable ID is $varId"
+     if { [regexp "VariableSubstitutionEntry" $varId] == 1 }  {
+        puts "found ITIM_HOME variable ID is $varId"
+        $AdminConfig remove $varId
+	  set rc SUCCESS
+     }
+     set varId [find_env_var_node $node ITIM_DB_JDBC_DRIVER_PATH]
+     puts "return variable ID is $varId"
+     if { [regexp "VariableSubstitutionEntry" $varId] == 1 }  {
+        puts "found ITIM_DB_JDBC_DRIVER_PATH variable ID is $varId"
+        $AdminConfig remove $varId
+	  set rc SUCCESS
+     }
+  }
+
+  if {$rc == "SUCCESS"} {
+    $AdminConfig save
+  }
+}

@@ -1,0 +1,26 @@
+-OPT silentInstallLicenseAcceptance="true"
+
+-OPT disableOSPrereqChecking="true"
+-OPT disableNonBlockingPrereqChecking="true"
+
+-OPT installType="installNew"
+-OPT profileType="standAlone"
+
+-OPT feature="languagepack.console.all"
+-OPT feature="languagepack.server.all" 
+
+-OPT PROF_enableAdminSecurity="true"
+-OPT PROF_adminUserName=wasadmin
+-OPT PROF_adminPassword=Passw0rd
+
+-OPT installLocation="/opt/IBM/WebSphere/AppServer"
+
+#-OPT PROF_profilePath=/opt/IBM/WebSphere/AppServer/profiles
+#-OPT PROF_dmgrProfileName=DMgr01
+#-OPT PROF_appServerProfileName=AppSrv01
+#-OPT PROF_isDefault="true"
+
+#-OPT PROF_hostName=<%= @wasHost %>
+#-OPT PROF_nodeName=<%= @wasHost %>CellManager01
+#-OPT PROF_appServerNodeName=<%= @wasHost %>Node01
+#-OPT PROF_cellName=<%= @wasHost %>Cell01

@@ -1,0 +1,56 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2006, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+#  This jacl script invokes WasConfigUtil.crt_jdbc_driver to create 
+#  the configuration of a non-XA JDBC driver Provider to host the 
+#  data source used by the messaging engine of the ITIM JMS cluster.
+#  It creates the datasource by invoking the procedure 
+#  WAsConfigUtil.update_itim_datasource.
+#
+
+if {$argc < 5} { 
+  puts "  "
+  puts "Incorrect number of args.  Three arguments are required."  
+  puts "   arg1 - ITIM JMS cluster name" 
+  puts "   arg2 - itim db url, ie jdbc:db2://localhost:50000/itimdb"
+  puts "   arg3 - itim database user id"
+  puts "   arg4 - itim database user password"
+  puts "   arg5 - database type (IBM_DB, IBM_ZDB, ORACLE_DB, or MS_DB)"
+  puts "  "
+} else {
+
+  set cluster_name [lindex $argv 0]
+  set db_url       [lindex $argv 1]
+  set userid       [lindex $argv 2]
+  set user_pw      [lindex $argv 3]
+  set db_type      [lindex $argv 4] 
+
+  puts "--> itim jms cluster name is $cluster_name"
+  puts "--> itim db url is $db_url"
+  puts "--> itim database userid is $userid"
+  puts "--> database user password is <not_shown>"
+  puts "--> db type is $db_type"
+
+  set cid [$AdminConfig getid /ServerCluster:$cluster_name]
+  set is_xa   "false"
+
+  set jdbc_id [crt_jdbc_driver $cid $db_type $is_xa]
+  puts "--> the non-XA jdbc driver provider id is: $jdbc_id"
+
+  if {$jdbc_id != ""} {
+     set ds_name     "itimSharedBusDataSource"
+     set description "ITIM Bus Shared DataSource "
+     set rc [update_itim_datasource $db_url $userid $user_pw $jdbc_id $db_type $ds_name $description $is_xa]    
+     puts "--> Create or update ITIM bus shared data source with return code -> $rc" 
+    
+     if { $rc == "SUCCESS" }  {
+        $AdminConfig save
+     }
+  } 
+}

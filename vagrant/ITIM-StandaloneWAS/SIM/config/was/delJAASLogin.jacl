@@ -1,0 +1,44 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to remove ITIM JAAS Application Login 
+# configuration
+#
+# this script add the ITIM JAAS Allication Login entry in 
+#      $WAS_HOME\config\cells\<cellName>\security.xml
+#
+ 
+  set elist [$AdminConfig list JAASConfigurationEntry]
+
+  set nentry [llength $elist]
+  set found  false
+  puts "Debug --> number of JAAS entry is $nentry"
+  for {set i 0} {$i < $nentry} {incr i} {
+     set entryi [lindex $elist $i]
+     set alias  [$AdminConfig showAttribute $entryi alias]
+     puts "Debug --> current JAAS entry alias is $alias" 
+     if {[regexp "ITIM" $alias] == 1} {
+        set found true
+        puts "Debug --> removing $entryi"
+        $AdminConfig remove $entryi
+        continue
+     }
+     if {[regexp "serviceLoginContext" $alias] == 1} {
+        set found true
+        puts "Debug --> removing $entryi"
+        $AdminConfig remove $entryi
+        continue
+     }
+  }  
+
+  if {$found == "true"} {
+     $AdminConfig save
+  }

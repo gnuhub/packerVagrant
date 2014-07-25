@@ -1,0 +1,14 @@
+dn: ou=myCompany,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: myCompany
+
+dn: ou=users,ou=myCompany,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+dn: ou=groups,ou=myCompany,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: groups

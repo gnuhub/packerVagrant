@@ -1,0 +1,4 @@
+-OPT silentInstallLicenseAcceptance="true"
+-OPT disableOSPrereqChecking="true"
+-OPT disableEarlyPrereqChecking="true"
+-OPT installLocation="/opt/IBM/WebSphere/UpdateInstaller"

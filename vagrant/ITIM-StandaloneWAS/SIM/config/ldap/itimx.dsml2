@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file contains the default data that have changed between ITIM 5.0 Standard and Express -->
+<batchRequest>
+
+    <!-- ========================================================  -->
+    <!-- Enable erAutoGroupMembershipEnabled property              -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="<%tenant.dn%>">
+	<modification name="erAutoGroupMembershipEnabled" operation="replace">
+	    <value>true</value>
+	</modification>
+    </modifyRequest>
+
+    <!-- ========================================================  -->
+    <!-- Enable "set user password..." property                    -->
+    <!-- ========================================================  -->
+    <modifyRequest dn="<%tenant.dn%>">
+	<modification name="erPwdEnabled" operation="replace">
+	    <value>true</value>
+	</modification>
+    </modifyRequest>
+     
+</batchRequest>

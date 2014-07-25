@@ -1,0 +1,15 @@
+dn:cn=ITIM Manager,dc=com
+objectclass:person
+objectclass:inetOrgPerson
+cn:System Administrator
+sn:Administrator
+uid:ITIM Manager
+userpassword:secret
+
+dn:cn=isimsystem,ou=systemUser,ou=itim,ou=,dc=com
+objectclass:person
+objectclass:inetOrgPerson
+cn:isimsystem
+sn:isimsystem
+uid:isimsystem
+userpassword:isimsystem

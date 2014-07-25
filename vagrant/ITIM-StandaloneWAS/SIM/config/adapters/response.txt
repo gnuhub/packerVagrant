@@ -1,0 +1,61 @@
+################################################################################
+#
+# InstallShield Options File Template
+#
+# Wizard name: Setup
+# Wizard source: PosixAdapterInstall.jar
+# Created on: Tue Jul 12 10:02:24 PDT 2005
+# Created by: InstallShield Options File Generator
+#
+# This file can be used to create an options file (i.e., response file) for the
+# wizard "Setup". Options files are used with "-options" on the command line to
+# modify wizard settings.
+# 
+# The settings that can be specified for the wizard are listed below. To use
+# this template, follow these steps:
+# 
+#    1. Enable a setting below by removing leading '###' characters from the
+#    line (search for '###' to find settings you can change).
+# 
+#    2. Specify a value for a setting by replacing the characters '<value>'.
+#    Read each setting's documentation for information on how to specify its
+#    value.
+# 
+#    3. Save the changes to the file.
+# 
+#    4. To use the options file with the wizard, specify -options <file-name>
+#    as a command line argument to the wizard, where <file-name> is the name
+#    of this options file.
+#
+################################################################################
+
+
+################################################################################
+#
+# Has the license been accepted
+#
+# The license must be accepted before installation so this value must be true
+# for the install to be successful.
+#
+
+
+-G licenseAccepted=True
+
+
+################################################################################
+#
+# IBM Tivoli Directory Integrator Based POSIX Adapter For ITIM Install
+# Location
+#
+# The install location of the product. Specify a valid directory into which the
+# product should be installed. If the directory contains spaces, enclose it in
+# double-quotes. For example, to install the product to C:Program FilesMy
+# Product, use
+# 
+#    -P installLocation="C:Program FilesMy Product"
+#
+
+
+-P ITDIBasedPOSIXAdapter.installLocation=""
+-W SetInstallLocWin.active=False 
+-W SetInstallLocNotWin.active=False

@@ -1,0 +1,67 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+#
+#  This script performs the following tasks - 
+#
+#	- Remove the enroleDataSource
+#	- Remove the itimBusDataSource
+#	- Remove the ITIM XA JDBC driver provider
+#	- Remove the ITIM non-XA JDBD driver provider
+#
+
+if {$argc < 3} { 
+  puts "  "
+  puts "Incorrect number of args.  Three arguments are required."  
+  puts "   arg1 - node name" 
+  puts "   arg2 - server name" 
+  puts "   arg3 - db type (IBM_DB, IBM_ZDB, ORACLE_DB, or MS_DB)" 
+  puts "  "
+} else {
+
+  set node      [lindex $argv 0]
+  set server    [lindex $argv 1]
+  set dbtype    [lindex $argv 2]
+
+  puts "--> node name is $node"
+  puts "--> server name is $server"
+  puts "--> database type is $dbtype"
+
+  set sid [$AdminConfig getid /Node:$node/Server:$server]
+  
+  if {$sid != ""} {
+
+     set dsid [find_object_id $sid "DataSource" "jndiName" "enroleDataSource"]
+     puts "--> remove enroleDataSource dsid: $dsid" 
+     if { $dsid != "" } {
+         $AdminConfig remove $dsid
+     }
+
+     set dsid [find_object_id $sid "DataSource" "jndiName" "itimBusDataSource.$server"]
+     puts "--> remove itimBusDataSource.$server dsid: $dsid" 
+     if { $dsid != "" } {
+         $AdminConfig remove $dsid
+     }
+
+     set is_was6 "true"
+     set is_xa "true"
+     set jdbcid [find_jdbc_driver $sid $dbtype $is_xa $is_was6]
+     if { $jdbcid != "" } {
+         puts "--> remove ITIM XA jdbc provider: $jdbcid" 
+         $AdminConfig remove $jdbcid
+     }
+
+     set is_xa "false"
+     set jdbcid [find_jdbc_driver $sid $dbtype $is_xa $is_was6]
+     if { $jdbcid != "" } {
+         puts "--> remove ITIM non-XA jdbc provider: $jdbcid" 
+         $AdminConfig remove $jdbcid
+     }
+     $AdminConfig save
+  }
+}

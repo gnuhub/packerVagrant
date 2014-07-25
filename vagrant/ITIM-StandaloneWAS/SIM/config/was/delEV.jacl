@@ -1,0 +1,49 @@
+#
+#  Licensed Materials  Property of IBM
+#
+#  5724-C34
+#
+#  (c) Copyright IBM Corp. 2003, 2012 All Rights Reserved
+#
+#  US Government Users Restricted Rights - Use, duplication or
+#  disclosure restricted by GSA ADP Schedule Contract with
+#  IBM Corp.
+# 
+# This jacl script is to remove an environment variable
+# require input 
+#     $nodename
+#     $varname  - variable name  
+#
+# wsadmin.bat -f g:\was5\delEV.jacl node_name ITIM_HOME 
+#
+# this script delete an environment variable in 
+#         $WAS_HOME\config\cells\<cellName>\nodes\<nodeName>\variables.xml
+#
+
+if {$argc < 1} { 
+  puts "  "
+  puts "Incorrect number of args.  First two arguments are required."  
+  puts "   arg1 - node-name" 
+  puts " "
+} else {
+
+  set nodename [lindex $argv 0]
+  
+  puts "Debug --> node name is $nodename"
+
+  set varId [find_env_var_node $nodename ITIM_DB_JDBC_DRIVER_PATH]
+  puts "Debug --> return variable ID is $varId"
+  if { [regexp "VariableSubstitutionEntry" $varId] == 1 }  {
+     puts "Debug --> found ITIM_DB_JDBC_DRIVER_PATH variable ID is $varId"
+     $AdminConfig remove $varId
+  }
+  
+  set varIdHome [find_env_var_node $nodename ITIM_HOME]
+    puts "Debug --> return variable ID is $varIdHome"
+    if { [regexp "VariableSubstitutionEntry" $varIdHome] == 1 }  {
+       puts "Debug --> found ITIM_HOME variable ID is $varIdHome"
+       $AdminConfig remove $varIdHome
+  }
+    
+  $AdminConfig save
+}

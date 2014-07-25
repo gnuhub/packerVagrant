@@ -3,7 +3,7 @@
     "type": "virtualbox-iso",
     "virtualbox_version_file": ".vbox_version",
     "headless": false,
-	"vm_name": "Ubuntu12.04x64",
+	"vm_name": "Ubuntu12.04x64_4.3.10",
 	
     "guest_os_type": "Ubuntu",
     "disk_size": 40960,
