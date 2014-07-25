@@ -10,3 +10,4 @@
 echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /tmp/tmp.txt
 cat /etc/sudoers /tmp/tmp.txt > /tmp/sudoers.txt
 mv /tmp/sudoers.txt /etc/sudoers
+chmod 440 /etc/sudoers

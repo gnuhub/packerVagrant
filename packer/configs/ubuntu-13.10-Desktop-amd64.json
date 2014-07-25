@@ -1,53 +1,61 @@
 {
-  "builders": [{
-    "type": "virtualbox-iso",
-    "virtualbox_version_file": ".vbox_version",
-    "headless": false,
-	"vm_name": "Ubuntu13.10-Desktopx64",
-	
-    "guest_os_type": "Ubuntu_64",
-    "disk_size": 40960,
+	"variables": {
+		"ubuntuVersion": "13.10",
+		"architecture": "amd64",
+		"edition": "desktop",
+		"guest": "Ubuntu_64"
+	 },
 
-    "iso_url": "../iso/ubuntu-13.10-desktop-amd64.iso",
-    "iso_checksum": "21ec41563ff34da27d4a0b56f2680c4f",
-    "iso_checksum_type": "md5",
+	"builders": [{
+		"type": "virtualbox-iso",
+		"virtualbox_version_file": ".vbox_version",
+		"headless": false,
+		"vm_name": "Ubuntu{{user `ubuntuVersion`}}-{{user `edition`}}_{{user `architecture`}}",
 
-    "boot_command": [
-      "<esc><esc><esc><enter><wait>",
-      "/casper/vmlinuz.efi url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-13.10-Desktop-amd64/preseed.cfg automatic-ubiquity noprompt boot=casper initrd=/casper/initrd.lz quiet splash -- <enter>"
-    ],
-    "boot_wait": "6s",
+		"guest_os_type": "{{user `guest`}}",
+		"disk_size": 40960,
 
-    "http_directory": "../http",
-    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-    "guest_additions_url": "../iso/VBoxGuestAdditions_{{.Version}}.iso",
+		"iso_url": "../iso/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.iso",
+		"iso_checksum": "21ec41563ff34da27d4a0b56f2680c4f",
+		"iso_checksum_type": "md5",
 
-	
-    "ssh_username": "vagrant",
-    "ssh_password": "ubuntu",
-    "ssh_port": 22,
-    "ssh_wait_timeout": "10000s",
+		"boot_command": [
+			"<esc><esc><esc><enter><wait>",
+			"/casper/vmlinuz.efi url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}/preseed.cfg automatic-ubiquity noprompt boot=casper initrd=/casper/initrd.lz quiet splash -- <enter>"
+		],
+		"boot_wait": "6s",
 
-    "vboxmanage": [
-      ["modifyvm", "{{.Name}}", "--memory", "512"],
-      ["modifyvm", "{{.Name}}", "--cpus", "1"]
-    ],
+		"http_directory": "../http",
+		"guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+		"guest_additions_url": "../iso/VBoxGuestAdditions_{{.Version}}.iso",
 
-    "shutdown_command": "echo 'ubuntu'|sudo -S /sbin/halt -h -p"
-  }],
-  "post-processors": [{
-    "output": "../build/ubuntu-13.10-Desktop-amd64.box",
-    "type": "vagrant"
-	
-  }],
-  "provisioners": [{
-    "type": "shell",
-    "execute_command": "echo 'ubuntu' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-    "scripts": [
-      "../scripts/vagrant.sh",
-      "../scripts/vboxguest.sh",
-      "../scripts/compact.sh",
-      "../scripts/ubuntuSudoerUpdate.sh"
-	  ]
-  }]
+
+		"ssh_username": "vagrant",
+		"ssh_password": "ubuntu",
+		"ssh_port": 22,
+		"ssh_wait_timeout": "10000s",
+
+		"vboxmanage": [
+			["modifyvm", "{{.Name}}", "--memory", "512"],
+			["modifyvm", "{{.Name}}", "--cpus", "1"]
+		],
+
+		"shutdown_command": "echo 'ubuntu'|sudo -S /sbin/halt -h -p"
+	}],
+
+	"post-processors": [{
+		"output": "../build/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.box",
+		"type": "vagrant"
+	}],
+
+	"provisioners": [{
+		"type": "shell",
+		"execute_command": "echo 'ubuntu' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+		"scripts": [
+			"../scripts/vagrant.sh",
+			"../scripts/vboxguest.sh",
+			"../scripts/compact.sh",
+			"../scripts/ubuntuSudoerUpdate.sh"
+  		]
+	}]
 }
