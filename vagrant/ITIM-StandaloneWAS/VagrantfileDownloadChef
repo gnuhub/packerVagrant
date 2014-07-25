@@ -13,13 +13,13 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.synced_folder "../software", "/installs"
-#	config.ssh.username = "root"
-#	config.ssh.password = "vagrant"
+	config.ssh.username = "root"
+	config.ssh.password = "vagrant"
 	
-#	config.omnibus.chef_version = :latest
+	config.omnibus.chef_version = :latest
 	
 	config.vm.define "tds" do |tds|
-		tds.vm.box = "centos65x32chef"
+		tds.vm.box = "centos65x32"
 		tds.vm.network "private_network", ip: "10.0.15.4"
 		tds.vm.provider "virtualbox" do |vb|
 			vb.name = "TDStim"
@@ -48,7 +48,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 
 	config.vm.define "was" do |was|
-		was.vm.box = "centos65x32chef"
+		was.vm.box = "centos65x32"
 		was.vm.network "private_network", ip: "10.0.15.3"
 		was.vm.provider "virtualbox" do |vb|
 			vb.name = "singleWAS"
