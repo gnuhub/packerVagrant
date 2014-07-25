@@ -1,0 +1,6 @@
+One off task to give the remote repository a friendly name:
+git remote add origin https://github.com/cookieninja/packerVagrant.git
+Add changed files: git add -A
+Commit changed files: git commit -m "commit message"
+Finally, upload the changes:
+git push origin master 
