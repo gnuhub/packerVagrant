@@ -3,7 +3,7 @@
     "type": "virtualbox-iso",
     "virtualbox_version_file": ".vbox_version",
     "headless": false,
-	"vm_name": "Ubuntu12.04x64_4.3.10",
+	"vm_name": "Ubuntu12.04x64_{{.Version}}",
 	
     "guest_os_type": "Ubuntu",
     "disk_size": 40960,
@@ -25,7 +25,7 @@
 
     "http_directory": "../http",
     "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-	"guest_additions_url":	"../iso/VBoxGuestAdditions_4.3.8.iso",
+	"guest_additions_url":	"../iso/VBoxGuestAdditions_{{.Version}}.iso",
 
 	
     "ssh_username": "vagrant",

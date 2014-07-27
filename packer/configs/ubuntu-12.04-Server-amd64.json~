@@ -25,7 +25,7 @@
 
     "http_directory": "../http",
     "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-	"guest_additions_url":	"../iso/VBoxGuestAdditions_{{.Version}}.iso",
+	"guest_additions_url":	"../iso/VBoxGuestAdditions_4.3.8.iso",
 
 	
     "ssh_username": "vagrant",

@@ -1,13 +1,13 @@
 {
 	"variables": {
-		"vboxVersion": "4.3.10"
+		"vboxVersion": "4.3.14"
 	 },
 
     "builders": [{
         "type": "virtualbox-iso",
         "virtualbox_version_file": ".vbox_version",
         "headless": false,
-		"vm_name": "rhel-server-6.0-x86_64_{{user `vboxVersion`}}",
+		"vm_name": "rhel-server-6.0-x86_64_{{.Version}}",
         "guest_os_type": "RedHat_64",
         "disk_size": 40960,
 
@@ -37,7 +37,7 @@
         "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
     }],
     "post-processors": [{
-        "output": "../build/redhat-6.0-x86_64_{{user `vboxVersion`}}.box",
+        "output": "../build/redhat-6.0-x86_64_{{.Version}}.box",
         "type": "vagrant"
     }],
     "provisioners": [{

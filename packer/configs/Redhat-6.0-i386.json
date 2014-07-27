@@ -1,13 +1,9 @@
 {
-	"variables": {
-		"vboxVersion": "4.3.10"
-	 },
-
     "builders": [{
         "type": "virtualbox-iso",
         "virtualbox_version_file": ".vbox_version",
         "headless": false,
-		"vm_name": "centos-6.5-i386_{{user `vboxVersion`}}",
+		"vm_name": "centos-6.5-i386_{{.Version}}",
         "guest_os_type": "RedHat",
         "disk_size": 40960,
 
@@ -37,7 +33,7 @@
         "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
     }],
     "post-processors": [{
-        "output": "../build/redhat-6.0-i386_{{user `vboxVersion`}}.box",
+        "output": "../build/redhat-6.0-i386_{{.Version}}.box",
         "type": "vagrant"
     }],
     "provisioners": [{

@@ -1,6 +1,6 @@
 {
 	"variables": {
-		"ubuntuVersion": "13.10",
+		"ubuntuVersion": "14.10",
 		"architecture": "amd64",
 		"edition": "desktop",
 		"guest": "Ubuntu_64"
@@ -16,7 +16,7 @@
 		"disk_size": 40960,
 
 		"iso_url": "../iso/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.iso",
-		"iso_checksum": "21ec41563ff34da27d4a0b56f2680c4f",
+		"iso_checksum": "be07346f83322c93c4fb039f5be1cf44",
 		"iso_checksum_type": "md5",
 
 		"boot_command": [

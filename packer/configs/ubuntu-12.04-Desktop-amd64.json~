@@ -3,18 +3,18 @@
     "type": "virtualbox-iso",
     "virtualbox_version_file": ".vbox_version",
     "headless": false,
-	"vm_name": "Ubuntu12.04x64_{{.Version}}",
+	"vm_name": "Ubuntu12.04-Desktopx64_{{.Version}}",
 	
     "guest_os_type": "Ubuntu_64",
     "disk_size": 40960,
 
-    "iso_url": "../iso/ubuntu-12.04.4-server-amd64.iso",
-    "iso_checksum": "e83adb9af4ec0a039e6a5c6e145a34de",
+    "iso_url": "../iso/ubuntu-12.04.4-alternate-amd64.iso",
+    "iso_checksum": "46e0fac240154bf59a11426a47a61363",
     "iso_checksum_type": "md5",
 
     "boot_command": [
       "<esc><esc><enter><wait>",
-      "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-12.04-server-amd64/preseed.cfg ",
+      "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-12.04-desktop-amd64/preseed.cfg ",
       "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
       "hostname={{ .Name }} ",
       "fb=false debconf/frontend=noninteractive ",
@@ -25,7 +25,7 @@
 
     "http_directory": "../http",
     "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-	"guest_additions_url":	"../iso/VBoxGuestAdditions_{{.Version}}.iso",
+	"guest_additions_url":	"../iso/VBoxGuestAdditions_4.3.8.iso",
 
 	
     "ssh_username": "vagrant",
@@ -41,7 +41,7 @@
     "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
   }],
   "post-processors": [{
-    "output": "../build/ubuntu-12.04-Server-amd64.box",
+    "output": "../build/ubuntu-12.04-Desktop-amd64.box",
     "type": "vagrant"
 	
   }],
@@ -51,7 +51,8 @@
     "scripts": [
       "../scripts/vagrant.sh",
       "../scripts/vboxguest.sh",
-      "../scripts/compact.sh"
+      "../scripts/compact.sh",
+      "../scripts/ubuntuSudoerUpdate.sh"
     ]
   }]
 }

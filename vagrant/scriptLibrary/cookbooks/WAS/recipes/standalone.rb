@@ -11,11 +11,11 @@
 # * Use chef resources to enable/disable services, not bash shell commands.
 # * Update SIM install so that archive is copied to VM, extracted there and then installed!
 
-#%w{compat-libstdc++-33 compat-db gtk2 gtk2-engines libXp libXmu libXtst pam rpm-build elfutils elfutils-libs libXft ksh libstdc++}.each do |pkg|
-#	package pkg do
-#		action :install
-#	end
-#end	
+%w{compat-libstdc++-33 compat-db gtk2 gtk2-engines libXp libXmu libXtst pam rpm-build elfutils elfutils-libs libXft ksh libstdc++}.each do |pkg|
+	package pkg do
+		action :install
+	end
+end	
 
 directory "/installFiles" do
   owner "root"
