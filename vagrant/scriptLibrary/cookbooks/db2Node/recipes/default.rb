@@ -42,12 +42,12 @@ user "db2inst1" do
 end
 
 template "db2RSP" do
-  path "/installFiles/db2.rsp"
-  source "db2.rsp"
+  path "/installFiles/db2TIM.rsp"
+  source "db2TIM.rsp"
   mode 00755
   owner "vagrant"
   group "vagrant"
-  not_if do ::File.exists?('/installFiles/db2.rsp') end
+  not_if do ::File.exists?('/installFiles/db2TIM.rsp') end
 end
 
 bash "install DB2" do
@@ -55,7 +55,7 @@ bash "install DB2" do
 	user "root"
 	group "root"
 	code <<-EOH
-		ese/db2setup -r /installFiles/db2.rsp
+		ese/db2setup -r /installFiles/db2TIM.rsp
 		EOH
 	ignore_failure false
 end

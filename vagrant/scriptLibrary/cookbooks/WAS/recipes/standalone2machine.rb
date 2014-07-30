@@ -55,8 +55,8 @@ template "was-fp31" do
 end
 
 template "configResponse" do
-  path "/installFiles/rsp/configResponse1.properties"
-  source "configResponse1.properties"
+  path "/installFiles/rsp/configResponse.properties"
+  source "configResponse2.properties"
   mode 0755
   owner "root"
   group "root"

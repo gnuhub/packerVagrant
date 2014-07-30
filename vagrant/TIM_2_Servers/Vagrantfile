@@ -1,0 +1,51 @@
+# Issues: None
+# Note: Look in /root/waslogs/ for log files and install problems!
+#
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+#
+# Attempting to get TDS and DB2 on one server, using same DB2 version
+
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.vm.synced_folder "../software", "/installs"
+	
+	config.vm.define "tds" do |tds|
+		tds.vm.box = "centos65x64chef"
+		tds.vm.network "private_network", ip: "10.0.15.2"
+		tds.vm.provider "virtualbox" do |vb|
+			vb.name = "TIM-TDS_ITIMDB"
+			vb.gui = false
+			vb.customize ["modifyvm", :id, "--memory", "2048"]
+		end
+		tds.vm.network "forwarded_port", guest: 12100, host: 12100
+		tds.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "tdsNode::tds63_x64"
+		end
+	end
+
+	config.vm.define "was" do |was|
+		was.vm.box = "centos65x32chef"
+		was.vm.network "private_network", ip: "10.0.15.3"
+		was.vm.provider "virtualbox" do |vb|
+			vb.name = "TIM-WAS_TDI"
+			vb.gui = false
+			vb.customize ["modifyvm", :id, "--memory", "2048"]
+		end
+		was.vm.network "forwarded_port", guest: 9080, host: 9080
+		was.vm.network "forwarded_port", guest: 80, host: 2080
+		was.vm.network "forwarded_port", guest: 9060, host: 9060
+		was.vm.network "forwarded_port", guest: 9043, host: 9043
+		was.vm.network "forwarded_port", guest: 443, host: 8443	
+		was.vm.network "forwarded_port", guest: 9443, host: 9443			
+		was.vm.provision :chef_solo do |chef|
+			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.add_recipe "tdiNode::default"
+			chef.add_recipe "WAS::standalone2machine"
+		end
+	end		
+	
+end
