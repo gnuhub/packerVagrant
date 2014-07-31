@@ -1,0 +1,6 @@
+default[:wasNode][:start]  = "/opt/IBM/WebSphere/AppServer/profiles/bin/startNode.sh"
+default[:wasNode][:stop]   = "/opt/IBM/WebSphere/AppServer/profiles/bin/stopNode.sh"
+default[:wasDM][:start]  = "/opt/IBM/WebSphere/AppServer/profiles/bin/startManager.sh"
+default[:wasDM][:stop]   = "/opt/IBM/WebSphere/AppServer/profiles/bin/stopManager.sh"
+default[:wasServer][:start]  = "/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1"
+default[:wasServer][:stop]   = "/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wasadmin -password Passw0rd"

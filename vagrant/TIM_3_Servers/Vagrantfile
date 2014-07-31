@@ -27,7 +27,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		end
 		tds.vm.network "forwarded_port", guest: 12100, host: 12100
 		tds.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.cookbooks_path = "../chef/cookbooks"
+			chef.environments_path = "../chef/environments"
+			chef.environment = "tim3Server"
 			chef.add_recipe "tdsNode::default"
 #			chef.log_level = :debug
 		end
@@ -41,7 +43,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			vb.gui = false
 		end
 		db2.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.cookbooks_path = "../chef/cookbooks"
+			chef.environments_path = "../chef/environments"
+			chef.environment = "tim3Server"
 			chef.add_recipe "db2Node::default"
 #			chef.log_level = :debug
 		end
@@ -62,7 +66,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		was.vm.network "forwarded_port", guest: 443, host: 8443	
 		was.vm.network "forwarded_port", guest: 9443, host: 9443			
 		was.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.cookbooks_path = "../chef/cookbooks"
+			chef.environments_path = "../chef/environments"
+			chef.environment = "tim3Server"
 			chef.add_recipe "tdiNode::default"
 			chef.add_recipe "WAS::standalone"
 #			chef.log_level = :debug

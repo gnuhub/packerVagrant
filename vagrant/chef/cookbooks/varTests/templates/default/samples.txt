@@ -1,0 +1,7 @@
+The host name is <%= node[:hostname] %>
+The ip address is <%= @myIP %>
+The platform is <%= @myPlatform %>
+<% node[:dave].each do|person| -%>
+Dave port is <%= person %>
+<% end -%>
+Barry port is <%= node[:barry] %>

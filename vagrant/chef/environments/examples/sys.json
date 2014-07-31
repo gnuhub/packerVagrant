@@ -1,0 +1,9 @@
+{
+  "name": "dev",
+  "default_attributes": {
+	"dave": ["abc","def"],
+	"barry": "BarryJson"
+  },
+  "json_class": "Chef::Environment",
+  "description": ""
+}
