@@ -16,7 +16,11 @@
 		"disk_size": 40960,
 
 		"iso_url": "../iso/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.iso",
+<<<<<<< HEAD
 		"iso_checksum": "30dcfaa2ef109ece1e532dbdbd341f83",
+=======
+		"iso_checksum": "7c365779936c8b3d6a9a626e83115ea5",
+>>>>>>> ee1828dbdc5f2d9d94d40ef22cc226d0beb521fa
 		"iso_checksum_type": "md5",
 
 		"boot_command": [

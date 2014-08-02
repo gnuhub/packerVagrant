@@ -1,0 +1,85 @@
+    1  cd /installs/
+    2  ls
+    3  cd TDS63Linux64/
+    4  mkdir /installFiles
+    5  ls
+    6  cp * /installFiles/
+    7  CD /installFiles/
+    8  cd /installFiles/
+    9  ls
+   10  tar xvf tds63-linux-x86-64.tar 
+   11  pwd
+   12  ls
+   13  cd tds63-linux-x86-64
+   14  ls
+   15  cd db2/
+   16  ls
+   17  ./db2_install -r /vagrant/db2TDS_TIM.rsp 
+   18  ./db2setup -r /vagrant/db2TDS_TIM.rsp 
+   19  yum install ksh
+   20  yum install compat-libstdc++-33
+   21  ./db2setup -r /vagrant/db2TDS_TIM.rsp 
+   22  pwd
+   23  cd ..
+   24  ls -ltr
+   25  cd tdsfiles/
+   26  ls -ltr
+   27  rpm -ivh idsldap-clt*
+   28  rpm -ivh idsldap-license63-6.3.0-0.x86_64.rpm 
+   29  ./idsLicense 
+   30  more idsLicense 
+   31  cd ..
+   32  ./tdsfiles/idsLicense 
+   33  ./tdsfiles/lapc 
+   34  pwd
+   35  yum install glibc.i686
+   36  ./tdsfiles/idsLicense 
+   37  ./tdsfiles/lapc 
+   38  yum install libstdc++.i686
+   39  ./tdsfiles/lapc 
+   40  ./tdsfiles/idsLicense 
+   41  pwd
+   42  cd tdsfiles/
+   43  ls -ltr
+   44  rpm -ivh *.rpm
+   45  cd /opt/IBM/ldap/V6.3/sbin/
+   46  ./idsslapd -I idsldap -n
+   47  ./idsicrt -I idsldap -e madeinchelsea
+   48  ./idsicrt -I idsldap -e madeinchelsea -n
+   49  ./idsslapd -I idsldap -n
+   50  ./idsdnpw -I idsldap -p idsldap -n
+   51  ./idscfgsuf -I idsldap -s dc=com -n
+   52  ./idsslapd -I idsldap -n
+   53  passwd idsldap
+   54  ./idsslapd -I idsldap -n
+   55  su - idsldap
+   56  ./idsicrt -h
+   57  ./idsicrt -c
+   58  ./idsicrt -c -I idsldap
+   59  ./idsicrt -c 50000 -I idsldap
+   60  ./idsicrt -h
+   61  ./idsicrt -C -I idsldap
+   62  ./idsicrt -C 
+   63  ./idsicrt -C -I idsldap
+   64  ./idscfgdb -h
+   65  ./idscfgdb -I idsldap -t idsldap -a idsldap -I /home/idsldap/ -v idsldap -n
+   66  ./idsslapd -I idsldap -n
+   67  ./idscfgdb -I idsldap -t idsldap -a idsldap -I /home/idsldap/  -n
+   68  ./idscfgdb -I idsldap -t idsldap -a idsldap -I /home/idsldap  -n
+   69  ./idscfgdb -I idsldap -t idsldap -a idsldap -I /home/idsldap/idsslapd-idsldap/  -n
+   70  ./idscfgdb -I idsldap -t idsldap -a idsldap -l /home/idsldap/idsslapd-idsldap/  -v idsldap -n
+   71  ./idscfgdb -I idsldap -t idsldap -a idsldap -l /home/idsldap/idsslapd-idsldap/  -w isldap -n
+   72  ./idscfgdb 
+   73  ./idscfgdb -I idsldap -t idsldap -a idsldap -l /home/idsldap/idsslapd-idsldap/  -w idsldap -n
+   74  ./idsslapd -I idsldap -n
+   75  pwd
+   76  su - idsldap
+   77  ./idscfgdb -I idsldap -t idsldap -a idsldap -l /home/idsldap  -w idsldap -n
+   78  ./idsucfgdb -I idsldap
+   79  ./idscfgdb -I idsldap -t idsldap -a idsldap -l /home/idsldap  -w idsldap -n
+   80  ./idsslapd -I idsldap -n
+   81  telnet
+   82  yum install telnet
+   83  telnet 127.0.0.1 389
+   84  history | grep yum
+   85  history > /vagrant/allCommandsGettingLDAPworking.txt

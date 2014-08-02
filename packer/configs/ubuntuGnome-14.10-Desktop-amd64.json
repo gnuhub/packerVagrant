@@ -1,0 +1,61 @@
+{
+	"variables": {
+		"ubuntuVersion": "14.10",
+		"architecture": "amd64",
+		"edition": "desktop",
+		"guest": "Ubuntu_64"
+	 },
+
+	"builders": [{
+		"type": "virtualbox-iso",
+		"virtualbox_version_file": ".vbox_version",
+		"headless": false,
+		"vm_name": "Ubuntu{{user `ubuntuVersion`}}-{{user `edition`}}_{{user `architecture`}}",
+
+		"guest_os_type": "{{user `guest`}}",
+		"disk_size": 40960,
+
+		"iso_url": "../iso/ubuntuGnome-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.iso",
+		"iso_checksum": "0961dc7f5657f2a18bc0274c7455c8a5",
+		"iso_checksum_type": "md5",
+
+		"boot_command": [
+			"<esc><esc><esc><enter><wait>",
+			"/casper/vmlinuz.efi url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}/preseed.cfg automatic-ubiquity noprompt boot=casper initrd=/casper/initrd.lz quiet splash -- <enter>"
+		],
+		"boot_wait": "6s",
+
+		"http_directory": "../http",
+		"guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+		"guest_additions_url": "../iso/VBoxGuestAdditions_{{.Version}}.iso",
+
+
+		"ssh_username": "vagrant",
+		"ssh_password": "ubuntu",
+		"ssh_port": 22,
+		"ssh_wait_timeout": "10000s",
+
+		"vboxmanage": [
+			["modifyvm", "{{.Name}}", "--memory", "512"],
+			["modifyvm", "{{.Name}}", "--cpus", "1"]
+		],
+
+		"shutdown_command": "echo 'ubuntu'|sudo -S /sbin/halt -h -p"
+	}],
+
+	"post-processors": [{
+		"output": "../build/ubuntuGnome-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.box",
+		"type": "vagrant"
+	}],
+
+	"provisioners": [{
+		"type": "shell",
+		"execute_command": "echo 'ubuntu' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+		"scripts": [
+			"../scripts/vagrant.sh",
+			"../scripts/vboxguest.sh",
+			"../scripts/compact.sh",
+			"../scripts/ubuntuSudoerUpdate.sh"
+  		]
+	}]
+}

@@ -1,0 +1,41 @@
+PROD                    	= ENTERPRISE_SERVER_EDITION
+FILE                    	= /opt/ibm/db2/V9.7
+LIC_AGREEMENT           	= ACCEPT    	** ACCEPT or DECLINE
+INSTALL_TYPE            	= TYPICAL    	** TYPICAL, COMPACT, CUSTOM
+DB2COMM                 	= TCPIP      	** BLANK or TCPIP
+INSTANCE                	= IDSLDAP     	** char(8)  no spaces
+IDSLDAP.NAME             	= idsldap      	** char(8)  no spaces, no upper case letters
+IDSLDAP.GROUP_NAME       	= idsldap      	** char(30) no spaces
+IDSLDAP.HOME_DIRECTORY   	= /home/idsldap	** char(64) no spaces. Valid for root installation only
+IDSLDAP.PASSWORD         	= vagrant   	** Valid for root installation only
+IDSLDAP.AUTOSTART        	= YES       	** YES or NO
+IDSLDAP.START_DURING_INSTALL = YES   		** YES or NO. Default is YES.
+IDSLDAP.FENCED_USERNAME  	= db2sdfe1  	** char(8)  no spaces, no upper case letters
+IDSLDAP.FENCED_PASSWORD		= vagrant
+IDSLDAP.FENCED_GROUP_NAME 	= db2sdfe1    	** char(30)  no spaces
+IDSLDAP.SVCENAME        		= MAIN_DB2SVC   ** BLANK or char(14). Reserved for root installation only
+IDSLDAP.PORT_NUMBER     		= 50000      	** 1024 - 65535, Reserved for root installation only##
+
+DATABASE            		= TDS       	** myDB: char(8) no spaces - this is the prefix for this DB set
+TDS.DATABASE_NAME   		= IDSLDAP    	** favorateDB: char(8) no spaces - this is the real database
+TDS.INSTANCE        		= IDSLDAP     	** db2inst1: char(8)  no spaces - one value of INSTANCE keyword
+*TDS.ALIAS           		= dbAlias2    	** alias of myDB: char(8) no spaces and can not start with SYS, DBM or IBM
+TDS.USERNAME        		= idsldap     	** db2user: char(8)  no spaces
+TDS.PASSWORD        		= idsldap    	** db2pwd: char(8)  no spaces
+
+DATABASE            		= TIM        	** myDB: char(8) no spaces - this is the prefix for this DB set
+TIM.DATABASE_NAME   		= ITIMDB     	** favorateDB: char(8) no spaces - this is the real database
+TIM.INSTANCE        		= IDSLDAP      	** db2inst1: char(8)  no spaces - one value of INSTANCE keyword
+*TIM.ALIAS           		= dbAlias     	** alias of myDB: char(8) no spaces and can not start with SYS, DBM or IBM
+TIM.USERNAME        		= db2user1     	** db2user: char(8)  no spaces
+TIM.PASSWORD        		= vagrant    	** db2pwd: char(8)  no spaces
+
+* Example command to create a table: db2 "create table employee ( Empno smallint, Name varchar(30))"
+
+*myDB.LOCATION        =                 ** local, remote, LOCAL or REMOTE; For client only product use remote or REMOTE
+*myDB.SYSTEM_NAME     =                 ** some remote host char(64) no spaces: for LOCATION=remote only
+*myDB.AUTHENTICATION  =                 ** CLIENT, SERVER, SERVER_ENCRYPT: optional
+*myDB.PATH            =                 ** the directory for the database: optional
+*myDB.SVCENAME        =                 ** service1: for remote LOCATION only
+*myDB.USERNAME        =                 ** db2user: char(8)  no spaces
+*myDB.PASSWORD        =                 ** db2pwd: char(8)  no spaces

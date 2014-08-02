@@ -1,0 +1,7 @@
+default[:wasNode2][:profile]       = "AppSrv02"
+default[:wasNode][:start]  = "/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startNode.sh"
+default[:wasNode][:stop]   = "/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopNode.sh"
+default[:wasDM][:start]  = "/opt/IBM/WebSphere/AppServer/profiles/DMgr01/bin/startManager.sh"
+default[:wasDM][:stop]   = "/opt/IBM/WebSphere/AppServer/profiles/DMgr01/bin/stopManager.sh"
+default[:wasServer][:start]  = "/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1"
+default[:wasServer][:stop]   = "/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1"

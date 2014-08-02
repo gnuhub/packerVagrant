@@ -1,0 +1,28 @@
+{
+  "name": "tim2Server",
+  "default_attributes": {
+	"hosts": ["10.0.15.3 vmHost2", "10.0.15.4 vmHost3", "10.0.15.5 vmHost4", "10.0.15.6 vmHost5", "10.0.15.7 vmHost6" ],
+	"tdsHost": "vmHost2",
+	"db2Host": "vmHost2",
+	"tdiHost": "vmHost3",
+	"wasHost": "vmHost3",
+
+	"tdsAdminUser": "idsldap",
+	"tdsAdminPW": "idsldap",
+	"tdsUser": "idsldap",
+	"tdsPW": "idsldap",
+	"tdsInstance": "idsldap",
+	"tdsDatabase": "idsldap",
+	"tdsLDAPAdminUser": "cn=root",
+	"tdsLDAPAdminPW": "idsldap",
+
+	"isimdbAdminUser": "idsldap",
+	"isimdbAdminPW": "idsldap",
+	"isimdbUser": "idsldap",
+	"isimdbPW": "idsldap",
+	"isimdbInstance": "idsldap",
+	"isimdbDatabase": "itimdb"
+  },
+  "json_class": "Chef::Environment",
+  "description": ""
+}

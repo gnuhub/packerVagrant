@@ -1,0 +1,28 @@
+{
+  "name": "tim3Server",
+  "default_attributes": {
+	"hosts": ["10.0.15.3 vmHost2", "10.0.15.4 vmHost3", "10.0.15.5 vmHost4", "10.0.15.6 vmHost5", "10.0.15.7 vmHost6" ],
+	"tdsHost": "vmHost3",
+	"db2Host": "vmHost4",
+	"tdiHost": "vmHost2",
+	"wasHost": "vmHost2",
+
+	"tdsAdminUser": "idsldap",
+	"tdsAdminPW": "vagrant",
+	"tdsUser": "idsldap",
+	"tdsPW": "idsldap",
+	"tdsInstance": "idsldap",
+	"tdsDatabase": "idsldap",
+	"tdsLDAPAdminUser": "cn=root",
+	"tdsLDAPAdminPW": "idsldap",
+
+	"isimdbAdminUser": "db2inst1",
+	"isimdbAdminPW": "vagrant",	
+	"isimdbUser": "db2inst1",
+	"isimdbPW": "vagrant",
+	"isimdbInstance": "db2inst1",
+	"isimdbDatabase": "itimdb"
+  },
+  "json_class": "Chef::Environment",
+  "description": ""
+}
