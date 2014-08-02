@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	
 	config.vm.define "tim" do |tim|
 		tim.vm.box = "centos65x64chef"
-		tim.vm.network "private_network", ip: "10.0.15.2"
+		tim.vm.network "private_network", ip: "10.0.15.3"
 		
 		tim.vm.provider "virtualbox" do |vb|
 			vb.name = "TIM-All_in_one"
@@ -31,10 +31,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		tim.vm.network "forwarded_port", guest: 9443, host: 9443
 		
 		tim.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "../scriptLibrary/cookbooks"
+			chef.cookbooks_path = "../chef/cookbooks"
+			chef.environments_path = "../chef/environments"
+			chef.environment = "tim1Server"
 			chef.add_recipe "tdsNode::tds63_x64"
 			chef.add_recipe "tdiNode::default"
-			chef.add_recipe "WAS::standalone1machine"
+			chef.add_recipe "WAS::standalone"
 		end
 	end	
 end

@@ -15,8 +15,8 @@
 		"guest_os_type": "{{user `guest`}}",
 		"disk_size": 40960,
 
-		"iso_url": "../iso/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.iso",
-		"iso_checksum": "be07346f83322c93c4fb039f5be1cf44",
+		"iso_url": "../iso/ubuntuGnome-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.iso",
+		"iso_checksum": "0961dc7f5657f2a18bc0274c7455c8a5",
 		"iso_checksum_type": "md5",
 
 		"boot_command": [
@@ -44,7 +44,7 @@
 	}],
 
 	"post-processors": [{
-		"output": "../build/ubuntu-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.box",
+		"output": "../build/ubuntuGnome-{{user `ubuntuVersion`}}-{{user `edition`}}-{{user `architecture`}}.box",
 		"type": "vagrant"
 	}],
 

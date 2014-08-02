@@ -62,9 +62,9 @@ template "configResponse" do
   group "root"
 end
 
-template "installvariables-single" do
-  path "/installFiles/rsp/installvariables-single.properties"
-  source "installvariables-single.properties"
+template "installvariables" do
+  path "/installFiles/rsp/installvariables.properties"
+  source "installvariables.properties"
   mode 0755
   owner "root"
   group "root"
@@ -216,7 +216,7 @@ bash "install ISIM" do
 	user "root"
 	group "root"
 	code <<-EOH
-		./instlinux.bin -i silent -f /installFiles/rsp/installvariables-single.properties -DITIM_CFG_RESP_FILE_DIR=/installFiles/rsp/
+		./instlinux.bin -i silent -f /installFiles/rsp/installvariables.properties -DITIM_CFG_RESP_FILE_DIR=/installFiles/rsp/
 	EOH
 	ignore_failure true
 	not_if do ::File.exists?('/opt/IBM/isim/data/enRole.properties') end

@@ -1,25 +1,27 @@
 {
   "name": "tim2Server",
   "default_attributes": {
-	"hosts": ["vmHost2 = 192.168.0.2", "vmHost3 = 192.168.0.3", "vmHost4 = 192.168.0.4", "vmHost5 = 192.168.0.5", "vmHost6 = 192.168.0.6" ],
+	"hosts": ["10.0.15.3 vmHost2", "10.0.15.4 vmHost3", "10.0.15.5 vmHost4", "10.0.15.6 vmHost5", "10.0.15.7 vmHost6" ],
 	"tdsHost": "vmHost2",
 	"db2Host": "vmHost2",
 	"tdiHost": "vmHost3",
 	"wasHost": "vmHost3",
 
-	"tdsAdminUser": ""
-	"tdsAdminPW": ""	
-	"tdsUser": "idsldap"
-	"tdsPW": "idsldap"
+	"tdsAdminUser": "idsldap",
+	"tdsAdminPW": "idsldap",
+	"tdsUser": "idsldap",
+	"tdsPW": "idsldap",
 	"tdsInstance": "idsldap",
 	"tdsDatabase": "idsldap",
+	"tdsLDAPAdminUser": "cn=root",
+	"tdsLDAPAdminPW": "idsldap",
 
-	"isimdbAdminUser": ""
-	"isimdbAdminPW": ""		
-	"isimdbUser": "idsldap"
+	"isimdbAdminUser": "idsldap",
+	"isimdbAdminPW": "idsldap",
+	"isimdbUser": "idsldap",
 	"isimdbPW": "idsldap",
 	"isimdbInstance": "idsldap",
-	"isimdbDatabase": "isimdb"
+	"isimdbDatabase": "itimdb"
   },
   "json_class": "Chef::Environment",
   "description": ""
