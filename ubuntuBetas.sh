@@ -21,8 +21,6 @@ else
 	echo "Latest build found"
 fi
 
-mv "${destDir}${iso}" "${destDir}${iso}"
-
 cd "${confDir}"
 
 packer build "${conf}"
