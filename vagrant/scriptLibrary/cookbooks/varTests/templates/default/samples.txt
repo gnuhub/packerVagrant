@@ -1,3 +1,0 @@
-The host name is <%= node[:hostname] %>
-The ip address is <%= @myIP %>
-The platform is <%= @myPlatform %>

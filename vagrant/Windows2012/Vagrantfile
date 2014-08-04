@@ -47,6 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
    config.vm.provider "virtualbox" do |vb|
   #   # Don't boot with headless mode
+	 vb.name = "Windows2012Test"
      vb.gui = true
   #
   #   # Use VBoxManage to customize the VM. For example to change memory:
@@ -86,7 +87,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # path, and data_bags path (all relative to this Vagrantfile), and adding
   # some recipes and/or roles.
   #
-  # config.vm.provision "chef_solo" do |chef|
+   config.vm.provision "chef_solo" do |chef|
+     	chef.cookbooks_path = "../chef/cookbooks"
+		chef.environments_path = "../chef/environments"
+		chef.environment = "tim1Server"
+		chef.add_recipe "windows::default"
   #   chef.cookbooks_path = "../my-recipes/cookbooks"
   #   chef.roles_path = "../my-recipes/roles"
   #   chef.data_bags_path = "../my-recipes/data_bags"
@@ -95,7 +100,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   #   # You may also specify custom JSON attributes:
   #   chef.json = { mysql_password: "foo" }
-  # end
+   end
 
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
@@ -106,11 +111,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If you have your own Chef Server, use the appropriate URL, which may be
   # HTTP instead of HTTPS depending on your configuration. Also change the
   # validation key to validation.pem.
-  #
-  # config.vm.provision "chef_client" do |chef|
+  
+  #	config.vm.provision "chef_client" do |chef|
   #   chef.chef_server_url = "https://api.opscode.com/organizations/ORGNAME"
   #   chef.validation_key_path = "ORGNAME-validator.pem"
-  # end
+  #	end
   #
   # If you're using the Opscode platform, your validator client is
   # ORGNAME-validator, replacing ORGNAME with your organization name.

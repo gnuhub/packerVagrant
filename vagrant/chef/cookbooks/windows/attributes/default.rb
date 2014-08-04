@@ -1,0 +1,1 @@
+default[:wasNode2][:profile]       = "AppSrv02"
