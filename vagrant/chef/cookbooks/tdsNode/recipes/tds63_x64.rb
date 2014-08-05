@@ -28,7 +28,7 @@ directory "/installFiles" do
 end
 
 execute "Copy archive files to VM" do
-  command "cp /installs/TDS63Linux64/* /installFiles/"
+  command "cp /installs/TDS63Linux64/tds63-linux-x86-64.tar /installFiles/"
   ignore_failure false
   not_if do ::File.exists?('/installFiles/tds63-linux-x86-64.tar') end
 end

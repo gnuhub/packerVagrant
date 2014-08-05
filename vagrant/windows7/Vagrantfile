@@ -92,14 +92,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		chef.environments_path = "../chef/environments"
 		chef.environment = "tim1Server"
 		chef.add_recipe "windows::default"
-  #   chef.cookbooks_path = "../my-recipes/cookbooks"
-  #   chef.roles_path = "../my-recipes/roles"
-  #   chef.data_bags_path = "../my-recipes/data_bags"
-  #   chef.add_recipe "mysql"
-  #   chef.add_role "web"
-  #
-  #   # You may also specify custom JSON attributes:
-  #   chef.json = { mysql_password: "foo" }
+    # 	chef.cookbooks_path = "../my-recipes/cookbooks"
+    #  	chef.roles_path = "../my-recipes/roles"
+    #   chef.data_bags_path = "../my-recipes/data_bags"
+    #   chef.add_recipe "mysql"
+    #   chef.add_role "web"
+    #
+    #   You may also specify custom JSON attributes:
+    #   chef.json = { mysql_password: "foo" }
 	end
 	#   chef.cookbooks_path = "../my-recipes/cookbooks"
 	#   chef.roles_path = "../my-recipes/roles"
