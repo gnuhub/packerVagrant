@@ -1,0 +1,1838 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=Generator content="Microsoft Word 12 (filtered)">
+<title>Release notes - IBM Security Access Manager Adapter 6.0.2</title>
+<link rel=Stylesheet type="text/css" media=all href=ibmdita.css>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"Malgun Gothic";
+	panose-1:2 11 5 3 2 0 0 2 0 4;}
+@font-face
+	{font-family:Cambria;
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"\@Malgun Gothic";
+	panose-1:2 11 5 3 2 0 0 2 0 4;}
+@font-face
+	{font-family:Consolas;
+	panose-1:2 11 6 9 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-top:12.0pt;
+	margin-right:120.0pt;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.5pt;
+	font-family:"Arial","sans-serif";
+	color:black;
+	font-weight:bold;}
+h3
+	{mso-style-link:"Heading 3 Char";
+	margin-right:0cm;
+	margin-bottom:2.4pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h4
+	{mso-style-link:"Heading 4 Char";
+	margin-right:0cm;
+	margin-bottom:1.2pt;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h5
+	{mso-style-link:"Heading 5 Char";
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:9.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h6
+	{mso-style-link:"Heading 6 Char";
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:#006699;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#996699;
+	text-decoration:underline;}
+p
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+pre
+	{mso-style-link:"HTML Preformatted Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	background:#DADADA;
+	font-size:12.0pt;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	font-family:"Cambria","serif";
+	color:#365F91;
+	font-weight:bold;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	font-family:"Arial","sans-serif";
+	color:black;
+	font-weight:bold;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-link:"Heading 3";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;}
+span.Heading4Char
+	{mso-style-name:"Heading 4 Char";
+	mso-style-link:"Heading 4";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;
+	font-style:italic;}
+span.Heading5Char
+	{mso-style-name:"Heading 5 Char";
+	mso-style-link:"Heading 5";
+	font-family:"Cambria","serif";
+	color:#243F60;}
+span.Heading6Char
+	{mso-style-name:"Heading 6 Char";
+	mso-style-link:"Heading 6";
+	font-family:"Cambria","serif";
+	color:#243F60;
+	font-style:italic;}
+span.HTMLPreformattedChar
+	{mso-style-name:"HTML Preformatted Char";
+	mso-style-link:"HTML Preformatted";
+	font-family:Consolas;}
+p.msgitem, li.msgitem, div.msgitem
+	{mso-style-name:msgitem;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.msolistparagraphcxspfirst, li.msolistparagraphcxspfirst, div.msolistparagraphcxspfirst
+	{mso-style-name:msolistparagraphcxspfirst;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.msolistparagraphcxspmiddle, li.msolistparagraphcxspmiddle, div.msolistparagraphcxspmiddle
+	{mso-style-name:msolistparagraphcxspmiddle;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.msolistparagraphcxsplast, li.msolistparagraphcxsplast, div.msolistparagraphcxsplast
+	{mso-style-name:msolistparagraphcxsplast;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.ibmfilepath, li.ibmfilepath, div.ibmfilepath
+	{mso-style-name:ibmfilepath;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.ibmcommand, li.ibmcommand, div.ibmcommand
+	{mso-style-name:ibmcommand;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.ibmemphasis, li.ibmemphasis, div.ibmemphasis
+	{mso-style-name:ibmemphasis;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.mv, li.mv, div.mv
+	{mso-style-name:mv;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.pk, li.pk, div.pk
+	{mso-style-name:pk;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.pkdef, li.pkdef, div.pkdef
+	{mso-style-name:pkdef;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.pv, li.pv, div.pv
+	{mso-style-name:pv;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.filepath, li.filepath, div.filepath
+	{mso-style-name:filepath;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.base, li.base, div.base
+	{mso-style-name:base;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:white;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.tbldesc, li.tbldesc, div.tbldesc
+	{mso-style-name:tbldesc;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.italic, li.italic, div.italic
+	{mso-style-name:italic;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.bold, li.bold, div.bold
+	{mso-style-name:bold;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.underlined, li.underlined, div.underlined
+	{mso-style-name:underlined;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.bold-italic, li.bold-italic, div.bold-italic
+	{mso-style-name:bold-italic;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.bolditalic, li.bolditalic, div.bolditalic
+	{mso-style-name:bolditalic;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.smallcaps, li.smallcaps, div.smallcaps
+	{mso-style-name:smallcaps;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+p.italic-underlined, li.italic-underlined, div.italic-underlined
+	{mso-style-name:italic-underlined;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.bold-underlined, li.bold-underlined, div.bold-underlined
+	{mso-style-name:bold-underlined;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.bold-italic-underlined, li.bold-italic-underlined, div.bold-italic-underlined
+	{mso-style-name:bold-italic-underlined;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.smallcaps-underlined, li.smallcaps-underlined, div.smallcaps-underlined
+	{mso-style-name:smallcaps-underlined;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.emphasis, li.emphasis, div.emphasis
+	{mso-style-name:emphasis;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.inlinedef, li.inlinedef, div.inlinedef
+	{mso-style-name:inlinedef;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.sidebar, li.sidebar, div.sidebar
+	{mso-style-name:sidebar;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#CCCCCC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.rharrow, li.rharrow, div.rharrow
+	{mso-style-name:rharrow;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:9.0pt;
+	font-family:"Times New Roman","serif";}
+p.runningheader, li.runningheader, div.runningheader
+	{mso-style-name:runningheader;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:9.0pt;
+	font-family:"Times New Roman","serif";}
+p.runningfooter, li.runningfooter, div.runningfooter
+	{mso-style-name:runningfooter;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:8.5pt;
+	font-family:"Times New Roman","serif";}
+p.breadcrumb, li.breadcrumb, div.breadcrumb
+	{mso-style-name:breadcrumb;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:9.0pt;
+	font-family:"Times New Roman","serif";}
+p.fastpath, li.fastpath, div.fastpath
+	{mso-style-name:fastpath;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.fastpathtitle, li.fastpathtitle, div.fastpathtitle
+	{mso-style-name:fastpathtitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.toc, li.toc, div.toc
+	{mso-style-name:toc;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.nested0, li.nested0, div.nested0
+	{mso-style-name:nested0;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.p, li.p, div.p
+	{mso-style-name:p;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.skip, li.skip, div.skip
+	{mso-style-name:skip;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.skipspace, li.skipspace, div.skipspace
+	{mso-style-name:skipspace;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.ulchildlink, li.ulchildlink, div.ulchildlink
+	{mso-style-name:ulchildlink;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.olchildlink, li.olchildlink, div.olchildlink
+	{mso-style-name:olchildlink;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.title, li.title, div.title
+	{mso-style-name:title;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.pagetitle, li.pagetitle, div.pagetitle
+	{mso-style-name:pagetitle;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle1, li.topictitle1, div.topictitle1
+	{mso-style-name:topictitle1;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.subtitle, li.subtitle, div.subtitle
+	{mso-style-name:subtitle;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.pagesubtitle, li.pagesubtitle, div.pagesubtitle
+	{mso-style-name:pagesubtitle;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle2, li.topictitle2, div.topictitle2
+	{mso-style-name:topictitle2;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.boldtitle, li.boldtitle, div.boldtitle
+	{mso-style-name:boldtitle;
+	margin-right:0cm;
+	margin-bottom:2.4pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle3, li.topictitle3, div.topictitle3
+	{mso-style-name:topictitle3;
+	margin-right:0cm;
+	margin-bottom:2.4pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle4, li.topictitle4, div.topictitle4
+	{mso-style-name:topictitle4;
+	margin-right:0cm;
+	margin-bottom:1.2pt;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle5, li.topictitle5, div.topictitle5
+	{mso-style-name:topictitle5;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:9.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle6, li.topictitle6, div.topictitle6
+	{mso-style-name:topictitle6;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.tip, li.tip, div.tip
+	{mso-style-name:tip;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.tiptitle, li.tiptitle, div.tiptitle
+	{mso-style-name:tiptitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.firstcol, li.firstcol, div.firstcol
+	{mso-style-name:firstcol;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.ptoch1, li.ptoch1, div.ptoch1
+	{mso-style-name:ptoch1;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+p.ptoch2, li.ptoch2, div.ptoch2
+	{mso-style-name:ptoch2;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+p.stitle, li.stitle, div.stitle
+	{mso-style-name:stitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.xxlines, li.xxlines, div.xxlines
+	{mso-style-name:xxlines;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:11.5pt;
+	font-family:"Times New Roman","serif";}
+p.sectiontitle, li.sectiontitle, div.sectiontitle
+	{mso-style-name:sectiontitle;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:14.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.prereq, li.prereq, div.prereq
+	{mso-style-name:prereq;
+	margin-right:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.deflisthead, li.deflisthead, div.deflisthead
+	{mso-style-name:deflisthead;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.parmlistkwd, li.parmlistkwd, div.parmlistkwd
+	{mso-style-name:parmlistkwd;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.parmlistvar, li.parmlistvar, div.parmlistvar
+	{mso-style-name:parmlistvar;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.attention, li.attention, div.attention
+	{mso-style-name:attention;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.attentiontitle, li.attentiontitle, div.attentiontitle
+	{mso-style-name:attentiontitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.cautiontitle, li.cautiontitle, div.cautiontitle
+	{mso-style-name:cautiontitle;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.caution, li.caution, div.caution
+	{mso-style-name:caution;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.danger, li.danger, div.danger
+	{mso-style-name:danger;
+	margin-top:2.4pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	border:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.dangertitle, li.dangertitle, div.dangertitle
+	{mso-style-name:dangertitle;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.important, li.important, div.important
+	{mso-style-name:important;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.importanttitle, li.importanttitle, div.importanttitle
+	{mso-style-name:importanttitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.remember, li.remember, div.remember
+	{mso-style-name:remember;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.remembertitle, li.remembertitle, div.remembertitle
+	{mso-style-name:remembertitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.restriction, li.restriction, div.restriction
+	{mso-style-name:restriction;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.restrictiontitle, li.restrictiontitle, div.restrictiontitle
+	{mso-style-name:restrictiontitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:12.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.notetitle, li.notetitle, div.notetitle
+	{mso-style-name:notetitle;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.noshade, li.noshade, div.noshade
+	{mso-style-name:noshade;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.xlight, li.xlight, div.xlight
+	{mso-style-name:xlight;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#DADADA;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light, li.light, div.light
+	{mso-style-name:light;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#B0B0B0;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.medium, li.medium, div.medium
+	{mso-style-name:medium;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#8C8C8C;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.dark, li.dark, div.dark
+	{mso-style-name:dark;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#6E6E6E;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.xdark, li.xdark, div.xdark
+	{mso-style-name:xdark;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#585858;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light-yellow, li.light-yellow, div.light-yellow
+	{mso-style-name:light-yellow;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#FFFFCC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.khaki, li.khaki, div.khaki
+	{mso-style-name:khaki;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#CCCC99;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.medium-blue, li.medium-blue, div.medium-blue
+	{mso-style-name:medium-blue;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#6699CC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light-blue, li.light-blue, div.light-blue
+	{mso-style-name:light-blue;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#CCCCFF;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.mid-grey, li.mid-grey, div.mid-grey
+	{mso-style-name:mid-grey;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#CCCCCC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light-grey, li.light-grey, div.light-grey
+	{mso-style-name:light-grey;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#DADADA;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.lightest-grey, li.lightest-grey, div.lightest-grey
+	{mso-style-name:lightest-grey;
+	margin-right:0cm;
+	margin-left:0cm;
+	background:#E6E6E6;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.cgraphic, li.cgraphic, div.cgraphic
+	{mso-style-name:cgraphic;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Times New Roman","serif";}
+p.aix, li.aix, div.aix
+	{mso-style-name:aix;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.hpux, li.hpux, div.hpux
+	{mso-style-name:hpux;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.sun, li.sun, div.sun
+	{mso-style-name:sun;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.unix, li.unix, div.unix
+	{mso-style-name:unix;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.win2, li.win2, div.win2
+	{mso-style-name:win2;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.winnt, li.winnt, div.winnt
+	{mso-style-name:winnt;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.win, li.win, div.win
+	{mso-style-name:win;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.zos, li.zos, div.zos
+	{mso-style-name:zos;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.linux, li.linux, div.linux
+	{mso-style-name:linux;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.os390, li.os390, div.os390
+	{mso-style-name:os390;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.os400, li.os400, div.os400
+	{mso-style-name:os400;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.c, li.c, div.c
+	{mso-style-name:c;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.cplusplus, li.cplusplus, div.cplusplus
+	{mso-style-name:cplusplus;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.cobol, li.cobol, div.cobol
+	{mso-style-name:cobol;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.fortran, li.fortran, div.fortran
+	{mso-style-name:fortran;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.java, li.java, div.java
+	{mso-style-name:java;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.macosx, li.macosx, div.macosx
+	{mso-style-name:macosx;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.os2, li.os2, div.os2
+	{mso-style-name:os2;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.pl1, li.pl1, div.pl1
+	{mso-style-name:pl1;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.rpg, li.rpg, div.rpg
+	{mso-style-name:rpg;
+	margin-top:6.0pt;
+	margin-right:0cm;
+	margin-left:0cm;
+	text-indent:37.35pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.winxp, li.winxp, div.winxp
+	{mso-style-name:winxp;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.msochpdefault, li.msochpdefault, div.msochpdefault
+	{mso-style-name:msochpdefault;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+span.cmdname
+	{mso-style-name:cmdname;}
+span.breadcrumbs
+	{mso-style-name:breadcrumbs;}
+span.figcap
+	{mso-style-name:figcap;}
+span.figdesc
+	{mso-style-name:figdesc;}
+span.mv1
+	{mso-style-name:mv1;
+	font-family:"Courier New";
+	font-style:italic;}
+span.md
+	{mso-style-name:md;}
+span.pk1
+	{mso-style-name:pk1;
+	font-family:"Courier New";
+	font-weight:bold;}
+span.pkdef1
+	{mso-style-name:pkdef1;
+	font-family:"Courier New";
+	font-weight:bold;
+	text-decoration:underline;}
+span.pv1
+	{mso-style-name:pv1;
+	font-family:"Courier New";
+	font-style:italic;}
+span.pvdef
+	{mso-style-name:pvdef;}
+span.kwd
+	{mso-style-name:kwd;}
+span.kdwdef
+	{mso-style-name:kdwdef;}
+span.oper
+	{mso-style-name:oper;}
+span.operdef
+	{mso-style-name:operdef;}
+span.var
+	{mso-style-name:var;}
+span.vardef
+	{mso-style-name:vardef;}
+span.attentiontitle1
+	{mso-style-name:attentiontitle1;
+	font-weight:bold;}
+span.pblktitle
+	{mso-style-name:pblktitle;}
+span.ednoticestitle
+	{mso-style-name:ednoticestitle;}
+span.term
+	{mso-style-name:term;}
+span.idxshow
+	{mso-style-name:idxshow;}
+span.refkey
+	{mso-style-name:refkey;}
+.MsoChpDefault
+	{font-size:10.0pt;}
+@page WordSection1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+<meta name=copyright content="(C) Copyright IBM Corporation 2008">
+<meta name=DC.rights.owner content="(C) Copyright IBM Corporation 2008">
+<meta name=security content=public>
+<meta name=Robots content="index,follow">
+<meta http-equiv=PICS-Label
+content="(PICS-1.1 &quot;http://www.icra.org/ratingsv02.html&quot; l gen true r (cz 1 lz 1 nz 1 oz 1 vz 1) &quot;http://www.rsac.org/ratingsv01.html&quot; l gen true r (n 0 s 0 v 0 l 0) &quot;http://www.classify.org/safesurf/&quot; l gen true r (SS~~000 1))">
+<meta name=DC.Type content=reference>
+<meta name=DC.Title content="Release notes - Product 1.2">
+<meta name=abstract
+content="Product 1.2 is available. Compatibility, installation, and other getting-started issues are addressed.">
+<meta name=description
+content="Product 1.2 is available. Compatibility, installation, and other getting-started issues are addressed.">
+<meta name=DC.Format content=XHTML>
+<meta name=DC.Identifier content=relnotes>
+<meta name=DC.Language content=en-us>
+<!-- All rights reserved. Licensed Materials Property of IBM --><!-- US Government Users Restricted Rights --><!-- Use, duplication or disclosure restricted by --><!-- GSA ADP Schedule Contract with IBM Corp. -->
+</head>
+
+<body bgcolor=white lang=EN-AU link="#006699" vlink="#996699" style='margin-right:
+60.0pt;margin-bottom:12.0pt' id=relnotes>
+
+<div class=WordSection1>
+
+<h1 style='margin-right:120.0pt'><a name=relnotes></a><span lang=EN-US
+style='font-size:14.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></h1>
+
+<h1 style='margin-right:120.0pt'><span lang=EN-US style='font-size:14.5pt;
+font-family:"Arial","sans-serif";color:black'>Release notes - </span><var><span
+lang=EN-US style='font-size:14.5pt;color:black'>IBM® Security Identity Manager
+Adapter Installer 6.0.2</span></var></h1>
+
+<div>
+
+<p><var><span lang=EN-US style='font-size:9.5pt;color:black'>IBM Security Identity Manager
+Adapter Installer 6.0.2</span></var><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'> is
+available. Compatibility, installation, and other getting-started issues are
+addressed.</span></p>
+
+<div>
+
+<h2><span lang=EN-US>&nbsp;</span></h2>
+
+<h2><span lang=EN-US>Contents</span></h2>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal style='color:black'><span lang=EN-US style='font-size:
+     9.5pt;font-family:"Arial","sans-serif"'><a href="#_Adapter_Features_and">Installer
+     Features and Purpose</a></span></li>
+ <li class=MsoNormal style='color:black'><span lang=EN-US style='font-size:
+     9.5pt;font-family:"Arial","sans-serif"'><a href="#_Contents_of_this">Contents
+     of this Release</a></span></li>
+ <li class=MsoNormal style='color:black'><span lang=EN-US style='font-size:
+     9.5pt;font-family:"Arial","sans-serif"'><a href="#_Notices">Notices</a></span></li>
+</ul>
+
+</div>
+
+<div id="relnotes__description">
+
+<h2><a name="_Preface"></a><span lang=EN-US>&nbsp;</span></h2>
+
+<h2><a name="_Adapter_Features_and"></a><span lang=EN-US>Installer Features and
+Purpose</span></h2>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>The Adapter Installer displays
+the license agreement for IBM Security Identity Manager adapters and unpacks
+the adapter package content to a specified directory. </span></p>
+
+<p style='margin-right:60.0pt'><b><span lang=EN-US style='font-size:11.5pt;
+font-family:"Arial","sans-serif";color:black'>&nbsp;</span></b></p>
+
+<h2><a name="_Contents_of_this"></a><span lang=EN-US>Contents of this Release</span></h2>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Adapter Installer Version</span></i></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=156 valign=top style='width:117.0pt;border:solid windowtext 1.0pt;
+  background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Component</span></b></p>
+  </td>
+  <td width=468 valign=top style='width:351.0pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Version</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=156 valign=top style='width:117.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Build Date</span></p>
+  </td>
+  <td width=468 valign=top style='width:351.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>2013 May 27 21.53.32</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=156 valign=top style='width:117.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Adapter Installer Version</span></p>
+  </td>
+  <td width=468 valign=top style='width:351.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>6.0.2</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=156 valign=top style='width:117.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Component Versions</span></p>
+  </td>
+  <td width=468 valign=top style='width:351.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Adapter Installer build: 6.0.2.26</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=156 valign=top style='width:117.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Documentation</span></p>
+  </td>
+  <td width=468 valign=top style='width:351.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>N/A &nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><b><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>New Features</span></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=282 valign=top style='width:211.8pt;border:solid windowtext 1.0pt;
+  background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Enhancement # (FITS)</span></b></p>
+  </td>
+  <td width=797 valign=top style='width:597.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Description</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=282 valign=top style='width:211.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+  <td width=797 valign=top style='width:597.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></b></p>
+  <p class=MsoNormal><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Items included in current release</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=282 valign=top style='width:211.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>INT83418</span></p>
+  </td>
+  <td width=797 valign=top style='width:597.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal style='line-height:12.0pt;text-autospace:none'><span
+  style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Support
+  Windows 2012.</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=282 valign=top style='width:211.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+  <td width=797 valign=top style='width:597.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></b></p>
+  <p class=MsoNormal><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Items included in 6.0.1 version</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=282 valign=top style='width:211.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'></td>
+  <td width=797 valign=top style='width:597.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>Initial release.&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Closed Issues</span></i></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=138 valign=top style='width:103.35pt;border:solid windowtext 1.0pt;
+  background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>CMVC#</span></b></p>
+  </td>
+  <td width=131 valign=top style='width:98.05pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>APAR#</span></b></p>
+  </td>
+  <td width=811 valign=top style='width:608.15pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>PMR# / Description</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=138 valign=top style='width:103.35pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></b></p>
+  </td>
+  <td width=131 valign=top style='width:98.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></b></p>
+  </td>
+  <td width=811 valign=top style='width:608.15pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Known Issues</span></i></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=133 valign=top style='width:99.55pt;border:solid windowtext 1.0pt;
+  background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>CMVC#</span></b></p>
+  </td>
+  <td width=124 valign=top style='width:93.35pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>APAR#</span></b></p>
+  </td>
+  <td width=822 valign=top style='width:616.65pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#CCCCCC;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>PMR# / Description</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=133 valign=top style='width:99.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'></td>
+  <td width=124 valign=top style='width:93.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+  <td width=822 valign=top style='width:616.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;color:black'>&nbsp;</span></p>
+  <table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+   style='width:90.0%;background:white;border-collapse:collapse'>
+   <tr>
+    <td valign=top style='padding:.75pt .75pt .75pt .75pt'>
+    <p class=MsoNormal><span style='color:black'>&nbsp;</span></p>
+    <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+    color:black'>&nbsp;</span></p>
+    </td>
+   </tr>
+  </table>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Known Limitations</span></i></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=129 valign=top style='width:96.6pt;border:solid windowtext 1.0pt;
+  background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>CMVC#</span></b></p>
+  </td>
+  <td width=120 valign=top style='width:90.2pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>APAR#</span></b></p>
+  </td>
+  <td width=830 valign=top style='width:622.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>PMR# / Description</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=129 valign=top style='width:96.6pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'></td>
+  <td width=120 valign=top style='width:90.2pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'></td>
+  <td width=830 valign=top style='width:622.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Known ISIM Issues</span></i></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=135 valign=top style='width:101.2pt;border:solid windowtext 1.0pt;
+  background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>CMVC#</span></b></p>
+  </td>
+  <td width=126 valign=top style='width:94.7pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>APAR#</span></b></p>
+  </td>
+  <td width=818 valign=top style='width:613.65pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>PMR# / Description</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=135 valign=top style='width:101.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+  <td width=126 valign=top style='width:94.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+  <td width=818 valign=top style='width:613.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Known InstallAnywhere Issues</span></i></b></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width="90%"
+ style='width:90.0%;margin-left:5.4pt;background:white;border-collapse:collapse'>
+ <tr>
+  <td width=135 valign=top style='width:101.3pt;border:solid windowtext 1.0pt;
+  background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>CMVC#</span></b></p>
+  </td>
+  <td width=127 valign=top style='width:95.0pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>APAR#</span></b></p>
+  </td>
+  <td width=818 valign=top style='width:613.25pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#D9D9D9;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-top:3.0pt;margin-right:0cm;margin-bottom:
+  3.0pt;margin-left:0cm'><b><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>PMR# / Description</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=135 valign=top style='width:101.3pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt'></td>
+  <td width=127 valign=top style='width:95.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'></td>
+  <td width=818 valign=top style='width:613.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='color:black'>&nbsp;</span></p>
+  <p class=MsoNormal><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+  color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+<p style='margin-right:60.0pt'><a name="_Installation_and_Configuration"></a><a
+name="_Supported_Configurations"></a><b><span lang=EN-US style='font-size:11.5pt;
+font-family:"Arial","sans-serif";color:black'>&nbsp;</span></b></p>
+
+<h2><a name="_Notices"></a><span lang=EN-US>Notices</span></h2>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>This information was developed
+for products and services offered in the U.S.A. IBM may not offer the products,
+services, or features discussed in this document in other countries. Consult
+your local IBM representative for information on the products and services
+currently available in your area. Any reference to an IBM product, program, or
+service is not intended to state or imply that only that IBM product, program,
+or service may be used. Any functionally equivalent product, program, or
+service that does not infringe any IBM intellectual property right may be used
+instead. However, it is the user's responsibility to evaluate and verify the
+operation of any non-IBM product, program, or service.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>IBM may have patents or pending
+patent applications covering subject matter described in this document. The
+furnishing of this document does not give you any license to these patents. You
+can send license inquiries, in writing, to: </span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>IBM Director of Licensing</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>IBM Corporation</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>North Castle Drive</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>Armonk, NY&nbsp; 10504-1785&nbsp; U.S.A.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>For license inquiries regarding
+double-byte (DBCS) information, contact the IBM Intellectual Property
+Department in your country or send inquiries, in writing, to:</span></p>
+
+<p style='margin-top:0cm;margin-right:120.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>Intellectual Property Licensing</span></p>
+
+<p style='margin-top:0cm;margin-right:120.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>Legal and Intellectual Property Law</span></p>
+
+<p style='margin-top:0cm;margin-right:120.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>IBM Japan, Ltd.</span></p>
+
+<p style='margin-top:0cm;margin-right:120.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>1623-14, Shimotsuruma, Yamato-shi</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>Kanagawa 242-8502 Japan</span></p>
+
+<p style='margin-right:60.0pt'><b><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>The following paragraph does not
+apply to the United Kingdom or any other country where such provisions are
+inconsistent with local law</span></b><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>: </span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>INTERNATIONAL BUSINESS MACHINES
+CORPORATION PROVIDES THIS PUBLICATION &quot;AS IS&quot; WITHOUT WARRANTY OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Some states do not allow
+disclaimer of express or implied warranties in certain transactions, therefore,
+this statement may not apply to you.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>This information could include
+technical inaccuracies or typographical errors. Changes are periodically made
+to the information herein; these changes will be incorporated in new editions
+of the publication. IBM may make improvements and/or changes in the product(s)
+and/or the program(s) described in this publication at any time without notice.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Any references in this
+information to non-IBM Web sites are provided for convenience only and do not
+in any manner serve as an endorsement of those Web sites. The materials at
+those Web sites are not part of the materials for this IBM product and use of
+those Web sites is at your own risk.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>IBM may use or distribute any of
+the information you supply in any way it believes appropriate without incurring
+any obligation to you.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Licensees of this program who
+wish to have information about it for the purpose of enabling: (i) the exchange
+of information between independently created programs and other programs
+(including this one) and (ii) the mutual use of the information which has been
+exchanged should contact:</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>IBM Corporation</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>2ZA4/101</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>11400 Burnet Road</span></p>
+
+<p style='margin-top:0cm;margin-right:60.0pt;margin-bottom:0cm;margin-left:
+0cm;margin-bottom:.0001pt'><span lang=EN-US style='font-size:9.5pt;font-family:
+"Courier New";color:black'>Austin, TX 78758&nbsp; U.S.A.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Such information may be
+available, subject to appropriate terms and conditions, including in some
+cases, payment of a fee.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>The licensed program described in
+this information and all licensed material available for it are provided by IBM
+under terms of the IBM Customer Agreement, IBM International Program License
+Agreement, or any equivalent agreement between us.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Any performance data contained
+herein was determined in a controlled environment. Therefore, the results
+obtained in other operating environments may vary significantly. Some
+measurements may have been made on development-level systems and there is no
+guarantee that these measurements will be the same on generally available
+systems. Furthermore, some measurements may have been estimated through
+extrapolation. Actual results may vary. Users of this document should verify
+the applicable data for their specific environment.</span></p>
+
+<p style='margin-right:60.0pt'><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Information concerning non-IBM
+products was obtained from the suppliers of those products, their published
+announcements or other publicly available sources. IBM has not tested those
+products and cannot confirm the accuracy of performance, compatibility or any
+other claims related to non-IBM products. Questions on the capabilities of
+non-IBM products should be addressed to the suppliers of those products.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>This
+information contains examples of data and reports used in daily business
+operations. To illustrate them as completely as possible, the examples include
+the names of individuals, companies, brands, and products. All of these</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>names are
+fictitious and any similarity to the names and addresses used by an actual
+business enterprise is entirely coincidental.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>COPYRIGHT
+LICENSE:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>This
+information contains sample application programs in source language, which
+illustrate programming techniques on various operating platforms. You may copy,
+modify, and distribute these sample programs in any form without payment to
+IBM, for the purposes of developing, using, marketing or distributing
+application programs conforming to the application programming interface for
+the operating platform for which the sample programs are written. These
+examples have not been thoroughly tested under all conditions. IBM, therefore,
+cannot guarantee or imply reliability, serviceability, or function of these
+programs. You may copy, modify, and distribute these sample programs in any
+form without payment to IBM for the purposes of developing, using, marketing,
+or distributing application programs conforming to IBM's application
+programming interfaces.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Each copy
+or any portion of these sample programs or any derivative work, must include a
+copyright notice as follows:</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>© (your
+company name) (year). Portions of this code are derived from IBM Corp. Sample
+Programs. © Copyright IBM Corp. _enter the year or years_. All rights reserved.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>If you are
+viewing this information in softcopy form, the photographs and color
+illustrations might not be displayed.</span></p>
+
+<p style='margin-right:60.0pt'><b><i><span lang=EN-US style='font-size:9.5pt;
+font-family:"Arial","sans-serif";color:black'>Trademarks</span></i></b></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>IBM, the
+IBM logo, and ibm.com are trademarks or registered trademarks of International Business
+Machines Corp., registered in many jurisdictions worldwide. Other product and
+service names might be trademarks of IBM or other companies. A current list of
+IBM trademarks is available on the Web at &quot;Copyright and trademark
+information&quot; at www.ibm.com/legal/copytrade.shtml.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Adobe,
+Acrobat, PostScript and all Adobe-based trademarks are either registered
+trademarks or trademarks of Adobe Systems Incorporated in the United States,
+other countries, or both.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>IT
+Infrastructure Library is a registered trademark of the Central Computer and
+Telecommunications Agency which is now part of the Office of Government
+Commerce.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Intel,
+Intel logo, Intel Inside, Intel Inside logo, Intel Centrino, Intel Centrino
+logo, Celeron, Intel Xeon, Intel SpeedStep, Itanium, and Pentium are trademarks
+or registered trademarks of Intel Corporation or its subsidiaries in the United
+States and other countries.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Linux is a
+trademark of Linus Torvalds in the United States, other countries, or both.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Microsoft,
+Windows, Windows NT, and the Windows logo are trademarks of Microsoft
+Corporation in the United States, other countries, or both. ITIL is a
+registered trademark, and a registered community trademark of the Office of
+Government Commerce, and is registered in the U.S. Patent and Trademark Office.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>UNIX is a
+registered trademark of The Open Group in the United States and other
+countries.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Java and
+all Java-based trademarks and logos are trademarks or registered trademarks of
+Oracle and/or its affiliates.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Cell Broadband
+Engine is a trademark of Sony Computer Entertainment, Inc. in the United
+States, other countries, or both and is used under license therefrom.</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-autospace:none'><span lang=EN-US
+style='font-size:9.5pt;font-family:"Arial","sans-serif";color:black'>Linear
+Tape-Open, LTO, the LTO Logo, Ultrium, and the Ultrium logo are trademarks of
+HP, IBM Corp. and Quantum in the U.S. and other countries. </span></p>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

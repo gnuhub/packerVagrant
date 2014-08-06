@@ -1,0 +1,127 @@
+__________________________________________________________________________
+
+Tue Aug 05 08:23:31 PDT 2014
+
+Free Memory: 23945 kB
+Total Memory: 36484 kB
+
+java.class.path:
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData\IAClasses.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData\Execute.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\Windows\InstallerData\Execute.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData\Resource1.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\Windows\InstallerData\Resource1.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\Windows\InstallerData
+
+ZGUtil.CLASS_PATH:
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData\IAClasses.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData\Execute.zip
+    C:\Users\vagrant\AppData\Local\Temp\I1407252041\InstallerData
+
+sun.boot.class.path:
+    C:\Program Files\Java\jre8\lib\resources.jar
+    C:\Program Files\Java\jre8\lib\rt.jar
+    C:\Program Files\Java\jre8\lib\sunrsasign.jar
+    C:\Program Files\Java\jre8\lib\jsse.jar
+    C:\Program Files\Java\jre8\lib\jce.jar
+    C:\Program Files\Java\jre8\lib\charsets.jar
+    C:\Program Files\Java\jre8\lib\jfr.jar
+    C:\Program Files\Java\jre8\classes
+
+java.ext.dirs:
+    C:\Program Files\Java\jre8\lib\ext
+    C:\Windows\Sun\Java\lib\ext
+
+java.version                  == 1.8.0_11 (Java 1)
+java.vm.name                  == Java HotSpot(TM) 64-Bit Server VM
+java.vm.vendor                == Oracle Corporation
+java.vm.version               == 25.11-b03
+java.vm.specification.name    == Java Virtual Machine Specification
+java.vm.specification.vendor  == Oracle Corporation
+java.vm.specification.version == 1.8
+java.specification.name       == Java Platform API Specification
+java.specification.vendor     == Oracle Corporation
+java.specification.version    == 1.8
+java.vendor                   == Oracle Corporation
+java.vendor.url               == http://java.oracle.com/
+java.class.version            == 52.0
+java.compiler                 == null
+java.home                     == C:\Program Files\Java\jre8
+java.io.tmpdir                == C:\Users\vagrant\AppData\Local\Temp\
+os.name                       == Windows Server 2012
+os.arch                       == amd64
+os.version                    == 6.2
+path.separator                == ;
+file.separator                == \
+file.encoding                 == Cp1252
+user.name                     == vagrant
+user.home                     == C:\Users\vagrant
+user.dir                      == C:\Users\vagrant\AppData\Local\Temp\I1407252041\Windows
+user.language                 == en
+user.region                   == null
+__________________________________________________________________________
+
+Installed Feature(s) Application, Help of IBM Security Identity Manager Adapter
+
+Install Begin: AUGUST 5, 2014 8:20:46 AM PDT
+Install End: AUGUST 5, 2014 8:22:45 AM PDT
+
+Installed by InstallAnywhere 12.5 Enterprise Build 4208
+
+
+User Interactions
+-----------------
+
+
+#Indicate whether the license agreement been accepted
+#----------------------------------------------------
+LICENSE_ACCEPTED=TRUE
+
+#Choose Adapter Package
+#----------------------
+USER_SELECTED_FILE=Adapter-WinAD-6.0.11.zip.enc
+PATH_OF_SELECTED_FILE=C:\\vagrant\\ISIM_Adaptors\\ISIM_6.0_ADAP_6.0.11_WIN_64_ML\\
+
+#Choose Install Folder
+#---------------------
+USER_INSTALL_DIR=C:\\Users\\vagrant\\ADAdaptor
+
+Summary
+-------
+
+Installation: Successful.
+
+8 Successes
+0 Warnings
+0 NonFatalErrors
+0 FatalErrors
+
+Action Notes:
+
+None
+
+Install Log Detail:
+
+Check Disk Space:         C:\Users\vagrant\AppData\Local\Temp
+                          Status: SUCCESSFUL
+                          Additional Notes: NOTE - Required Disk Space: 1,566,219; Free Disk Space: 41,665,323,008
+
+
+
+
+Check Disk Space:         C:\Users\vagrant\ADAdaptor
+                          Status: SUCCESSFUL
+                          Additional Notes: NOTE - Required Disk Space: 1,566,219; Free Disk Space: 41,665,323,008
+
+Check Disk Space:         C:\Users\vagrant\ADAdaptor
+                          Status: SUCCESSFUL
+                          Additional Notes: NOTE - Required Disk Space: 1,566,219; Free Disk Space: 41,665,323,008
+
+Install Directory:        C:\Users\vagrant\ADAdaptor\
+                          Status: SUCCESSFUL
+                          Additional Notes: NOTE - Directory already existed
+
+Custom Action:            com.ibm.itim.adapter.install.installanywhere.UnpackageAdapter
+                          Status: SUCCESSFUL
+

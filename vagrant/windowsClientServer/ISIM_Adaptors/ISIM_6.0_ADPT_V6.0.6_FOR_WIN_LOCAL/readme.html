@@ -1,0 +1,1009 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=Generator content="Microsoft Word 12 (filtered)">
+<title>IBM Security Identity Manager Adapter README</title>
+<link rel=Stylesheet type="text/css" media=all href=ibmdita.css>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Consolas;
+	panose-1:2 11 6 9 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h3
+	{mso-style-link:"Heading 3 Char";
+	margin-right:0in;
+	margin-bottom:2.4pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h4
+	{mso-style-link:"Heading 4 Char";
+	margin-right:0in;
+	margin-bottom:1.2pt;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h5
+	{mso-style-link:"Heading 5 Char";
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:9.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+h6
+	{mso-style-link:"Heading 6 Char";
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:8.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:#006699;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#996699;
+	text-decoration:underline;}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+pre
+	{mso-style-link:"HTML Preformatted Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	background:#DADADA;
+	font-size:12.0pt;}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	font-family:"Cambria","serif";
+	color:#365F91;
+	font-weight:bold;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-link:"Heading 3";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;}
+span.Heading4Char
+	{mso-style-name:"Heading 4 Char";
+	mso-style-link:"Heading 4";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;
+	font-style:italic;}
+span.Heading5Char
+	{mso-style-name:"Heading 5 Char";
+	mso-style-link:"Heading 5";
+	font-family:"Cambria","serif";
+	color:#243F60;}
+span.Heading6Char
+	{mso-style-name:"Heading 6 Char";
+	mso-style-link:"Heading 6";
+	font-family:"Cambria","serif";
+	color:#243F60;
+	font-style:italic;}
+span.HTMLPreformattedChar
+	{mso-style-name:"HTML Preformatted Char";
+	mso-style-link:"HTML Preformatted";
+	font-family:"Consolas","serif";}
+p.msgitem, li.msgitem, div.msgitem
+	{mso-style-name:msgitem;
+	margin-top:0in;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.ibmfilepath, li.ibmfilepath, div.ibmfilepath
+	{mso-style-name:ibmfilepath;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;}
+p.ibmcommand, li.ibmcommand, div.ibmcommand
+	{mso-style-name:ibmcommand;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.ibmemphasis, li.ibmemphasis, div.ibmemphasis
+	{mso-style-name:ibmemphasis;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.mv, li.mv, div.mv
+	{mso-style-name:mv;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;}
+p.pk, li.pk, div.pk
+	{mso-style-name:pk;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-weight:bold;}
+p.pkdef, li.pkdef, div.pkdef
+	{mso-style-name:pkdef;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;}
+p.pv, li.pv, div.pv
+	{mso-style-name:pv;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;}
+p.filepath, li.filepath, div.filepath
+	{mso-style-name:filepath;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;}
+p.base, li.base, div.base
+	{mso-style-name:base;
+	margin-right:0in;
+	margin-left:0in;
+	background:white;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.tbldesc, li.tbldesc, div.tbldesc
+	{mso-style-name:tbldesc;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.italic, li.italic, div.italic
+	{mso-style-name:italic;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.bold, li.bold, div.bold
+	{mso-style-name:bold;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.underlined, li.underlined, div.underlined
+	{mso-style-name:underlined;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.bold-italic, li.bold-italic, div.bold-italic
+	{mso-style-name:bold-italic;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.bolditalic, li.bolditalic, div.bolditalic
+	{mso-style-name:bolditalic;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.smallcaps, li.smallcaps, div.smallcaps
+	{mso-style-name:smallcaps;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+p.italic-underlined, li.italic-underlined, div.italic-underlined
+	{mso-style-name:italic-underlined;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.bold-underlined, li.bold-underlined, div.bold-underlined
+	{mso-style-name:bold-underlined;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.bold-italic-underlined, li.bold-italic-underlined, div.bold-italic-underlined
+	{mso-style-name:bold-italic-underlined;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.smallcaps-underlined, li.smallcaps-underlined, div.smallcaps-underlined
+	{mso-style-name:smallcaps-underlined;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.emphasis, li.emphasis, div.emphasis
+	{mso-style-name:emphasis;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.inlinedef, li.inlinedef, div.inlinedef
+	{mso-style-name:inlinedef;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.sidebar, li.sidebar, div.sidebar
+	{mso-style-name:sidebar;
+	margin-right:0in;
+	margin-left:0in;
+	background:#CCCCCC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.rharrow, li.rharrow, div.rharrow
+	{mso-style-name:rharrow;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:9.0pt;}
+p.runningheader, li.runningheader, div.runningheader
+	{mso-style-name:runningheader;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:9.0pt;}
+p.runningfooter, li.runningfooter, div.runningfooter
+	{mso-style-name:runningfooter;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:8.5pt;}
+p.breadcrumb, li.breadcrumb, div.breadcrumb
+	{mso-style-name:breadcrumb;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:9.0pt;
+	font-family:"Times New Roman","serif";}
+p.fastpath, li.fastpath, div.fastpath
+	{mso-style-name:fastpath;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.fastpathtitle, li.fastpathtitle, div.fastpathtitle
+	{mso-style-name:fastpathtitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.toc, li.toc, div.toc
+	{mso-style-name:toc;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.nested0, li.nested0, div.nested0
+	{mso-style-name:nested0;
+	margin-top:0in;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.p, li.p, div.p
+	{mso-style-name:p;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.skip, li.skip, div.skip
+	{mso-style-name:skip;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.skipspace, li.skipspace, div.skipspace
+	{mso-style-name:skipspace;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.ulchildlink, li.ulchildlink, div.ulchildlink
+	{mso-style-name:ulchildlink;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.olchildlink, li.olchildlink, div.olchildlink
+	{mso-style-name:olchildlink;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.title, li.title, div.title
+	{mso-style-name:title;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.pagetitle, li.pagetitle, div.pagetitle
+	{mso-style-name:pagetitle;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle1, li.topictitle1, div.topictitle1
+	{mso-style-name:topictitle1;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	font-size:18.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.subtitle, li.subtitle, div.subtitle
+	{mso-style-name:subtitle;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.pagesubtitle, li.pagesubtitle, div.pagesubtitle
+	{mso-style-name:pagesubtitle;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle2, li.topictitle2, div.topictitle2
+	{mso-style-name:topictitle2;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:15.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.boldtitle, li.boldtitle, div.boldtitle
+	{mso-style-name:boldtitle;
+	margin-right:0in;
+	margin-bottom:2.4pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle3, li.topictitle3, div.topictitle3
+	{mso-style-name:topictitle3;
+	margin-right:0in;
+	margin-bottom:2.4pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle4, li.topictitle4, div.topictitle4
+	{mso-style-name:topictitle4;
+	margin-right:0in;
+	margin-bottom:1.2pt;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle5, li.topictitle5, div.topictitle5
+	{mso-style-name:topictitle5;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:9.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.topictitle6, li.topictitle6, div.topictitle6
+	{mso-style-name:topictitle6;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:8.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.tip, li.tip, div.tip
+	{mso-style-name:tip;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.tiptitle, li.tiptitle, div.tiptitle
+	{mso-style-name:tiptitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.firstcol, li.firstcol, div.firstcol
+	{mso-style-name:firstcol;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.ptoch1, li.ptoch1, div.ptoch1
+	{mso-style-name:ptoch1;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+p.ptoch2, li.ptoch2, div.ptoch2
+	{mso-style-name:ptoch2;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+p.stitle, li.stitle, div.stitle
+	{mso-style-name:stitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.xxlines, li.xxlines, div.xxlines
+	{mso-style-name:xxlines;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:11.5pt;
+	font-family:"Times New Roman","serif";}
+p.sectiontitle, li.sectiontitle, div.sectiontitle
+	{mso-style-name:sectiontitle;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	font-size:14.5pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.prereq, li.prereq, div.prereq
+	{mso-style-name:prereq;
+	margin-right:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.deflisthead, li.deflisthead, div.deflisthead
+	{mso-style-name:deflisthead;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.parmlistkwd, li.parmlistkwd, div.parmlistkwd
+	{mso-style-name:parmlistkwd;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.parmlistvar, li.parmlistvar, div.parmlistvar
+	{mso-style-name:parmlistvar;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-style:italic;}
+p.attention, li.attention, div.attention
+	{mso-style-name:attention;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.attentiontitle, li.attentiontitle, div.attentiontitle
+	{mso-style-name:attentiontitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.cautiontitle, li.cautiontitle, div.cautiontitle
+	{mso-style-name:cautiontitle;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.caution, li.caution, div.caution
+	{mso-style-name:caution;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.danger, li.danger, div.danger
+	{mso-style-name:danger;
+	margin-top:2.4pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	border:none;
+	padding:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.dangertitle, li.dangertitle, div.dangertitle
+	{mso-style-name:dangertitle;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.important, li.important, div.important
+	{mso-style-name:important;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.importanttitle, li.importanttitle, div.importanttitle
+	{mso-style-name:importanttitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.remember, li.remember, div.remember
+	{mso-style-name:remember;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.remembertitle, li.remembertitle, div.remembertitle
+	{mso-style-name:remembertitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.restriction, li.restriction, div.restriction
+	{mso-style-name:restriction;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.restrictiontitle, li.restrictiontitle, div.restrictiontitle
+	{mso-style-name:restrictiontitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.note, li.note, div.note
+	{mso-style-name:note;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.notetitle, li.notetitle, div.notetitle
+	{mso-style-name:notetitle;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	font-weight:bold;}
+p.noshade, li.noshade, div.noshade
+	{mso-style-name:noshade;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.xlight, li.xlight, div.xlight
+	{mso-style-name:xlight;
+	margin-right:0in;
+	margin-left:0in;
+	background:#DADADA;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light, li.light, div.light
+	{mso-style-name:light;
+	margin-right:0in;
+	margin-left:0in;
+	background:#B0B0B0;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.medium, li.medium, div.medium
+	{mso-style-name:medium;
+	margin-right:0in;
+	margin-left:0in;
+	background:#8C8C8C;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.dark, li.dark, div.dark
+	{mso-style-name:dark;
+	margin-right:0in;
+	margin-left:0in;
+	background:#6E6E6E;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.xdark, li.xdark, div.xdark
+	{mso-style-name:xdark;
+	margin-right:0in;
+	margin-left:0in;
+	background:#585858;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light-yellow, li.light-yellow, div.light-yellow
+	{mso-style-name:light-yellow;
+	margin-right:0in;
+	margin-left:0in;
+	background:#FFFFCC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.khaki, li.khaki, div.khaki
+	{mso-style-name:khaki;
+	margin-right:0in;
+	margin-left:0in;
+	background:#CCCC99;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.medium-blue, li.medium-blue, div.medium-blue
+	{mso-style-name:medium-blue;
+	margin-right:0in;
+	margin-left:0in;
+	background:#6699CC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light-blue, li.light-blue, div.light-blue
+	{mso-style-name:light-blue;
+	margin-right:0in;
+	margin-left:0in;
+	background:#CCCCFF;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.mid-grey, li.mid-grey, div.mid-grey
+	{mso-style-name:mid-grey;
+	margin-right:0in;
+	margin-left:0in;
+	background:#CCCCCC;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.light-grey, li.light-grey, div.light-grey
+	{mso-style-name:light-grey;
+	margin-right:0in;
+	margin-left:0in;
+	background:#DADADA;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.lightest-grey, li.lightest-grey, div.lightest-grey
+	{mso-style-name:lightest-grey;
+	margin-right:0in;
+	margin-left:0in;
+	background:#E6E6E6;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.cgraphic, li.cgraphic, div.cgraphic
+	{mso-style-name:cgraphic;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Times New Roman","serif";}
+p.aix, li.aix, div.aix
+	{mso-style-name:aix;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.hpux, li.hpux, div.hpux
+	{mso-style-name:hpux;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.sun, li.sun, div.sun
+	{mso-style-name:sun;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.unix, li.unix, div.unix
+	{mso-style-name:unix;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.win2, li.win2, div.win2
+	{mso-style-name:win2;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.winnt, li.winnt, div.winnt
+	{mso-style-name:winnt;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.win, li.win, div.win
+	{mso-style-name:win;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.zos, li.zos, div.zos
+	{mso-style-name:zos;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.linux, li.linux, div.linux
+	{mso-style-name:linux;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.os390, li.os390, div.os390
+	{mso-style-name:os390;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.os400, li.os400, div.os400
+	{mso-style-name:os400;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.c, li.c, div.c
+	{mso-style-name:c;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.cplusplus, li.cplusplus, div.cplusplus
+	{mso-style-name:cplusplus;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.cobol, li.cobol, div.cobol
+	{mso-style-name:cobol;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.fortran, li.fortran, div.fortran
+	{mso-style-name:fortran;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.java, li.java, div.java
+	{mso-style-name:java;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.macosx, li.macosx, div.macosx
+	{mso-style-name:macosx;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.os2, li.os2, div.os2
+	{mso-style-name:os2;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.pl1, li.pl1, div.pl1
+	{mso-style-name:pl1;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.rpg, li.rpg, div.rpg
+	{mso-style-name:rpg;
+	margin-top:6.0pt;
+	margin-right:0in;
+	margin-left:0in;
+	text-indent:41.25pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p.winxp, li.winxp, div.winxp
+	{mso-style-name:winxp;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+span.mv1
+	{mso-style-name:mv1;
+	font-family:"Courier New";
+	font-style:italic;}
+span.pk1
+	{mso-style-name:pk1;
+	font-family:"Courier New";
+	font-weight:bold;}
+span.pkdef1
+	{mso-style-name:pkdef1;
+	font-family:"Courier New";
+	font-weight:bold;
+	text-decoration:underline;}
+span.pv1
+	{mso-style-name:pv1;
+	font-family:"Courier New";
+	font-style:italic;}
+span.attentiontitle1
+	{mso-style-name:attentiontitle1;
+	font-weight:bold;}
+.MsoChpDefault
+	{font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+<meta name=copyright content="(C) Copyright IBM Corporation 2008">
+<meta name=DC.rights.owner content="(C) Copyright IBM Corporation 2008">
+<meta name=security content=public>
+<meta name=Robots content="index,follow">
+<meta name=DC.Type content=reference>
+<meta name=DC.Format content=XHTML>
+<meta name=DC.Identifier content=relnotes>
+<meta name=DC.Language content=en-us>
+<!-- All rights reserved. Licensed Materials Property of IBM --><!-- US Government Users Restricted Rights --><!-- Use, duplication or disclosure restricted by --><!-- GSA ADP Schedule Contract with IBM Corp. -->
+</head>
+
+<body bgcolor=white lang=EN-US link="#006699" vlink="#996699" style='margin-right:
+60.0pt;margin-bottom:12.0pt' id=relnotes>
+
+<div class=WordSection1>
+
+<div>
+
+<h1 style='margin-right:120.0pt'><var><span style='font-size:14.5pt;color:black'>IBM®
+Security Identity Manager Adapter README</span></var></h1>
+
+<div>
+
+<div id="relnotes__description">
+
+<h2><span style='font-size:12.0pt;font-family:"Arial","sans-serif";color:black'>Adapter
+Installation</span></h2>
+
+<p style='margin-right:120.0pt'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+color:black'>The adapter package included in this archive is an encrypted
+package that must be decrypted in order to proceed with the adapter
+installation. Decrypting the adapter package requires IBM Security Identity
+Manager Adapter Installer. The IBM Security Identity Manager Adapter Installer
+is used to decrypt all adapter packages </span></p>
+
+<p style='margin-right:120.0pt'><span style='font-size:9.5pt;font-family:"Arial","sans-serif";
+color:black'>Please download the IBM Security Identity Manager Adapter
+Installer from <a
+href="http://www.ibm.com/software/howtobuy/passportadvantage/pao_customers.htm">IBM
+Passport Advantage</a> and refer to accompanying documentation for the
+instructions. Once the adapter package has been decrypted, follow the
+installation instruction included in the adapter package. </span></p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

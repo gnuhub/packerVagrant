@@ -1,0 +1,11 @@
+<dsml><directory-entries>
+<entry dn="uid=cninja">
+<objectclass><oc-value>inetOrgPerson</oc-value></objectclass>
+<attr name="sn"><value>Cookie</value></attr>
+<attr name="givenname"><value>Ninja</value></attr>
+<attr name="cn"><value>Cookie Ninja</value></attr>
+<attr name="initials"><value>CN</value></attr>
+<attr name="mail"><value>cninja@xyz.com</value></attr>
+</entry>
+</directory-entries>
+</dsml>
